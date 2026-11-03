@@ -12,7 +12,13 @@ Simulador para practicar la creación de iFlows de SAP Cloud Integration desde e
 
 ## Cómo funciona
 
-Es un único archivo `index.html` con HTML, CSS y JavaScript sin dependencias. El motor de simulación corre en el navegador: XPath con `document.evaluate`, expresiones Camel Simple (`${header.x}`, `${property.x}`) y un subconjunto de Groovy traducido a JavaScript. Los sistemas destino responden con datos de prueba. El avance se guarda en el `localStorage` de cada navegador; no hay servidor ni base de datos y no se envía ningún dato.
+Sitio estático sin dependencias:
+
+- `index.html`: estructura de la página.
+- `styles.css`: estilos, con tema claro y oscuro.
+- `app.js`: editor, ejercicios y motor de simulación.
+
+El motor de simulación corre en el navegador: XPath con `document.evaluate`, expresiones Camel Simple (`${header.x}`, `${property.x}`) y un subconjunto de Groovy traducido a JavaScript. Los sistemas destino responden con datos de prueba. El avance se guarda en el `localStorage` de cada navegador; no hay servidor ni base de datos y no se envía ningún dato.
 
 ## Desarrollo local
 
