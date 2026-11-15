@@ -1,28 +1,31 @@
-# Taller de iFlows
+# flowDev
 
-Simulador para practicar la creación de iFlows de SAP Cloud Integration desde el navegador, sin tenant ni instalación.
+Plataforma educativa para aprender automatización e integración con flujos: **n8n**, **Make**, **Zapier** y **SAP CPI**.
 
 ## Qué incluye
 
-- **Escenarios guiados (11):** HTTPS, SFTP, PGP, Data Store, Router, Message Mapping, Multicast, AMQP, OData, IDoc, RFC, SOAP, Splitter, Local Integration Process y Open Connectors.
-- **Cuestionarios teóricos (20):** uno por clase, con corrección, explicación y botón para ver la respuesta.
-- **Práctica extra (9) y modo libre.**
-- Editor visual con paleta, conexiones y hoja de propiedades parecida a la de CPI.
-- Botón **Check** (errores de modelado), **Probar** (trace paso a paso con headers, properties y body) y **Verificar** (comprobaciones automáticas de cada ejercicio).
+- **Inicio, registro e ingreso**, y un panel con el avance por plataforma.
+- **n8n, Make y Zapier:** 4 lecciones, 3 proyectos guiados y un cuestionario por plataforma. Los proyectos se resuelven en un editor de flujos con el vocabulario de cada herramienta, se ejecutan con datos de prueba y se verifican con casos automáticos.
+- **SAP CPI** (`sap-cpi/`): taller de iFlows con editor BPMN, 11 escenarios guiados, 20 cuestionarios teóricos, 9 ejercicios extra y modo libre.
+- **Próximamente:** Power Automate y Activepieces.
+
+## Estructura
+
+```
+index.html    estructura de flowDev
+styles.css    identidad visual
+app.js        contenido, editor de flujos, simulador y cuentas
+sap-cpi/      taller de SAP Cloud Integration (index.html, styles.css, app.js)
+vercel.json   configuración del sitio estático
+```
 
 ## Cómo funciona
 
-Sitio estático sin dependencias:
+Sitio estático sin dependencias ni servidor. Los editores son simuladores: evalúan expresiones (`{{ $json.campo }}`, `{{1.campo}}`), condiciones y bifurcaciones en el navegador, y las apps responden con datos de prueba.
 
-- `index.html`: estructura de la página.
-- `styles.css`: estilos, con tema claro y oscuro.
-- `app.js`: editor, ejercicios y motor de simulación.
-
-El motor de simulación corre en el navegador: XPath con `document.evaluate`, expresiones Camel Simple (`${header.x}`, `${property.x}`) y un subconjunto de Groovy traducido a JavaScript. Los sistemas destino responden con datos de prueba. El avance se guarda en el `localStorage` de cada navegador; no hay servidor ni base de datos y no se envía ningún dato.
+Las cuentas y el avance se guardan en el `localStorage` de cada navegador (la contraseña como hash). No se envía ningún dato, una cuenta no sirve en otro dispositivo y no hay recuperación de contraseña.
 
 ## Desarrollo local
-
-Abrí `index.html` en el navegador, o serví la carpeta:
 
 ```bash
 python -m http.server 8000
@@ -30,8 +33,8 @@ python -m http.server 8000
 
 ## Deploy
 
-Sitio estático: en Vercel se importa el repositorio sin framework ni comando de build (Framework Preset: *Other*, Output Directory: raíz).
+En Vercel: importar el repositorio con Framework Preset *Other*, sin comando de build.
 
 ## Aviso
 
-Proyecto educativo independiente, sin afiliación con SAP SE. SAP y SAP Integration Suite son marcas de SAP SE. Los nombres de empresas, hosts y datos de los ejercicios son ficticios. El simulador es una aproximación simplificada y no reemplaza la práctica en un tenant real.
+Proyecto educativo independiente. n8n, Make, Zapier, SAP, Power Automate y Activepieces son marcas de sus respectivos dueños. Los nombres de empresas, hosts y datos de los ejercicios son ficticios.
