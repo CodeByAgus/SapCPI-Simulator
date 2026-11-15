@@ -15,7 +15,7 @@ Plataforma educativa para aprender automatización e integración con flujos: **
 index.html    estructura de flowDev
 styles.css    identidad visual
 app.js        contenido, editor de flujos, simulador y cuentas
-sap-cpi/      taller de SAP Cloud Integration (index.html, styles.css, app.js)
+sap-cpi/      taller de SAP Cloud Integration (index.html, taller.css, taller.js)
 vercel.json   configuración del sitio estático
 ```
 

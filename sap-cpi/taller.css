@@ -1,32 +1,16 @@
-/* Layout: banco de trabajo de tres columnas — paleta | lienzo BPMN | hoja de propiedades; en pantallas chicas se apilan */
+/* Taller de SAP CPI con la identidad de flowDev. Layout: banco de trabajo de tres columnas — paleta | lienzo BPMN | hoja de propiedades; en pantallas chicas se apilan */
 :root{
-  --bg:#ECEFEB; --surface:#FFFFFF; --surface-2:#F4F6F2; --sunken:#E3E7E1;
-  --ink:#17201C; --muted:#56625C; --line:#CBD3CC; --line-strong:#97A39C;
-  --accent:#1D59B5; --accent-ink:#FFFFFF; --accent-soft:#DCE5F5;
-  --msg:#B5561A; --msg-soft:#F7E4D5;
-  --ok:#25744A; --ok-soft:#D9EEE1; --bad:#AF3434; --bad-soft:#F6DDDD; --warn:#8E650A; --warn-soft:#F4EACB;
-  --pool:#FAFBF9; --dot:#CFD6CF;
-  --f-display:'Bricolage Grotesque','IBM Plex Sans',system-ui,sans-serif;
-  --f-body:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
-  --f-mono:'IBM Plex Mono',ui-monospace,'Cascadia Mono',Consolas,monospace;
-}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --bg:#101513; --surface:#191F1D; --surface-2:#1F2624; --sunken:#0C100F;
-    --ink:#E3E9E5; --muted:#96A29C; --line:#2E3834; --line-strong:#4B5752;
-    --accent:#7DA6F2; --accent-ink:#0A1530; --accent-soft:#1D2A43;
-    --msg:#EA9C5C; --msg-soft:#3A2818;
-    --ok:#62C18A; --ok-soft:#173224; --bad:#EF7D7D; --bad-soft:#3A1D1D; --warn:#DDB552; --warn-soft:#352A10;
-    --pool:#151B19; --dot:#29322E; color-scheme:dark;
-  }
-}
-:root[data-theme="dark"]{
-  --bg:#101513; --surface:#191F1D; --surface-2:#1F2624; --sunken:#0C100F;
-  --ink:#E3E9E5; --muted:#96A29C; --line:#2E3834; --line-strong:#4B5752;
-  --accent:#7DA6F2; --accent-ink:#0A1530; --accent-soft:#1D2A43;
-  --msg:#EA9C5C; --msg-soft:#3A2818;
-  --ok:#62C18A; --ok-soft:#173224; --bad:#EF7D7D; --bad-soft:#3A1D1D; --warn:#DDB552; --warn-soft:#352A10;
-  --pool:#151B19; --dot:#29322E; color-scheme:dark;
+  --bg:#262624; --surface:#FFFFFF; --surface-2:#F4F4F0; --sunken:#ECECE7;
+  --ink:#111110; --muted:#6C6C66; --line:#E2E2DD; --line-strong:#B9B9B1;
+  --accent:#111110; --accent-ink:#FFFFFF; --accent-soft:#DCEEFB;
+  --msg:#4C83A8; --msg-soft:#DCEEFB;
+  --ok:#1F7A4D; --ok-soft:#D8F0E2; --bad:#B4372F; --bad-soft:#F8DEDB; --warn:#8E650A; --warn-soft:#F6ECCB;
+  --pool:#FFFFFF; --dot:#D9D9D2;
+  --sky:#DCEEFB; --sky-3:#7FA4C0; --grey:#3D3D39; --muted-dark:#A5A59D;
+  --f-display:'Inter Tight','Helvetica Neue',Helvetica,Arial,sans-serif;
+  --f-body:'Inter Tight','Helvetica Neue',Helvetica,Arial,sans-serif;
+  --f-mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
+  color-scheme:light;
 }
 html,body{height:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:14px;line-height:1.45;
@@ -257,3 +241,54 @@ pre.code{font-family:var(--f-mono);font-size:12px;line-height:1.5;background:var
 /* Enlace de vuelta a flowDev */
 .back{display:inline-flex;align-items:center;border:1px solid var(--line-strong);border-radius:99px;padding:5px 12px;font-size:13px;font-weight:600;color:var(--ink);text-decoration:none;background:var(--surface);white-space:nowrap}
 .back:hover{border-color:var(--ink)}
+
+/* ---------- Identidad flowDev ---------- */
+body{font-size:14.5px}
+.app{gap:14px;padding-block:18px}
+.top{background:var(--ink);color:#fff;border-radius:28px;padding:12px 14px 12px 18px}
+.brand h1{font-weight:500;letter-spacing:-.04em;font-size:22px}
+.brand small{color:var(--muted-dark)}
+.brand svg *{stroke:var(--sky)}
+.back{background:var(--sky);border-color:var(--sky);color:var(--ink);font-weight:500;padding:7px 14px}
+.back:hover{background:#cbe3f5;border-color:#cbe3f5}
+.exsel label{color:var(--muted-dark)}
+.exsel select{border-radius:99px;border-color:var(--grey);background:var(--grey);color:#fff;padding:7px 12px}
+.top .pill{background:var(--grey);border-color:var(--grey);color:#fff}
+.top .pill.ok{background:var(--sky);border-color:var(--sky);color:var(--ink)}
+button{border-radius:99px;border-width:1.5px;font-weight:500}
+.top button{background:transparent;color:#fff;border-color:#6b6b64}
+.top button:hover{border-color:#fff}
+button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
+.top button.primary{background:var(--sky);border-color:var(--sky);color:var(--ink)}
+.palette,.stage,.panel{border:0;border-radius:28px}
+.palette{padding:12px 12px 16px}
+.pitem{border-radius:12px}
+.pitem svg,.pitem[data-type="sender"] svg,.pitem[data-type="receiver"] svg{stroke:var(--ink)}
+.stage-bar{padding:10px 16px;border-bottom-color:var(--line)}
+.zoom button{padding:2px 10px}
+.tabs button{border-radius:0;border-width:0 0 2px 0;padding:14px 6px 11px}
+.tabs button[aria-selected="true"]{border-bottom-color:var(--ink)}
+.tabbody{padding:18px 20px 30px}
+.tabbody h2{font-weight:500;letter-spacing:-.035em;font-size:26px;line-height:1.05}
+.eyebrow,.tabbody h3,.pgroup h4{font-weight:500}
+.lvl{border-radius:99px;background:var(--sky);color:var(--ink);padding:3px 12px;font-weight:500}
+input,select,textarea{border-radius:14px;border-width:1.5px;border-color:var(--line)}
+pre.code{border-radius:14px;border:0;background:var(--ink);color:var(--sky)}
+code{border:0;background:#F0F0EC;border-radius:6px}
+.hints,.results,.row-card,.step,.quiz-q,.dlv,.confirm{border-radius:16px}
+.seg{border-radius:99px;border-color:var(--ink)}
+.seg button{border-radius:0;border-width:0}
+.seg button+button{border-left:1.5px solid var(--ink)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.ph-ico{border-radius:12px;background:var(--ink)}
+.ph-ico svg{stroke:var(--sky)}
+.ph-ico.msg{background:var(--sky)} .ph-ico.msg svg{stroke:var(--ink)}
+.node .ico{stroke:var(--sky-3)}
+.node.sel .body,.edge.sel{stroke:var(--sky-3)}
+.handle circle{fill:var(--ink)} .handle path{stroke:var(--sky)}
+.m-sel{fill:var(--sky-3)}
+.lipbox{stroke:var(--sky-3)} .lipbox-title{fill:#4C83A8}
+.node.lipStart .body{stroke:var(--sky-3)}
+.toast{background:var(--sky);color:var(--ink);border-radius:99px;font-weight:500;padding:10px 18px}
+.note{border-top-color:var(--line)}
+.app.quiz .panel{max-width:860px}
