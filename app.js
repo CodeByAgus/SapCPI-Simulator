@@ -1022,11 +1022,11 @@ const pct = pf => Math.round(doneCount(pf) / TOTAL(pf) * 100);
 const mark = k => { if (!data().progress[k]) { data().progress[k] = true; persist(); } };
 
 /* ---------------- Vistas ---------------- */
-const state = { view: 'home', pf: null, tab: 'lecciones', proj: null, flow: null, sel: null, run: null, results: null, auth: 'registro', reveal: new Set(), graded: false, quizId: null };
+const state = { view: 'home', pf: null, tab: 'lecciones', proj: null, flow: null, sel: null, run: null, results: null, auth: 'registro', reveal: new Set(), graded: false, quizId: null, ptab: 'ej', ins: null, tquiz: null, inputRaw: null };
 const view = $('#view');
 let toastT;
 function toast(m) { const t = $('#toast'); t.textContent = m; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, 2800); }
-function go(v, extra = {}) { Object.assign(state, { view: v, sel: null, run: null, results: null, reveal: new Set(), graded: false, quizId: null }, extra); render(); window.scrollTo(0, 0); }
+function go(v, extra = {}) { Object.assign(state, { view: v, sel: null, run: null, results: null, reveal: new Set(), graded: false, quizId: null, ptab: 'ej', ins: null, tquiz: null }, extra); render(); window.scrollTo(0, 0); }
 
 function renderNav() {
   const links = [['home', 'Inicio'], ['n8n', 'n8n'], ['make', 'Make'], ['zapier', 'Zapier'], ['dash', 'Mi avance']];
@@ -1166,7 +1166,7 @@ function platform() {
       <summary><span class="n">${i + 1}</span><span class="h3" style="flex:1">${esc(t)}</span>${pr[`${pf}:L${i}`] ? '<span class="pill ok">Leída</span>' : ''}</summary>
       <div class="body">${parts.join('')}<button type="button" class="btn sm" data-act="read" data-i="${i}">${pr[`${pf}:L${i}`] ? 'Leída' : 'Marcar como leída'}</button></div></details>`).join('');
   else if (tab === 'proyectos') body = [...new Set(gr.map(j => j.cat))].map(c2 => `<p class="gtitle" style="margin-top:20px">${esc(c2)} · ${gr.filter(j => j.cat === c2).length}</p><div>${gr.filter(j => j.cat === c2).map(item).join('')}</div>`).join('');
-  else if (tab === 'libre') body = `<div class="grid2" style="align-items:center"><div class="stack"><h2 class="h2">Modo libre</h2><p class="lead">Armá cualquier ${esc(p.flow)} con todos los ${esc(p.node)}s: IA, código, APIs, hojas y lógica. Sin requisitos ni verificación.</p><p class="dim">Vos definís los datos de entrada y qué responden la API, la IA y la hoja de cálculo. Tu ${esc(p.flow)} queda guardado.</p><div><button type="button" class="btn" data-proj="libre">Abrir el editor libre</button></div></div><div class="tiles"><div class="tile">${svg('ai')}<p>Respuesta de la IA a tu medida</p></div><div class="tile grey">${svg('http')}<p>Respuesta de la API en JSON</p></div><div class="tile grey">${svg('sheetsRead')}<p>Filas de la hoja de cálculo</p></div><div class="tile">${svg('code')}<p>Código propio en cada paso</p></div></div></div>`;
+  else if (tab === 'libre') body = `<div class="grid2" style="align-items:center"><div class="stack"><h2 class="h2">Modo libre</h2><p class="lead">Abrí el ${TALLER[pf].toLowerCase().replace('zaps', 'Zaps')} sin requisitos ni verificación, con todos los ${esc(p.node)}s: IA, código, APIs, hojas y lógica.</p><p class="dim">Vos definís los datos de entrada y qué responden la API, la IA y la hoja de cálculo. Tu ${esc(p.flow)} queda guardado.</p><div><button type="button" class="btn" data-proj="libre">Abrir el editor libre</button></div></div><div class="tiles"><div class="tile">${svg('ai')}<p>Respuesta de la IA a tu medida</p></div><div class="tile grey">${svg('http')}<p>Respuesta de la API en JSON</p></div><div class="tile grey">${svg('sheetsRead')}<p>Filas de la hoja de cálculo</p></div><div class="tile">${svg('code')}<p>Código propio en cada paso</p></div></div></div>`;
   else if (!state.quizId) body = p.quizzes.map(q => `<button type="button" class="list-item" data-quiz="${q.id}"><span class="pill${pr[`${pf}:Q:${q.id}`] ? ' ok' : ''}">${pr[`${pf}:Q:${q.id}`] ? 'Aprobado' : q.qs.length + ' preguntas'}</span><span class="grow"><span class="h3">${esc(q.title)}</span></span><span class="arrow">${svg('arrow')}</span></button>`).join('');
   else {
     const quiz = p.quizzes.find(q => q.id === state.quizId), ans = data().quiz[`${pf}:${quiz.id}`] || {};
@@ -1175,7 +1175,7 @@ function platform() {
       + `<div class="row"><button type="button" class="btn" data-act="grade">Corregir</button>${pr[`${pf}:Q:${quiz.id}`] ? '<span class="pill ok">Aprobado</span>' : ''}</div>`;
   }
   return `<section class="card ${p.tone === 'dark' ? 'dark' : ''} flush split">
-    <div class="side"><h1 class="display">${p.name}</h1><div><span class="pill">${esc(p.tag)}</span></div><p class="lead ${p.tone === 'dark' ? 'dim' : ''}">${esc(p.intro)}</p></div>
+    <div class="side"><h1 class="display">${p.name}</h1><div><span class="pill">${esc(p.tag)}</span></div><p class="lead ${p.tone === 'dark' ? 'dim' : ''}">${esc(p.intro)}</p><div><button type="button" class="btn ${p.tone === 'dark' ? 'sky' : ''}" data-proj="${(gr.find(j => !pr[`${pf}:P:${j.id}`]) || gr[0]).id}">Abrir el ${TALLER[pf].toLowerCase().replace('zaps', 'Zaps')}</button></div></div>
     <div class="side ${p.tone === 'dark' ? '' : 'dark'}">
       <div class="tiles">
         <div class="tile"><span class="big">${pct(pf)}%</span><p>de ${p.name} completado</p></div>
@@ -1191,79 +1191,107 @@ function platform() {
   </section>`;
 }
 
-/* ---------------- Editor de flujos ---------------- */
+/* ---------------- Taller: barra | paleta | lienzo | panel (la misma distribución que el taller de iFlows) ---------------- */
+const TALLER = { n8n: 'Taller de workflows', make: 'Taller de escenarios', zapier: 'Taller de Zaps' };
 const getSeq = id => { if (id === 'root') return state.flow.steps; const [nid, bi] = id.split(':'); return all(state.flow).find(n => n.id === nid).branches[+bi].steps; };
 const findNode = id => all(state.flow).find(n => n.id === id);
 const condText = c => (c && c.left ? `${c.left} ${OPS.find(o => o[0] === c.op)[1]}${['exists', 'empty'].includes(c.op) ? '' : ' ' + c.right}` : 'sin condición');
+const kind = op => (TRIGGERS.includes(op) ? 'trigger' : [...APPS, 'http', 'crm', 'task', 'sheetsRead', 'ai'].includes(op) ? 'app' : 'tool');
 function nodeHtml(n, pf) {
   const cat = P[pf].cat[n.op] || [n.op], r = state.run;
-  const cls = ['fnode', state.sel === n.id ? 'sel' : '', r && r.failed === n.num ? 'failed' : r && r.trace.some(t => t.num === n.num && !t.skipped && !t.error) ? 'ran' : ''].join(' ');
-  const inner = pf === 'zapier' ? `<span class="ic">${svg(n.op)}</span><span class="tx"><span class="nm">${esc(n.name)}</span><span class="sb">${esc(cat[0])}</span></span>` : `<span class="ic">${svg(n.op)}</span><span class="nm">${esc(n.name)}</span><span class="sb">${esc(cat[0])}</span>`;
-  return `<button type="button" class="${cls}" data-node="${n.id}"><span class="num">${n.num}</span>${inner}</button>`;
+  const cls = ['fnode', 'k-' + kind(n.op), state.sel === n.id ? 'sel' : '', r && r.failed === n.num ? 'failed' : r && r.trace.some(t => t.num === n.num && !t.skipped && !t.error) ? 'ran' : ''].join(' ');
+  const inner = pf === 'zapier'
+    ? `<span class="ic">${svg(n.op)}</span><span class="tx"><span class="sb">${esc(cat[0])}</span><span class="nm">${n.num}. ${esc(n.name)}</span></span>`
+    : `<span class="num">${n.num}</span><span class="ic">${svg(n.op)}</span><span class="nm">${esc(n.name)}</span><span class="sb">${esc(cat[0])}</span>`;
+  return `<button type="button" class="${cls}" data-node="${n.id}">${inner}</button>`;
 }
-const addBtn = (seqId, idx) => `<span class="link"><button type="button" class="add" data-add="${seqId}" data-idx="${idx}" aria-label="Agregar paso">+</button></span>`;
+const insOn = (seqId, idx) => state.ins && state.ins.seqId === seqId && state.ins.idx === idx;
+const addBtn = (seqId, idx) => `<span class="link"><button type="button" class="add${insOn(seqId, idx) ? ' on' : ''}" data-add="${seqId}" data-idx="${idx}" aria-label="Insertar acá" title="Insertar acá">+</button></span>`;
 function seqHtml(steps, seqId, pf) {
   let h = '<div class="seq">';
-  if (seqId === 'root' && steps.length && !TRIGGERS.includes(steps[0].op)) h += `<button type="button" class="add first" data-add="root" data-idx="0">+ Elegir trigger</button><span class="link"></span>`;
+  const needTrigger = seqId === 'root' && (!steps.length || !TRIGGERS.includes(steps[0].op));
+  if (needTrigger) h += `<span class="empty-flow">Elegí un trigger en la paleta</span>${steps.length ? '<span class="link"></span>' : ''}`;
   steps.forEach((n, i) => {
     if (i > 0 || seqId !== 'root') h += addBtn(seqId, i);
     h += nodeHtml(n, pf);
     if (n.branches) h += `<span class="link"></span><div class="branches">${n.branches.map((b, bi) => `<div class="branch"><span class="link0"></span><span class="blabel" title="${esc(condText(b.cond))}">${esc(b.name)}${n.op === 'router' ? (b.fallback ? ' · respaldo' : ' · ' + esc(short(condText(b.cond), 26))) : ''}</span>${seqHtml(b.steps, `${n.id}:${bi}`, pf)}</div>`).join('')}</div>`;
   });
   const last = steps[steps.length - 1];
-  if (!steps.length && seqId === 'root') h += `<button type="button" class="add first" data-add="root" data-idx="0">+ Elegir trigger</button>`;
-  else if (!last || !last.branches) h += addBtn(seqId, steps.length);
+  if (steps.length ? !last.branches : seqId !== 'root') h += addBtn(seqId, steps.length);
   return h + '</div>';
 }
+function paletteHtml(pf) {
+  const cat = P[pf].cat, groups = [...new Set(Object.values(cat).map(c => c[1]))];
+  return groups.map(g => `<div class="pgroup"><h4>${esc(g)}</h4><div class="pitems">${Object.keys(cat).filter(o => cat[o][1] === g).map(o => `<button type="button" class="pitem" data-pal="${o}" title="${esc(cat[o][2])}">${svg(o)}<span>${esc(cat[o][0])}</span></button>`).join('')}</div></div>`).join('');
+}
+function selectorHtml(pf) {
+  const pr = data().progress, gr = graded(pf), cur = state.tquiz ? 'quiz:' + state.tquiz : state.proj.id;
+  const opt = (v, text, done) => `<option value="${v}"${v === cur ? ' selected' : ''}>${done ? '✓ ' : ''}${esc(text)}</option>`;
+  return `<select id="tlSel" aria-label="Ejercicio">${[...new Set(gr.map(j => j.cat))].map(c => `<optgroup label="${esc(c)}">${gr.filter(j => j.cat === c).map(j => opt(j.id, j.title, pr[`${pf}:P:${j.id}`])).join('')}</optgroup>`).join('')}<optgroup label="Cuestionarios teóricos">${P[pf].quizzes.map(q => opt('quiz:' + q.id, q.title, pr[`${pf}:Q:${q.id}`])).join('')}</optgroup><optgroup label="Modo libre">${opt('libre', 'Modo libre', false)}</optgroup></select>`;
+}
+function quizHtml(pf, quiz) {
+  const ans = data().quiz[`${pf}:${quiz.id}`] || {}, done = data().progress[`${pf}:Q:${quiz.id}`];
+  return `<div class="row" style="margin-bottom:6px"><span class="pill">Cuestionario teórico</span>${done ? '<span class="pill ok">Aprobado</span>' : ''}</div><h2 class="h2" style="margin-bottom:14px">${esc(quiz.title)}</h2>`
+    + quiz.qs.map((q, i) => { const g = state.graded && ans[i] != null, ok = ans[i] === 0, show = state.reveal.has(i);
+      return `<div class="q${g ? (ok ? ' ok' : ' bad') : ''}"><p class="t">${i + 1}. ${esc(q[0])}</p>${order(q).map(k => `<label class="${show && k === 0 ? 'right' : ''}"><input type="radio" name="q${i}" data-q="${i}" data-o="${k}"${ans[i] === k ? ' checked' : ''}><span>${esc(q[1][k])}</span></label>`).join('')}${g || show ? `<p class="why">${g ? (ok ? 'Correcto. ' : 'No es esa. ') : ''}${esc(q[2])}</p>` : ''}<div class="row" style="justify-content:flex-end;margin-top:6px"><button type="button" class="btn line sm" data-act="reveal" data-i="${i}">${show ? 'Ocultar respuesta' : 'Ver respuesta'}</button></div></div>`; }).join('')
+    + `<div class="row"><button type="button" class="btn" data-act="grade">Corregir</button></div>`;
+}
 function project() {
-  const pf = state.pf, p = P[pf], j = state.proj, r = state.run, R = state.results;
+  const pf = state.pf, p = P[pf], j = state.proj, quiz = state.tquiz && p.quizzes.find(q => q.id === state.tquiz);
+  const top = `<section class="tl-top">
+    <button type="button" class="btn sky sm" data-go="${pf}" data-keep-tab="${quiz ? 'quiz' : 'proyectos'}">← ${p.name}</button>
+    <div class="tl-brand"><b>${TALLER[pf]}</b><small>Práctica de ${p.name} en flowDev</small></div>
+    <label class="tl-sel"><span>Ejercicio</span>${selectorHtml(pf)}</label>
+    <span class="pill tl-prog">${doneCount(pf)}/${TOTAL(pf)} completados</span>
+    ${quiz ? '' : `<button type="button" class="btn line sm" data-act="run">${esc(p.run)}</button>${j.free ? '' : '<button type="button" class="btn sky sm" data-act="verify">Verificar ejercicio</button>'}`}
+  </section>`;
+  if (quiz) return `${top}<section class="tl quiz"><div class="tl-panel"><div class="tl-body">${quizHtml(pf, quiz)}</div></div></section>`;
   number(state.flow);
-  const done = data().progress[`${pf}:P:${j.id}`];
-  return `<section class="card ${p.tone === 'dark' ? 'dark' : ''}">
-    <div class="row" style="justify-content:space-between;margin-bottom:12px"><button type="button" class="btn line sm" data-go="${pf}" data-keep-tab="proyectos">← ${p.name}</button><span class="row"><span class="pill">${esc(j.cat)}</span>${j.free ? '' : `<span class="pill">${esc(j.level)}</span>`}${done ? '<span class="pill ok">Resuelto</span>' : ''}</span></div>
-    <h1 class="h2">${esc(j.title)}</h1><p class="lead ${p.tone === 'dark' ? 'dim' : ''}" style="margin-top:8px;max-width:70ch">${esc(j.story)}</p>
-  </section>
-  <section class="work">
-    <div class="stack">
-      <div class="card" style="padding:16px">
-        <div class="row" style="justify-content:space-between;margin-bottom:12px"><span class="eyebrow dim">Tu ${esc(p.flow)}</span><span class="row"><button type="button" class="btn sm" data-act="run">${esc(p.run)}</button>${j.free ? '' : '<button type="button" class="btn sky sm" data-act="verify">Verificar</button>'}</span></div>
-        <div class="canvas"><div class="flow ${pf} ${p.layout === 'v' ? 'v' : ''}">${seqHtml(state.flow.steps, 'root', pf)}</div></div>
-        <p class="note" style="margin-top:10px">Tocá <b>+</b> para agregar un ${esc(p.node)} y tocá un ${esc(p.node)} para configurarlo. El número de cada uno es el que se usa en las expresiones.</p>
-      </div>
-      <div class="card dark">
-        <div class="row" style="justify-content:space-between;margin-bottom:10px"><span class="h3">Resultado de la ejecución</span>${r ? `<span class="pill ${r.error ? '' : 'fill'}">${r.error ? 'Con error' : 'Correcta'}</span>` : ''}</div>
-        ${!r ? `<p class="dim">Ejecutá el ${esc(p.flow)} para ver qué datos entrega cada ${esc(p.node)}.</p>` : `
-          ${r.error ? `<p style="color:#ff9c94;margin-bottom:10px">${esc(r.error)}</p>` : ''}
-          ${r.calls.filter(c => c.app !== 'http').length ? `<p class="eyebrow dim" style="margin-bottom:6px">Acciones realizadas</p>${r.calls.filter(c => c.app !== 'http').map(c => `<div class="call"><b>${esc(P[pf].cat[c.app][0])}</b><dl>${Object.entries(c.params).map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(typeof v === 'object' ? JSON.stringify(v) : v)}</dd>`).join('')}</dl></div>`).join('')}` : ''}
-          <p class="eyebrow dim" style="margin:10px 0 2px">Paso a paso</p>
-          ${r.trace.map(t => `<details class="step${t.error ? ' fail' : ''}"><summary><span class="k">${t.num ?? '·'}</span><span><b style="font-weight:500">${esc(t.name)}</b> <span class="dim">· ${esc(t.error || t.note || '')}</span></span></summary>${t.out ? `<pre>${esc(JSON.stringify(t.out, null, 2))}</pre>` : ''}</details>`).join('')}`}
-      </div>
-    </div>
-    <aside class="side-panel">
-      <div class="card">
-        ${j.objectives ? `<details style="margin-bottom:12px"><summary style="cursor:pointer;font-weight:500">Objetivos (${j.objectives.length})</summary><ul class="reqs" style="margin-top:8px">${j.objectives.map(x => `<li>${esc(x)}</li>`).join('')}</ul></details>` : ''}
-        ${j.free ? `<p class="eyebrow dim" style="margin-bottom:8px">Respuestas simuladas</p>
-        <label class="fld"><span>API (HTTP): JSON que devuelve</span><textarea class="mono" rows="4" data-mock="http" spellcheck="false">${esc(freeMocks(pf).http)}</textarea></label>
-        <label class="fld"><span>IA: texto (o JSON) que devuelve</span><textarea class="mono" rows="2" data-mock="ai" spellcheck="false">${esc(freeMocks(pf).ai)}</textarea></label>
-        <label class="fld"><span>Hoja de cálculo: lista de filas</span><textarea class="mono" rows="4" data-mock="rows" spellcheck="false">${esc(freeMocks(pf).rows)}</textarea></label>` : `<p class="eyebrow dim" style="margin-bottom:8px">Requisitos</p>
-        <ol class="reqs">${j.reqs.map(x => `<li>${x}</li>`).join('')}</ol>`}
-        ${j.mock ? `<p class="note" style="margin-top:8px">${esc(j.mock)}</p>` : ''}
-        <p class="eyebrow dim" style="margin:14px 0 6px">Datos de prueba</p>
-        <textarea id="runInput" class="mono" rows="5" spellcheck="false">${esc(JSON.stringify(state.input ?? j.sample, null, 2))}</textarea>
-        <details style="margin-top:10px"><summary style="cursor:pointer;font-weight:500">Pistas (${j.hints.length})</summary><ul class="reqs" style="margin-top:8px">${j.hints.map(x => `<li>${esc(x)}</li>`).join('')}</ul></details>
-        ${j.real ? `<details style="margin-top:8px"><summary style="cursor:pointer;font-weight:500">En ${P[pf].name} real</summary><ul class="reqs" style="margin-top:8px">${j.real.map(x => `<li>${esc(x)}</li>`).join('')}</ul></details>` : ''}
-      </div>
-      ${R ? `<div class="card"><div class="row" style="justify-content:space-between;margin-bottom:6px"><span class="h3">${R.all ? 'Proyecto resuelto' : 'Todavía falta'}</span><span class="pill ${R.all ? 'ok' : ''}">${R.items.filter(i => i.ok).length}/${R.items.length}</span></div><ul class="results">${R.items.map(i => `<li class="${i.ok ? 'ok' : 'bad'}"><span class="mk">${i.ok ? '✓' : '✗'}</span><span>${esc(i.label)}${!i.ok && i.detail ? `<small>${esc(i.detail)}</small>` : ''}</span></li>`).join('')}</ul></div>` : ''}
-      <div class="card" style="padding:16px"><div class="row">${state.confirm ? `<span style="flex-basis:100%">${state.confirm === 'sol' ? 'Esto reemplaza tu flujo por la solución.' : 'Esto borra tu flujo.'}</span><button type="button" class="btn sm" data-act="${state.confirm}ok">Confirmar</button><button type="button" class="btn line sm" data-act="cancel">Cancelar</button>` : `${j.free ? '' : '<button type="button" class="btn line sm" data-act="sol">Ver solución</button>'}<button type="button" class="btn line sm" data-act="reset">Vaciar</button>`}</div></div>
+  const r = state.run, R = state.results, tab = state.ptab, done = data().progress[`${pf}:P:${j.id}`];
+  const fm = j.free ? freeMocks(pf) : null;
+  const ej = `<div class="row" style="margin-bottom:6px"><span class="pill">${esc(j.cat)}</span>${j.free ? '' : `<span class="pill">${esc(j.level)}</span>`}${done ? '<span class="pill ok">Resuelto</span>' : ''}</div>
+    <h2 class="h2">${esc(j.title)}</h2><p style="margin:8px 0 14px">${esc(j.story)}</p>
+    ${j.objectives ? `<details class="fold"><summary>Objetivos de aprendizaje (${j.objectives.length})</summary><ul class="reqs">${j.objectives.map(x => `<li>${esc(x)}</li>`).join('')}</ul></details>` : ''}
+    ${j.free ? `<p class="note">Definí los datos de entrada y las respuestas simuladas en la pestaña Probar.</p>` : `<p class="gtitle">Requisitos</p><ol class="reqs">${j.reqs.map(x => `<li>${x}</li>`).join('')}</ol>`}
+    ${j.mock ? `<p class="gtitle">Sistemas simulados</p><p class="note">${esc(j.mock)}</p>` : ''}
+    ${j.free ? '' : `<p class="gtitle">Datos de entrada de ejemplo</p><pre>${esc(JSON.stringify(j.sample, null, 2))}</pre>`}
+    <details class="fold"><summary>Pistas (${j.hints.length})</summary><ul class="reqs">${j.hints.map(x => `<li>${esc(x)}</li>`).join('')}</ul></details>
+    ${j.real ? `<details class="fold"><summary>En ${p.name} real (fuera del simulador)</summary><ul class="reqs">${j.real.map(x => `<li>${esc(x)}</li>`).join('')}</ul></details>` : ''}
+    <div class="row" style="margin:16px 0 4px">${j.free ? '' : '<button type="button" class="btn" data-act="verify">Verificar ejercicio</button>'}<button type="button" class="btn line" data-ptab="run">Probar paso a paso</button></div>
+    ${R ? `<div class="resbox${R.all ? ' all' : ''}"><div class="row" style="justify-content:space-between;margin-bottom:6px"><span class="h3">${R.all ? 'Ejercicio resuelto' : 'Todavía falta'}</span><span class="pill ${R.all ? 'ok' : ''}">${R.items.filter(i => i.ok).length}/${R.items.length}</span></div><ul class="results">${R.items.map(i => `<li class="${i.ok ? 'ok' : 'bad'}"><span class="mk">${i.ok ? '✓' : '✗'}</span><span>${esc(i.label)}${!i.ok && i.detail ? `<small>${esc(i.detail)}</small>` : ''}</span></li>`).join('')}</ul></div>` : ''}
+    <div class="row" style="margin-top:14px">${state.confirm ? `<span style="flex-basis:100%">${state.confirm === 'sol' ? 'Esto reemplaza tu flujo por la solución.' : 'Esto borra tu flujo.'}</span><button type="button" class="btn sm" data-act="${state.confirm}ok">Confirmar</button><button type="button" class="btn line sm" data-act="cancel">Cancelar</button>` : `${j.free ? '' : '<button type="button" class="btn line sm" data-act="sol">Ver solución</button>'}<button type="button" class="btn line sm" data-act="reset">Reiniciar ejercicio</button>`}</div>
+    <p class="note" style="margin-top:18px;border-top:1.5px solid var(--line);padding-top:12px">Simulador simplificado de ${p.name}: no se conecta a ninguna cuenta ni servicio real.</p>`;
+  const run = `<label class="fld"><span>Datos de entrada (JSON)</span><textarea id="runInput" class="mono" rows="6" spellcheck="false">${esc(state.inputRaw ?? JSON.stringify(state.input ?? j.sample, null, 2))}</textarea></label>
+    ${fm ? `<p class="gtitle">Respuestas simuladas</p>
+    <label class="fld"><span>API (HTTP): JSON que devuelve</span><textarea class="mono" rows="4" data-mock="http" spellcheck="false">${esc(fm.http)}</textarea></label>
+    <label class="fld"><span>IA: texto (o JSON) que devuelve</span><textarea class="mono" rows="2" data-mock="ai" spellcheck="false">${esc(fm.ai)}</textarea></label>
+    <label class="fld"><span>Hoja de cálculo: lista de filas</span><textarea class="mono" rows="4" data-mock="rows" spellcheck="false">${esc(fm.rows)}</textarea></label>` : ''}
+    <div class="row"><button type="button" class="btn" data-act="run">${esc(p.run)}</button></div>
+    ${!r ? `<p class="note" style="margin-top:12px">Ejecutá el ${esc(p.flow)} para ver el resultado, las acciones realizadas y los datos que entrega cada ${esc(p.node)}.</p>` : `<div class="res-dark">
+      <div class="row" style="justify-content:space-between;margin-bottom:10px"><span class="h3">Resultado</span><span class="pill ${r.error ? '' : 'fill'}">${r.error ? 'Con error' : 'Correcta'}</span></div>
+      ${r.error ? `<p style="color:#ff9c94;margin-bottom:10px">${esc(r.error)}</p>` : ''}
+      ${r.calls.filter(c => c.app !== 'http').length ? `<p class="eyebrow dim" style="margin-bottom:6px">Acciones realizadas</p>${r.calls.filter(c => c.app !== 'http').map(c => `<div class="call"><b>${esc(P[pf].cat[c.app][0])}</b><dl>${Object.entries(c.params).map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(typeof v === 'object' ? JSON.stringify(v) : v)}</dd>`).join('')}</dl></div>`).join('')}` : ''}
+      <p class="eyebrow dim" style="margin:10px 0 2px">Paso a paso</p>
+      ${r.trace.map(t => `<details class="step${t.error ? ' fail' : ''}"><summary><span class="k">${t.num ?? '·'}</span><span><b style="font-weight:500">${esc(t.name)}</b> <span class="dim">· ${esc(t.error || t.note || '')}</span></span></summary>${t.out ? `<pre>${esc(JSON.stringify(t.out, null, 2))}</pre>` : ''}</details>`).join('')}</div>`}`;
+  const tip = state.ins ? `Punto de inserción elegido: hacé clic en un ${esc(p.node)} de la paleta.` : `Clic en la paleta para agregar un ${esc(p.node)} al final · el + elige dónde insertar · clic en un ${esc(p.node)} para configurarlo`;
+  return `${top}<section class="tl">
+    <aside class="tl-pal" aria-label="Paleta">${paletteHtml(pf)}</aside>
+    <div class="tl-stage"><div class="tl-bar">${tip}</div><div class="canvas ${pf}"><div class="flow ${pf} ${p.layout === 'v' ? 'v' : ''}">${seqHtml(state.flow.steps, 'root', pf)}</div></div></div>
+    <aside class="tl-panel">
+      <nav class="tl-tabs" role="tablist">${[['ej', 'Ejercicio'], ['prop', 'Propiedades'], ['run', 'Probar']].map(([k, l]) => `<button type="button" role="tab" data-ptab="${k}" aria-selected="${tab === k}">${l}</button>`).join('')}</nav>
+      <div class="tl-body" data-pane="ej"${tab === 'ej' ? '' : ' hidden'}>${ej}</div>
+      <div class="tl-body" data-pane="prop" id="propMount"${tab === 'prop' ? '' : ' hidden'}></div>
+      <div class="tl-body" data-pane="run"${tab === 'run' ? '' : ' hidden'}>${run}</div>
     </aside>
   </section>`;
 }
-const saveFlow = () => { data().flows[`${state.pf}:${state.proj.id}`] = state.flow; persist(); };
+const saveFlow = () => { if (state.proj) { data().flows[`${state.pf}:${state.proj.id}`] = state.flow; persist(); } };
 function openProject(id) {
   const j = PROJ[state.pf].find(x => x.id === id), saved = data().flows[`${state.pf}:${id}`];
-  go('project', { proj: j, flow: saved ? clone(saved) : { steps: [] }, input: null, confirm: null });
+  go('project', { proj: j, flow: saved ? clone(saved) : { steps: [] }, input: null, inputRaw: null, confirm: null });
 }
-function readInput() { try { const v = JSON.parse($('#runInput').value); state.input = Array.isArray(v) ? v : [v]; return state.input; } catch (_) { toast('Los datos de prueba no son JSON válido.'); return null; } }
+const openQuiz = id => go('project', { tquiz: id, quizId: id, proj: null, flow: { steps: [] } });
+function readInput() { try { const v = JSON.parse($('#runInput').value); state.input = Array.isArray(v) ? v : [v]; return state.input; } catch (_) { toast('Los datos de entrada no son JSON válido.'); return null; } }
 function verify() {
   const j = state.proj, pf = state.pf, f = state.flow, items = [];
   j.checks.forEach(([label, t]) => { let ok = false; try { ok = !!t(f); } catch (_) {} items.push({ ok, label }); });
@@ -1275,33 +1303,44 @@ function verify() {
     items.push({ ok: res === true, label: 'Prueba: ' + t.name, detail: res === true ? '' : String(res) });
   });
   const allOk = items.every(i => i.ok);
-  if (allOk) { mark(`${pf}:P:${j.id}`); toast('Proyecto resuelto.'); }
-  state.results = { items, all: allOk }; state.run = last; render();
+  if (allOk) { mark(`${pf}:P:${j.id}`); toast('Ejercicio resuelto.'); }
+  state.results = { items, all: allOk }; state.run = last; state.ptab = 'ej'; render();
 }
 
-/* Selector de pasos y propiedades */
-const drawer = $('#drawer'), dBody = $('#drawerBody');
-const closeDrawer = () => { drawer.hidden = true; state.sel = null; state.picking = null; render(); };
-function openPicker(seqId, idx) {
-  const pf = state.pf, cat = P[pf].cat, trig = seqId === 'root' && idx === 0;
-  state.picking = { seqId, idx };
-  const ops = Object.keys(cat).filter(o => trig ? TRIGGERS.includes(o) : !TRIGGERS.includes(o));
-  const atEnd = idx === getSeq(seqId).length;
-  const groups = [...new Set(ops.map(o => cat[o][1]))];
-  dBody.innerHTML = `<div class="drawer-head"><div><p class="eyebrow dim">${trig ? 'Trigger' : 'Agregar ' + esc(P[pf].node)}</p><h2 class="h2" id="drawerTitle">${trig ? '¿Cuándo arranca?' : '¿Qué sigue?'}</h2></div><button type="button" class="x" data-act="close" aria-label="Cerrar">×</button></div>`
-    + groups.map(g => `<p class="gtitle">${esc(g)}</p>` + ops.filter(o => cat[o][1] === g).map(o => { const off = BRANCHING.includes(o) && !atEnd; return `<button type="button" class="pick" data-pick="${o}"${off ? ' disabled title="Solo al final de la cadena"' : ''}><span class="ic">${svg(o)}</span><span><b style="font-weight:500">${esc(cat[o][0])}</b><small>${esc(off ? 'Las bifurcaciones van al final de la cadena.' : cat[o][2])}</small></span></button>`; }).join('')).join('');
-  drawer.hidden = false;
+/* Propiedades: el contenido vive en un nodo persistente que se monta en la pestaña del panel */
+const dBody = $('#drawerBody');
+dBody.remove();
+const showTab = () => { document.querySelectorAll('[data-pane]').forEach(el => { el.hidden = el.dataset.pane !== state.ptab; }); document.querySelectorAll('[data-ptab][role="tab"]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.ptab === state.ptab))); };
+const propsEmpty = () => { dBody.innerHTML = `<p class="eyebrow dim">Propiedades</p><h2 class="h2" style="margin:4px 0 8px">Nada seleccionado</h2><p>Hacé clic en un ${esc(P[state.pf]?.node || 'paso')} del lienzo para configurarlo.</p><ul class="reqs dim" style="margin-top:10px"><li>La paleta agrega al final de la cadena.</li><li>El botón + del lienzo elige otro punto de inserción.</li><li>El número de cada ${esc(P[state.pf]?.node || 'paso')} es el que se usa en las expresiones.</li></ul>`; };
+const closeDrawer = () => { state.sel = null; state.ptab = 'ej'; propsEmpty(); render(); };
+function addOp(op) {
+  const pf = state.pf, cat = P[pf].cat[op], f = state.flow, trig = TRIGGERS.includes(op);
+  let seqId = 'root', idx = 0;
+  if (!trig) {
+    if (!f.steps.length || !TRIGGERS.includes(f.steps[0].op)) return toast('Primero elegí un trigger en la paleta.');
+    if (state.ins) { ({ seqId, idx } = state.ins); try { getSeq(seqId); } catch (_) { state.ins = null; return render(); } }
+    else { idx = f.steps.length; if (f.steps[idx - 1].branches) return toast('La cadena principal termina en una bifurcación: tocá un + dentro de una rama para agregar ahí.'); }
+    if (BRANCHING.includes(op) && idx !== getSeq(seqId).length) return toast('Las bifurcaciones van al final de la cadena.');
+    if (seqId === 'root' && idx === 0) idx = 1;
+  }
+  const used = new Set(all(f).map(x => x.name)), base = cat[0].split(' · ')[0]; let name = base, k = 2; while (used.has(name)) name = `${base} ${k++}`;
+  const empty = { left: '', op: 'eq', right: '' };
+  const n = N(op, name, {}, op === 'if' ? [{ name: 'true', steps: [] }, { name: 'false', steps: [] }] : op === 'router' ? [{ name: 'Camino A', cond: { ...empty }, steps: [] }, { name: 'Camino B', cond: { ...empty }, fallback: true, steps: [] }] : undefined);
+  if (op === 'code') n.p.code = pf === 'zapier' ? 'output = { resultado: inputData.campo };' : 'return { ...$json };';
+  if (trig && f.steps[0] && TRIGGERS.includes(f.steps[0].op)) f.steps[0] = n; else getSeq(seqId).splice(idx, 0, n);
+  state.ins = null; state.run = null; state.results = null; saveFlow(); state.sel = n.id; state.ptab = 'prop'; render(); openProps(n.id);
 }
 const condUi = (c, pre) => `<div class="rowcard cond"><input class="mono" data-c="${pre}left" value="${esc(c.left)}" placeholder="valor" aria-label="Valor"><select data-c="${pre}op" aria-label="Operador">${OPS.map(([k, l]) => `<option value="${k}"${c.op === k ? ' selected' : ''}>${l}</option>`).join('')}</select><input class="mono" data-c="${pre}right" value="${esc(c.right)}" placeholder="comparar con" aria-label="Comparar con"></div>`;
 const rowsUi = (list, key, a, b) => list.map((r, i) => `<div class="rowcard"><input class="mono" data-r="${key}" data-i="${i}" data-f="name" value="${esc(r.name)}" placeholder="${a}" aria-label="${a}"><input class="mono" data-r="${key}" data-i="${i}" data-f="value" value="${esc(r.value)}" placeholder="${b}" aria-label="${b}"><button type="button" class="x" data-act="rowdel" data-r="${key}" data-i="${i}" aria-label="Quitar">×</button></div>`).join('') + `<button type="button" class="btn line sm" data-act="rowadd" data-r="${key}">+ Agregar</button>`;
 function openProps(id) {
-  const n = findNode(id), pf = state.pf, cat = P[pf].cat[n.op], p = n.p;
-  state.sel = id;
+  const n = findNode(id), pf = state.pf; if (!n) return propsEmpty();
+  const cat = P[pf].cat[n.op], p = n.p;
+  state.sel = id; state.ptab = 'prop';
   const t = (k, l, ph = '', mono = true) => `<label class="fld"><span>${l}</span><input ${mono ? 'class="mono"' : ''} data-k="${k}" value="${esc(p[k])}" placeholder="${esc(ph)}"></label>`;
   const ta = (k, l, rows = 3) => `<label class="fld"><span>${l}</span><textarea class="mono" rows="${rows}" data-k="${k}" spellcheck="false">${esc(p[k])}</textarea></label>`;
   let f = '';
   switch (n.op) {
-    case 'webhook': f = t('path', 'Ruta del webhook', '/mi-webhook') + '<p class="note">El trigger entrega el JSON que llega en la petición (los "Datos de prueba").</p>'; break;
+    case 'webhook': f = t('path', 'Ruta del webhook', '/mi-webhook') + '<p class="note">El trigger entrega el JSON que llega en la petición (los datos de entrada de la pestaña Probar).</p>'; break;
     case 'schedule': f = t('every', 'Frecuencia', 'Todos los días', false) + t('at', 'Hora', '09:00'); break;
     case 'set': f = `<p class="gtitle">Campos</p>${rowsUi(p.fields, 'fields', 'campo', 'valor o expresión')}<label class="row" style="margin-top:10px"><input type="checkbox" data-k="keep"${p.keep ? ' checked' : ''} style="width:auto"> Conservar los demás campos de entrada</label>`; break;
     case 'filter': case 'if': f = `<p class="gtitle">Condición</p>${condUi(p.cond, 'cond.')}`; break;
@@ -1328,31 +1367,25 @@ function openProps(id) {
     case 'telegram': f = t('chatId', 'Chat ID') + ta('text', 'Texto'); break;
   }
   const lastOut = state.run?.trace.find(x => x.num === n.num && x.out);
-  dBody.innerHTML = `<div class="drawer-head"><div><p class="eyebrow dim">${esc(cat[0])} · ${esc(P[pf].node)} ${n.num}</p><h2 class="h2" id="drawerTitle">${esc(n.name)}</h2></div><button type="button" class="x" data-act="close" aria-label="Cerrar">×</button></div>
+  dBody.innerHTML = `<div class="ph"><span class="ph-ic">${svg(n.op)}</span><div><p class="eyebrow dim">${esc(cat[0])} · ${esc(P[pf].node)} ${n.num}</p><h2 class="h2" id="drawerTitle">${esc(n.name)}</h2></div></div>
     <p class="dim" style="margin-bottom:12px">${esc(cat[2])}</p>
     <label class="fld"><span>Nombre</span><input data-name value="${esc(n.name)}"></label>${f}
     <div class="cheat"><p><b style="font-weight:500">Expresiones en ${P[pf].name}</b></p>${P[pf].cheat.map(x => `<p>${x}</p>`).join('')}</div>
     ${lastOut ? `<p class="gtitle">Salida en la última ejecución</p><pre style="max-height:180px">${esc(JSON.stringify(lastOut.out, null, 2))}</pre>` : ''}
-    <div class="row" style="margin-top:16px"><button type="button" class="btn" data-act="close">Listo</button><button type="button" class="btn danger" data-act="delnode">Eliminar</button></div>`;
-  drawer.hidden = false;
+    <div class="row" style="margin-top:16px;border-top:1.5px solid var(--line);padding-top:14px"><button type="button" class="btn" data-act="close">Listo</button><button type="button" class="btn danger" data-act="delnode">Eliminar ${esc(P[pf].node)}</button></div>`;
+  showTab();
 }
 dBody.addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
-  if (b.dataset.pick) {
-    const op = b.dataset.pick, { seqId, idx } = state.picking, cat = P[state.pf].cat[op];
-    const used = new Set(all(state.flow).map(x => x.name)); let name = cat[0].split(' · ')[0], k = 2; while (used.has(name)) name = `${cat[0].split(' · ')[0]} ${k++}`;
-    const n = N(op, name, {}, op === 'if' ? [{ name: 'true', steps: [] }, { name: 'false', steps: [] }] : op === 'router' ? [{ name: 'Camino A', cond: { left: '', op: 'eq', right: '' }, steps: [] }, { name: 'Camino B', cond: { left: '', op: 'eq', right: '' }, fallback: true, steps: [] }] : undefined);
-    if (op === 'code') n.p.code = state.pf === 'zapier' ? 'output = { resultado: inputData.campo };' : 'return { ...$json };';
-    if (seqId === 'root' && idx === 0 && state.flow.steps[0] && TRIGGERS.includes(state.flow.steps[0].op)) state.flow.steps[0] = n; else getSeq(seqId).splice(idx, 0, n);
-    state.run = null; saveFlow(); render(); openProps(n.id); return;
-  }
+  e.stopPropagation();
   const act = b.dataset.act, n = state.sel && findNode(state.sel);
   if (act === 'close') closeDrawer();
-  else if (act === 'delnode') { const drop = s => { const i = s.findIndex(x => x.id === n.id); if (i >= 0) s.splice(i, 1); else s.forEach(x => (x.branches || []).forEach(br => drop(br.steps))); }; drop(state.flow.steps); state.run = null; saveFlow(); closeDrawer(); }
+  else if (!n) return;
+  else if (act === 'delnode') { const drop = s => { const i = s.findIndex(x => x.id === n.id); if (i >= 0) s.splice(i, 1); else s.forEach(x => (x.branches || []).forEach(br => drop(br.steps))); }; drop(state.flow.steps); state.run = null; state.results = null; state.ins = null; saveFlow(); closeDrawer(); }
   else if (act === 'rowadd') { (n.p[b.dataset.r] ||= []).push({ name: '', value: b.dataset.r === 'fields' && n.op === 'summarize' ? 'sum' : '' }); saveFlow(); openProps(n.id); }
   else if (act === 'rowdel') { n.p[b.dataset.r].splice(+b.dataset.i, 1); saveFlow(); openProps(n.id); }
-  else if (act === 'bradd') { n.branches.push({ name: 'Camino ' + String.fromCharCode(65 + n.branches.length), cond: { left: '', op: 'eq', right: '' }, steps: [] }); saveFlow(); openProps(n.id); }
-  else if (act === 'brdel') { if (n.branches.length <= 2) return toast('Tiene que haber al menos dos caminos.'); n.branches.splice(+b.dataset.i, 1); saveFlow(); openProps(n.id); }
+  else if (act === 'bradd') { n.branches.push({ name: 'Camino ' + String.fromCharCode(65 + n.branches.length), cond: { left: '', op: 'eq', right: '' }, steps: [] }); saveFlow(); render(); openProps(n.id); }
+  else if (act === 'brdel') { if (n.branches.length <= 2) return toast('Tiene que haber al menos dos caminos.'); n.branches.splice(+b.dataset.i, 1); state.ins = null; saveFlow(); render(); openProps(n.id); }
 });
 function onDrawerInput(e) {
   const el = e.target, n = state.sel && findNode(state.sel); if (!n) return;
@@ -1361,50 +1394,59 @@ function onDrawerInput(e) {
   else if (el.dataset.k) n.p[el.dataset.k] = val;
   else if (el.dataset.r) n.p[el.dataset.r][+el.dataset.i][el.dataset.f] = val;
   else if (el.dataset.c) { const [where, key] = el.dataset.c.split('.'); (where === 'cond' ? n.p.cond : n.branches[+where.slice(1)].cond)[key] = val; }
-  else if (el.dataset.b) { const br = n.branches[+el.dataset.b]; if (el.dataset.f === 'fallback') { n.branches.forEach(x => { x.fallback = false; }); br.fallback = val; saveFlow(); openProps(n.id); return; } br[el.dataset.f] = val; }
+  else if (el.dataset.b) { const br = n.branches[+el.dataset.b]; if (el.dataset.f === 'fallback') { n.branches.forEach(x => { x.fallback = false; }); br.fallback = val; saveFlow(); render(); openProps(n.id); return; } br[el.dataset.f] = val; }
   else return;
   state.run = null; saveFlow();
 }
 dBody.addEventListener('input', onDrawerInput);
 dBody.addEventListener('change', e => { if (e.target.type === 'checkbox' || e.target.tagName === 'SELECT') onDrawerInput(e); });
-drawer.addEventListener('click', e => { if (e.target === drawer) closeDrawer(); });
-document.addEventListener('keydown', e => { if (e.key === 'Escape' && !drawer.hidden) closeDrawer(); });
+// Al salir de un campo de propiedades se actualiza el lienzo (nombres y condiciones) sin perder el foco mientras se escribe
+dBody.addEventListener('focusout', () => { if (state.view === 'project' && state.sel) { const cv = $('.tl-stage .flow'); if (cv) { number(state.flow); cv.innerHTML = seqHtml(state.flow.steps, 'root', state.pf); } } });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && state.view === 'project' && state.sel && !e.target.closest('input,textarea,select')) closeDrawer(); });
 
 /* ---------------- Render y eventos ---------------- */
 function render() {
   renderNav();
+  $('.shell').classList.toggle('wide', state.view === 'project');
   view.innerHTML = { home, auth, dash, platform, project }[state.view]();
+  if (state.view === 'project') { const m = $('#propMount'); if (m) { if (!state.sel || !findNode(state.sel)) { state.sel = null; propsEmpty(); } m.appendChild(dBody); } }
 }
 document.addEventListener('click', e => {
-  if (!drawer.hidden && e.target.closest('#drawer')) return;
-  const el = e.target.closest('[data-go],[data-auth],[data-tab],[data-proj],[data-act],[data-add],[data-node],[data-quiz]'); if (!el) return;
+  const el = e.target.closest('[data-go],[data-auth],[data-tab],[data-proj],[data-act],[data-add],[data-node],[data-quiz],[data-pal],[data-ptab]'); if (!el) return;
   const d = el.dataset;
   if (d.go) { if (P[d.go]) go('platform', { pf: d.go, tab: d.keepTab || 'lecciones' }); else go(d.go, { pf: null }); return; }
   if (d.auth) return go('auth', { auth: d.auth, pf: null });
   if (d.tab) { state.tab = d.tab; state.quizId = null; state.graded = false; state.reveal = new Set(); return render(); }
-  if (d.quiz !== undefined) { state.quizId = d.quiz || null; state.graded = false; state.reveal = new Set(); return render(); }
+  if (d.quiz) return openQuiz(d.quiz);
   if (d.proj) return openProject(d.proj);
-  if (d.add !== undefined) return openPicker(d.add, +d.idx);
-  if (d.node) { state.sel = d.node; render(); return openProps(d.node); }
+  if (d.ptab) { state.ptab = d.ptab; return showTab(); }
+  if (d.pal) return addOp(d.pal);
+  if (d.add !== undefined) { state.ins = insOn(d.add, +d.idx) ? null : { seqId: d.add, idx: +d.idx }; return render(); }
+  if (d.node) { state.sel = d.node; state.ptab = 'prop'; render(); return openProps(d.node); }
   const pf = state.pf;
   switch (d.act) {
     case 'logout': db.session = null; persist(); toast('Sesión cerrada.'); return go('home', { pf: null });
     case 'read': mark(`${pf}:L${d.i}`); toast('Lección marcada como leída.'); return render();
     case 'reveal': { const i = +d.i; state.reveal.has(i) ? state.reveal.delete(i) : state.reveal.add(i); return render(); }
     case 'grade': { const qz = P[pf].quizzes.find(q => q.id === state.quizId), ans = data().quiz[`${pf}:${qz.id}`] || {}; state.graded = true; if (qz.qs.every((_, i) => ans[i] === 0)) { mark(`${pf}:Q:${qz.id}`); toast('Cuestionario aprobado.'); } return render(); }
-    case 'run': { const inp = readInput(); if (!inp) return; state.run = runFlow(clone(state.flow), pf, inp, mocksFor(state.proj)); state.results = null; return render(); }
+    case 'run': { const inp = readInput(); if (!inp) { state.ptab = 'run'; return showTab(); } state.run = runFlow(clone(state.flow), pf, inp, mocksFor(state.proj)); state.results = null; state.ptab = 'run'; return render(); }
     case 'verify': return verify();
     case 'sol': case 'reset': state.confirm = d.act; return render();
     case 'cancel': state.confirm = null; return render();
-    case 'solok': state.flow = state.proj.solution(); state.confirm = null; state.run = null; state.results = null; saveFlow(); toast('Solución cargada: abrí cada paso para estudiarla.'); return render();
-    case 'resetok': state.flow = { steps: [] }; state.confirm = null; state.run = null; state.results = null; saveFlow(); return render();
+    case 'solok': state.flow = state.proj.solution(); Object.assign(state, { confirm: null, run: null, results: null, sel: null, ins: null }); saveFlow(); toast('Solución cargada: abrí cada paso para estudiarla.'); return render();
+    case 'resetok': state.flow = { steps: [] }; Object.assign(state, { confirm: null, run: null, results: null, sel: null, ins: null }); saveFlow(); return render();
   }
 });
 document.addEventListener('change', e => {
-  const el = e.target; if (el.dataset.q === undefined) return;
+  const el = e.target;
+  if (el.id === 'tlSel') return el.value.startsWith('quiz:') ? openQuiz(el.value.slice(5)) : openProject(el.value);
+  if (el.dataset.q === undefined) return;
   (data().quiz[`${state.pf}:${state.quizId}`] ||= {})[+el.dataset.q] = +el.dataset.o; state.graded = false; persist();
 });
-document.addEventListener('input', e => { const k = e.target.dataset.mock; if (k && state.proj?.free) { freeMocks(state.pf)[k] = e.target.value; persist(); } });
+document.addEventListener('input', e => {
+  if (e.target.id === 'runInput') state.inputRaw = e.target.value;
+  const k = e.target.dataset.mock; if (k && state.proj?.free) { freeMocks(state.pf)[k] = e.target.value; persist(); }
+});
 document.addEventListener('submit', async e => {
   if (e.target.id !== 'authForm') return;
   e.preventDefault();
