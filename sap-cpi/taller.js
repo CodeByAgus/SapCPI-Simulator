@@ -2394,5 +2394,5 @@ function loadExercise(id) {
   loadSample(); save(); renderAll(); if (!ex.quiz) fitZoom();
   wrapEl.scrollTo(0, 0);
 }
-loadExercise(store.last);
+loadExercise(location.hash.slice(1) || store.last);
 })();

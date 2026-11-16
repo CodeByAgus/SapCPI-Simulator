@@ -1029,8 +1029,8 @@ function toast(m) { const t = $('#toast'); t.textContent = m; t.hidden = false; 
 function go(v, extra = {}) { Object.assign(state, { view: v, sel: null, run: null, results: null, reveal: new Set(), graded: false, quizId: null, ptab: 'ej', ins: null, tquiz: null }, extra); render(); window.scrollTo(0, 0); }
 
 function renderNav() {
-  const links = [['home', 'Inicio'], ['n8n', 'n8n'], ['make', 'Make'], ['zapier', 'Zapier'], ['dash', 'Mi avance']];
-  $('#navLinks').innerHTML = links.map(([k, l]) => `<button type="button" data-go="${k}"${(state.view === k || (state.view !== 'home' && state.view !== 'dash' && state.pf === k)) ? ' aria-current="page"' : ''}>${l}</button>`).join('').replace('<button type="button" data-go="dash"', `<a href="${SAP.href}">SAP CPI</a><button type="button" data-go="dash"`);
+  const links = [['home', 'Inicio'], ['n8n', 'n8n'], ['make', 'Make'], ['zapier', 'Zapier'], ['sap', 'SAP CPI'], ['dash', 'Mi avance']];
+  $('#navLinks').innerHTML = links.map(([k, l]) => `<button type="button" data-go="${k}"${(state.view === k || (state.view !== 'home' && state.view !== 'dash' && state.pf === k)) ? ' aria-current="page"' : ''}>${l}</button>`).join('');
   const u = me();
   $('#navUser').innerHTML = u
     ? `<span class="chip"><i>${esc(u.name.trim()[0]?.toUpperCase() || '?')}</i>${esc(u.name.split(' ')[0])}</span><button type="button" class="btn line sm" data-act="logout">Salir</button>`
@@ -1072,12 +1072,12 @@ function home() {
       <p class="lead">Todas resuelven lo mismo con ideas parecidas: un disparador, pasos que transforman datos y lógica para decidir. Lo que aprendés en una te sirve en las otras.</p>
     </div>
     <div class="grid3">${Object.keys(P).map(pcard).join('')}</div>
-    <a class="pcard grey wide" href="${SAP.href}" style="margin-top:14px">
+    <button type="button" class="pcard grey wide" data-go="sap" style="margin-top:14px;width:100%">
       <div class="row" style="justify-content:space-between"><span class="pill">iFlows · integración empresarial</span><span class="arrow">${svg('arrow')}</span></div>
       <div class="name">SAP CPI</div>
       <p class="dim" style="max-width:62ch">El taller completo de SAP Cloud Integration: editor BPMN de iFlows con adaptadores, Router, Message Mapping, Groovy, Data Store, PGP y Local Integration Process, y un trace paso a paso.</p>
       <div class="row"><span class="pill fill">${SAP.scenarios} escenarios guiados</span><span class="pill fill">${SAP.quizzes} cuestionarios teóricos</span><span class="pill fill">${SAP.practice} ejercicios extra</span><span class="pill fill">Modo libre</span></div>
-    </a>
+    </button>
     <div class="grid2" style="margin-top:14px">${SOON.map(([n, d]) => `<div class="pcard soon"><div><span class="pill">Próximamente</span></div><div class="name">${n}</div><p>${esc(d)}</p></div>`).join('')}</div>
   </section>
 
@@ -1187,6 +1187,83 @@ function platform() {
   </section>
   <section class="card">
     <div class="tabs" role="tablist" style="margin-bottom:16px">${[['lecciones', 'Teoría'], ['proyectos', 'Proyectos'], ['quiz', 'Cuestionarios'], ['libre', 'Modo libre']].map(([k, l]) => `<button type="button" role="tab" data-tab="${k}" aria-selected="${tab === k}">${l}</button>`).join('')}</div>
+    ${body}
+  </section>`;
+}
+
+/* ---------------- SAP CPI: página de introducción (el taller vive en sap-cpi/) ---------------- */
+const SAP_INTRO = 'SAP Cloud Integration (CPI) es la herramienta de SAP Integration Suite para conectar sistemas SAP y no SAP. Las integraciones se modelan como iFlows en notación BPMN: un mensaje entra por un adaptador, se transforma, se enruta y sale hacia uno o más sistemas.';
+const SAP_SCEN = [
+  ['b-001', 'Clase 4', 'Ejercicio_001: creación de iFlow y controles básicos', 'HTTPS, Content Modifier y Send a un SFTP.'],
+  ['b-001b', 'Clase 4', 'Ejercicio_001, segundo escenario: encriptado PGP', 'El mismo iFlow, con PGP Encryptor.'],
+  ['b-002', 'Clase 4', 'Ejercicio_002: SFTP con desencriptación PGP y persistencia', 'SFTP Sender, PGP Decryptor y Data Store.'],
+  ['b-003', 'Clase 5', 'Ejercicio_003: enrutamiento, transformación y paralelo', 'Router, Message Mapping, XML a JSON y Multicast.'],
+  ['b-004', 'Clase 8', 'Ejercicio_004: consumo de una cola por AMQP', 'Event Mesh, Data Store y Request Reply.'],
+  ['b-odata', 'Clase 10', 'Ejercicio_004: consumo dinámico de OData', 'Adaptador OData con parámetros de la URL.'],
+  ['b-006', 'Clase 11', 'Ejercicio_006: envío de un IDoc al backend', 'Mapping a DEBMAS06 y HTTP On-Premise.'],
+  ['b-007', 'Clase 12', 'Ejercicio_007: consumo de una función RFC', 'JSON a XML, Mapping y adaptador RFC.'],
+  ['b-008', 'Clase 13', 'Ejercicio_008: consumo de un Web Service SOAP', 'Local Integration Process y Exception Subprocess.'],
+  ['b-009', 'Clase 14', 'Ejercicio_009: procesamiento de archivos SFTP', 'Iterating Splitter, Process Call y Data Store.'],
+  ['b-010', 'Clase 15', 'Ejercicio_010: Open Connectors', 'Consumo de una app de terceros con un conector.'],
+];
+const SAP_EXTRA = [['hola', 'Hola mundo por HTTPS'], ['json-xml', 'Pedido JSON a XML por SFTP'], ['router', 'Enrutar pedidos por país'], ['filter', 'Filtrar productos con stock'], ['groovy', 'Normalizar un cliente con Groovy'], ['enrich', 'Enriquecer un pedido con OData'], ['split', 'Procesar ítems uno por uno'], ['errores', 'Responder con un error controlado'], ['mapping', 'Mapear un pedido al formato del ERP']];
+const SAP_QUIZ = ['Servicios, suscripciones e Integración', 'Entornos y Automatización', 'Seguridad y gestión', 'Cloud Integration (Fundamentos y Modelado)', 'Lógica Avanzada y Troubleshooting', 'API Management (Ciclo de Vida y Seguridad)', 'SAP Graph y Developer Portal', 'Event Mesh y arquitecturas desacopladas', 'Assessment y Estrategias de Migración', 'OData y Consumo de Servicios', 'ALE e IDocs', 'RFC, BAPIs y Módulos Remotos', 'SOAP y SOAMANAGER', 'Gestión de Archivos y SFTPs Externos', 'Open Connectors', 'APIs y herramientas (Parte I)', 'APIs y herramientas (Parte II)', 'Formatos y parsing', 'Extensión (Groovy)', 'Seguridad, conectividad y panorama'];
+const SAP_LESSONS = [
+  ['Qué es Cloud Integration y qué es un iFlow', [
+    '<p><b>Cloud Integration</b> es una capacidad de SAP Integration Suite, dentro de SAP BTP. Sirve para que sistemas distintos (S/4HANA, un ERP viejo, una tienda online, un banco) intercambien datos sin conectarse directo entre sí.</p>',
+    '<p>Cada integración es un <b>iFlow</b> (integration flow). Se dibuja en <b>BPMN</b>: un rectángulo grande, el <i>Integration Process</i>, con los pasos adentro, y los sistemas externos afuera como participantes.</p>',
+    '<ul><li>Los iFlows se guardan en <b>paquetes</b> (Design).</li><li>Para que funcionen hay que <b>desplegarlos</b> (Deploy) en el tenant.</li><li>Cada ejecución se revisa en <b>Monitor</b>.</li></ul>',
+    '<p>Lo que viaja por el iFlow es un <b>mensaje</b> con tres partes: <b>body</b> (los datos), <b>headers</b> y <b>exchange properties</b>.</p>'
+  ]],
+  ['Participantes y adaptadores', [
+    '<p>Los sistemas se representan como <b>Sender</b> (quien envía) y <b>Receiver</b> (quien recibe). La línea punteada que los une al proceso lleva un <b>adaptador</b>: define el protocolo de esa conexión.</p>',
+    '<ul><li><b>HTTPS</b>: expone un endpoint para que te llamen. <b>HTTP</b> llama a otro servicio.</li><li><b>SOAP</b>, <b>OData</b>, <b>RFC</b> e <b>IDoc</b>: los protocolos clásicos del mundo SAP.</li><li><b>SFTP</b>: lee o deja archivos en un servidor.</li><li><b>AMQP</b> y <b>JMS</b>: colas de mensajes.</li><li><b>Open Connectors</b>: apps de terceros con conectores ya armados.</li></ul>',
+    '<p>Hacia afuera hay tres formas de llamar: <b>Request Reply</b> (espera la respuesta y reemplaza el body), <b>Send</b> (envía y sigue) y conectar el <b>End Message</b> a un Receiver (entrega al final).</p>',
+    '<p>Para llegar a un sistema dentro de la red de la empresa se usa <b>Proxy Type On-Premise</b>, que pasa por el Cloud Connector.</p>'
+  ]],
+  ['Headers, properties y expresiones', [
+    '<p>El <b>Content Modifier</b> crea o borra headers y properties, y puede reemplazar el body.</p>',
+    '<ul><li>Un <b>header</b> viaja con el mensaje hacia los receptores.</li><li>Una <b>exchange property</b> vive solo dentro del iFlow: sirve para guardar datos que vas a necesitar más adelante.</li></ul>',
+    '<p>Los valores se leen con expresiones <b>Camel Simple</b> o con <b>XPath</b> sobre un body XML:</p>',
+    '<pre>${header.nombre}\n${property.clienteId}\n${in.body}\n${exception.message}\n/Pedido/ClienteId        (XPath)</pre>',
+    '<p>Hay headers con significado propio: <code>CamelHttpQuery</code> trae los parámetros de la URL, <code>CamelFileName</code> define el nombre del archivo en SFTP y <code>CamelHttpResponseCode</code> el código HTTP de la respuesta.</p>',
+    '<p>Error típico: después de un Request Reply el body es la respuesta. Si necesitabas el mensaje original, guardalo antes en una property.</p>'
+  ]],
+  ['Transformar y enrutar', [
+    '<ul><li><b>Message Mapping</b>: pasa de una estructura a otra, campo por campo, a partir de XSD o WSDL.</li><li><b>Conversores</b> JSON a XML y XML a JSON.</li><li><b>Groovy Script</b>: lógica propia sobre el mensaje.</li><li><b>Filter</b>: conserva solo la parte del XML que devuelve un XPath.</li></ul>',
+    '<ul><li><b>Router</b>: el mensaje toma una sola ruta, la primera cuya condición se cumple, o la ruta por defecto.</li><li><b>Multicast</b>: el mismo mensaje va por todas las ramas, en paralelo o en secuencia.</li><li><b>Splitter</b> y <b>Gather</b>: dividen un mensaje en partes y las vuelven a juntar.</li><li><b>Local Integration Process</b>: un subproceso reutilizable, que se ejecuta con un Process Call.</li></ul>'
+  ]],
+  ['Errores, persistencia, seguridad y monitoreo', [
+    '<p>Un <b>Exception Subprocess</b> se dispara cuando falla un paso. Si termina en <b>End Message</b>, el mensaje queda Completed y quien llamó recibe tu respuesta; si termina en <b>Error End</b>, queda Failed.</p>',
+    '<ul><li><b>Data Store</b>: guarda mensajes en el tenant para consultarlos o reprocesarlos.</li><li><b>Security Material</b>: credenciales, claves y certificados, siempre fuera del iFlow.</li><li><b>Known Hosts</b> y claves <b>PGP</b>: confianza con servidores SFTP y encriptado de archivos.</li></ul>',
+    '<p>En <b>Monitor</b>, cada ejecución tiene su <b>MPL</b> (Message Processing Log). Con el nivel de log en <i>Trace</i> ves el body, los headers y las properties después de cada paso. Es lo que reproduce la pestaña Probar del taller.</p>'
+  ]],
+];
+const sapDone = () => { try { return JSON.parse(localStorage.getItem('taller-iflows-v1') || '{}').done || {}; } catch (_) { return {}; } };
+function sap() {
+  const tab = state.tab, pr = data().progress, done = sapDone(), href = id => `${SAP.href}#${id}`;
+  const total = SAP_SCEN.length + SAP_EXTRA.length + SAP_QUIZ.length, n = [...SAP_SCEN.map(s => s[0]), ...SAP_EXTRA.map(s => s[0]), ...SAP_QUIZ.map((_, i) => `q-c${i + 1}`)].filter(id => done[id]).length;
+  const link = (id, pill, title, sub) => `<a class="list-item" href="${href(id)}"><span class="pill${done[id] ? ' ok' : ''}">${done[id] ? 'Resuelto' : esc(pill)}</span><span class="grow"><span class="h3">${esc(title)}</span>${sub ? `<br><span class="dim">${esc(sub)}</span>` : ''}</span><span class="arrow">${svg('arrow')}</span></a>`;
+  let body = '';
+  if (tab === 'lecciones') body = SAP_LESSONS.map(([t, parts], i) => `<details class="lesson${pr[`sap:L${i}`] ? ' done' : ''}"${i === 0 && !pr['sap:L0'] ? ' open' : ''}>
+      <summary><span class="n">${i + 1}</span><span class="h3" style="flex:1">${esc(t)}</span>${pr[`sap:L${i}`] ? '<span class="pill ok">Leída</span>' : ''}</summary>
+      <div class="body">${parts.join('')}<button type="button" class="btn sm" data-act="read" data-i="${i}">${pr[`sap:L${i}`] ? 'Leída' : 'Marcar como leída'}</button></div></details>`).join('');
+  else if (tab === 'proyectos') body = `<p class="gtitle" style="margin-top:6px">Escenarios guiados · ${SAP_SCEN.length}</p><div>${SAP_SCEN.map(([id, c, t, s]) => link(id, c, t, s)).join('')}</div><p class="gtitle" style="margin-top:20px">Práctica extra · ${SAP_EXTRA.length}</p><div>${SAP_EXTRA.map(([id, t]) => link(id, 'Extra', t)).join('')}</div>`;
+  else if (tab === 'quiz') body = SAP_QUIZ.map((t, i) => link(`q-c${i + 1}`, `Clase ${i + 1}`, t)).join('');
+  else body = `<div class="grid2" style="align-items:center"><div class="stack"><h2 class="h2">Modo libre</h2><p class="lead">Abrí el taller de iFlows sin requisitos ni verificación y armá cualquier integración con todos los pasos y adaptadores.</p><p class="dim">Los Receivers responden con la respuesta simulada que les configures, y podés hacer que fallen para probar el manejo de errores.</p><div><a class="btn" href="${href('libre')}">Abrir el editor libre</a></div></div><div class="tiles"><div class="tile">${svg('router')}<p>Router, Multicast, Splitter y Gather</p></div><div class="tile grey">${svg('code')}<p>Groovy Script y Message Mapping</p></div><div class="tile grey">${svg('http')}<p>Adaptadores con respuesta simulada</p></div><div class="tile">${svg('sheets')}<p>Trace con headers, properties y body</p></div></div></div>`;
+  return `<section class="card flush split" style="background:var(--grey);color:var(--paper)">
+    <div class="side"><h1 class="display">SAP CPI</h1><div><span class="pill">iFlows · integración empresarial</span></div><p class="lead" style="color:#D6D6CE">${esc(SAP_INTRO)}</p><div><a class="btn sky" href="${href((SAP_SCEN.find(s => !done[s[0]]) || SAP_SCEN[0])[0])}">Abrir el taller de iFlows</a></div></div>
+    <div class="side dark">
+      <div class="tiles">
+        <div class="tile"><span class="big">${Math.round(n / total * 100)}%</span><p>del taller completado</p></div>
+        <div class="tile grey"><span class="big">${SAP_SCEN.length + SAP_EXTRA.length}</span><p>escenarios y ejercicios</p></div>
+        <div class="tile grey"><span class="big">${SAP_QUIZ.length}</span><p>cuestionarios teóricos</p></div>
+        <div class="tile"><span class="big">${SAP_LESSONS.length}</span><p>lecciones</p></div>
+      </div>
+    </div>
+  </section>
+  <section class="card">
+    <div class="tabs" role="tablist" style="margin-bottom:16px">${[['lecciones', 'Teoría'], ['proyectos', 'Escenarios'], ['quiz', 'Cuestionarios'], ['libre', 'Modo libre']].map(([k, l]) => `<button type="button" role="tab" data-tab="${k}" aria-selected="${tab === k}">${l}</button>`).join('')}</div>
     ${body}
   </section>`;
 }
@@ -1408,13 +1485,13 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape' && state.view
 function render() {
   renderNav();
   $('.shell').classList.toggle('wide', state.view === 'project');
-  view.innerHTML = { home, auth, dash, platform, project }[state.view]();
+  view.innerHTML = { home, auth, dash, platform, project, sap }[state.view]();
   if (state.view === 'project') { const m = $('#propMount'); if (m) { if (!state.sel || !findNode(state.sel)) { state.sel = null; propsEmpty(); } m.appendChild(dBody); } }
 }
 document.addEventListener('click', e => {
   const el = e.target.closest('[data-go],[data-auth],[data-tab],[data-proj],[data-act],[data-add],[data-node],[data-quiz],[data-pal],[data-ptab]'); if (!el) return;
   const d = el.dataset;
-  if (d.go) { if (P[d.go]) go('platform', { pf: d.go, tab: d.keepTab || 'lecciones' }); else go(d.go, { pf: null }); return; }
+  if (d.go) { if (P[d.go]) go('platform', { pf: d.go, tab: d.keepTab || 'lecciones' }); else go(d.go, { pf: null, ...(d.go === 'sap' ? { tab: 'lecciones' } : {}) }); return; }
   if (d.auth) return go('auth', { auth: d.auth, pf: null });
   if (d.tab) { state.tab = d.tab; state.quizId = null; state.graded = false; state.reveal = new Set(); return render(); }
   if (d.quiz) return openQuiz(d.quiz);
@@ -1426,7 +1503,7 @@ document.addEventListener('click', e => {
   const pf = state.pf;
   switch (d.act) {
     case 'logout': db.session = null; persist(); toast('Sesión cerrada.'); return go('home', { pf: null });
-    case 'read': mark(`${pf}:L${d.i}`); toast('Lección marcada como leída.'); return render();
+    case 'read': mark(`${state.view === 'sap' ? 'sap' : pf}:L${d.i}`); toast('Lección marcada como leída.'); return render();
     case 'reveal': { const i = +d.i; state.reveal.has(i) ? state.reveal.delete(i) : state.reveal.add(i); return render(); }
     case 'grade': { const qz = P[pf].quizzes.find(q => q.id === state.quizId), ans = data().quiz[`${pf}:${qz.id}`] || {}; state.graded = true; if (qz.qs.every((_, i) => ans[i] === 0)) { mark(`${pf}:Q:${qz.id}`); toast('Cuestionario aprobado.'); } return render(); }
     case 'run': { const inp = readInput(); if (!inp) { state.ptab = 'run'; return showTab(); } state.run = runFlow(clone(state.flow), pf, inp, mocksFor(state.proj)); state.results = null; state.ptab = 'run'; return render(); }
@@ -1465,5 +1542,6 @@ document.addEventListener('submit', async e => {
   if (!u || u.hash !== await hash(u.salt + pass)) { err.textContent = 'El email o la contraseña no coinciden con una cuenta de este navegador.'; return; }
   db.session = email; persist(); toast(`Hola de nuevo, ${u.name.split(' ')[0]}.`); go('dash', { pf: null });
 });
+if (location.hash === '#sap') { state.view = 'sap'; state.tab = 'lecciones'; }
 render();
 })();
