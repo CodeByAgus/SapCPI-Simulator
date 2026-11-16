@@ -22,6 +22,14 @@ const IC = {
   mail: '<rect x="3.5" y="5.5" width="17" height="13" rx="2.5"/><path d="M4 7l8 6 8-6"/>',
   slack: '<path d="M5 6.5A2.5 2.5 0 017.5 4h9A2.5 2.5 0 0119 6.5v6a2.5 2.5 0 01-2.5 2.5H11l-4.5 4v-4A2.5 2.5 0 015 12.5z"/>',
   telegram: '<path d="M20.5 4L3.5 11l6 2.2L11.5 19l3-4 4 3z"/><path d="M9.5 13.2L20.5 4"/>',
+  ai: '<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M18.5 15.5l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/>',
+  crm: '<circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6"/>',
+  task: '<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 12l3 3 5-6"/>',
+  sheetsRead: '<rect x="4" y="4" width="16" height="16" rx="2.5"/><path d="M4 10h16M10 4v16M13 15h4M15.5 13l2 2-2 2"/>',
+  summarize: '<path d="M17 5H7l5 7-5 7h10"/>',
+  sort: '<path d="M7 5v14M4 16l3 3 3-3M13 7h7M13 12h5M13 17h3"/>',
+  limit: '<path d="M5 7h14M5 12h14"/><path d="M5 17h6" stroke-dasharray="2 3"/>',
+  dedupe: '<rect x="4" y="4" width="11" height="11" rx="2"/><path d="M9 20h9a2 2 0 002-2V9"/>',
   arrow: '<path d="M5 12h13M13 6l6 6-6 6"/>',
   down: '<path d="M7 7l10 10M17 9v8H9"/>',
 };
@@ -39,15 +47,23 @@ const DEF = {
   if: () => ({ cond: { left: '', op: 'eq', right: '' } }),
   router: () => ({}),
   http: () => ({ method: 'GET', url: '', body: '' }),
-  code: () => ({ code: 'return { ...$json };' }),
+  code: () => ({ mode: 'each', inputs: [], code: 'return { ...$json };' }),
   split: () => ({ field: '' }),
   aggregate: () => ({ field: 'items' }),
   sheets: () => ({ doc: '', sheet: '', columns: [{ name: '', value: '' }] }),
   mail: () => ({ to: '', subject: '', body: '' }),
   slack: () => ({ channel: '', text: '' }),
   telegram: () => ({ chatId: '', text: '' }),
+  ai: () => ({ prompt: '' }),
+  crm: () => ({ email: '', name: '', props: [] }),
+  task: () => ({ list: '', title: '', description: '', due: '' }),
+  sheetsRead: () => ({ doc: '', sheet: '' }),
+  summarize: () => ({ fields: [{ name: '', value: 'sum' }], groupBy: '' }),
+  sort: () => ({ field: '', dir: 'asc' }),
+  limit: () => ({ max: '1' }),
+  dedupe: () => ({ field: '' }),
 };
-const OPS = [['eq', 'es igual a'], ['neq', 'es distinto de'], ['contains', 'contiene'], ['gt', 'es mayor que'], ['gte', 'es mayor o igual que'], ['lt', 'es menor que'], ['lte', 'es menor o igual que'], ['exists', 'existe'], ['empty', 'está vacío']];
+const OPS = [['eq', 'es igual a'], ['neq', 'es distinto de'], ['contains', 'contiene'], ['ncontains', 'no contiene'], ['gt', 'es mayor que'], ['gte', 'es mayor o igual que'], ['lt', 'es menor que'], ['lte', 'es menor o igual que'], ['exists', 'existe'], ['empty', 'está vacío']];
 
 /* ---------------- Plataformas ---------------- */
 const P = {
@@ -71,6 +87,14 @@ const P = {
       mail: ['Gmail · Send a message', 'Apps', 'Envía un email.'],
       slack: ['Slack · Send a message', 'Apps', 'Publica en un canal.'],
       telegram: ['Telegram · Send a text message', 'Apps', 'Envía un mensaje a un chat.'],
+      sheetsRead: ['Google Sheets · Get Row(s)', 'Apps', 'Lee las filas de una hoja: un item por fila.'],
+      crm: ['HubSpot · Create a contact', 'Apps', 'Crea un contacto en el CRM.'],
+      task: ['Trello · Create a card', 'Apps', 'Crea una tarjeta en una lista.'],
+      ai: ['OpenAI · Message a model', 'IA', 'Envía un prompt a un modelo y devuelve su respuesta en text.'],
+      summarize: ['Summarize', 'Datos', 'Suma, cuenta o promedia, con agrupación opcional.'],
+      sort: ['Sort', 'Datos', 'Ordena los items por un campo.'],
+      limit: ['Limit', 'Datos', 'Deja pasar solo los primeros items.'],
+      dedupe: ['Remove Duplicates', 'Datos', 'Quita los items repetidos según un campo.'],
     },
     lessons: [
       ['Workflows, nodos e items', [
@@ -121,6 +145,10 @@ const P = {
       mail: ['Email · Send an Email', 'Apps', 'Envía un email.'],
       slack: ['Slack · Create a Message', 'Apps', 'Publica en un canal.'],
       telegram: ['Telegram Bot · Send a Text Message', 'Apps', 'Envía un mensaje a un chat.'],
+      sheetsRead: ['Google Sheets · Search Rows', 'Apps', 'Lee las filas de una hoja: un bundle por fila.'],
+      crm: ['HubSpot CRM · Create a Contact', 'Apps', 'Crea un contacto en el CRM.'],
+      task: ['Trello · Create a Card', 'Apps', 'Crea una tarjeta en una lista.'],
+      ai: ['OpenAI · Create a Completion', 'IA', 'Envía un prompt a un modelo y devuelve su respuesta en text.'],
     },
     lessons: [
       ['Escenarios, módulos y bundles', [
@@ -169,6 +197,10 @@ const P = {
       mail: ['Gmail · Send Email', 'Apps', 'Envía un email.'],
       slack: ['Slack · Send Channel Message', 'Apps', 'Publica en un canal.'],
       telegram: ['Telegram · Send Message', 'Apps', 'Envía un mensaje a un chat.'],
+      sheetsRead: ['Google Sheets · Get Many Spreadsheet Rows', 'Apps', 'Trae varias filas en una lista llamada rows.'],
+      crm: ['HubSpot · Create Contact', 'Apps', 'Crea un contacto en el CRM.'],
+      task: ['Trello · Create Card', 'Apps', 'Crea una tarjeta en una lista.'],
+      ai: ['AI by Zapier', 'IA', 'Envía un prompt a un modelo y devuelve su respuesta en text.'],
     },
     lessons: [
       ['Zaps: trigger y acciones', [
@@ -313,13 +345,530 @@ function projects(pf) {
   ];
 }
 const PROJ = { n8n: projects('n8n'), make: projects('make'), zapier: projects('zapier') };
+
+/* ---------------- Proyectos por tema (n8n y Zapier) ---------------- */
+Object.values(PROJ).forEach(list => list.forEach(j => { j.cat = 'Primeros pasos'; }));
+const DEMO = 'empresa-demo.example';
+const sameMail = r => callsOf(r, 'mail');
+const ENRICH = { 'acme-logistica.example': { empresa: 'ACME Logística', industria: 'Transporte', empleados: 340 }, 'verde-sa.example': { empresa: 'Verde SA', industria: 'Agro', empleados: 45 } };
+const enrichApi = ({ url }) => { const m = String(url).match(/[?&]dominio=([^&\s]+)/); if (!m) throw new Error('400: falta el parámetro dominio en la URL'); return ENRICH[m[1]] || { empresa: null, industria: null, empleados: null }; };
+const TICKETS = [['T-501', 'Laura Gil', 'Me cobraron dos veces la factura de octubre.', 'facturacion'], ['T-502', 'Iván Sosa', 'La app se cierra sola cuando abro el panel.', 'tecnico'], ['T-503', 'Mora Paz', '¿Tienen local en Rosario?', 'otro']];
+const ticketAi = p => (TICKETS.find(t => p.includes(t[2])) || [])[3] || 'otro';
+const mailAi = p => { const n = p.match(/soy ([A-ZÁÉÍÓÚÑ][a-záéíóúñ]+ [A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)/), q = p.match(/(\d+) unidades de ([^.\n]+?)(?= para|\.|$)/m); return JSON.stringify(n && q ? { cliente: n[1], producto: q[2].trim(), cantidad: q[1] } : { cliente: '', producto: '', cantidad: '' }); };
+const VENTAS_A = [['Norte', 1200, 'pagado'], ['Norte', 3000, 'pagado'], ['Sur', 2500, 'pagado'], ['Sur', 900, 'pendiente'], ['Centro', 5000, 'pendiente']].map(([region, monto, estado], i) => ({ fecha: `2026-11-0${i + 1}`, region, monto, estado }));
+const VENTAS_B = [['Norte', 800, 'pagado'], ['Sur', 2600, 'pagado'], ['Sur', 1900, 'pagado'], ['Centro', 4000, 'pagado'], ['Centro', 9000, 'anulado']].map(([region, monto, estado], i) => ({ fecha: `2026-11-1${i}`, region, monto, estado }));
+const HOY_A = [['Ana', 1500], ['Luis', 900], ['Ana', 2000], ['Rita', 800]].map(([vendedor, monto]) => ({ vendedor, monto }));
+const HOY_B = [['Luis', 3000], ['Rita', 3500]].map(([vendedor, monto]) => ({ vendedor, monto }));
+const jsonCt = v => /^application\/json$/i.test(String(v || ''));
+const ref = (node, f) => `{{ $('${node}').item.json.${f} }}`;
+
+PROJ.n8n.push(
+  {
+    id: 'scoring', cat: 'Leads', level: 'Intermedio', title: 'Lead scoring con Code y CRM',
+    story: 'Ventas pierde tiempo con leads que no califican. El workflow tiene que puntuar cada lead, cargar en el CRM solo los calientes y mandar a los demás un email de seguimiento.',
+    objectives: ['Escribir lógica propia en un nodo Code (Run Once for Each Item).', 'Bifurcar con If según un campo calculado.', 'Leer datos de un nodo anterior por su nombre.'],
+    reqs: [
+      'Trigger: <b>Webhook</b>.',
+      '<b>Code</b> que agregue <code>score</code> y <code>segmento</code>: +40 si <code>empleados</code> ≥ 50, +40 si <code>presupuesto</code> ≥ 5000, +20 si <code>origen</code> es <code>referido</code>. <code>segmento</code> es <code>caliente</code> con score ≥ 60 y <code>frio</code> si no.',
+      '<b>If</b>: <code>{{ $json.segmento }}</code> es igual a <code>caliente</code>.',
+      'true: <b>HubSpot · Create a contact</b> (email, nombre y la propiedad <code>score</code>) y <b>Slack</b> a <code>#ventas</code>: <code>Lead caliente: NOMBRE de EMPRESA (score N)</code>.',
+      'false: <b>Gmail</b> al email del lead con asunto <code>Gracias por tu interés, NOMBRE</code>.',
+    ],
+    hints: ['En el Code, devolvé el item completo más los campos nuevos: return { ...$json, score, segmento }.', 'Después de HubSpot, $json es el contacto creado. Para el Slack leé el nodo Code por su nombre: {{ $(\'Nombre del nodo\').item.json.empresa }}.'],
+    real: ['El Webhook se prueba con la URL de test mientras ejecutás a mano.', 'HubSpot, Slack y Gmail necesitan una credencial cada uno (Credentials).', 'En un caso real, las reglas del score conviene acordarlas con el equipo de ventas y revisarlas cada tanto.'],
+    sample: [{ nombre: 'Carla Soto', email: 'carla@industrias-sur.example', empresa: 'Industrias Sur', empleados: 120, presupuesto: 8000, origen: 'referido' }],
+    checks: [['Usa un nodo Code', f => has(f, 'code')], ['Bifurca con If', f => has(f, 'if')]],
+    tests: [
+      [{ nombre: 'Carla Soto', email: 'carla@industrias-sur.example', empresa: 'Industrias Sur', empleados: 120, presupuesto: 8000, origen: 'referido' }, 100],
+      [{ nombre: 'Tomás Vera', email: 'tomas@kiosco.example', empresa: 'Kiosco Vera', empleados: 3, presupuesto: 6000, origen: 'ads' }, 40],
+      [{ nombre: 'Elsa Ruiz', email: 'elsa@textil-rosario.example', empresa: 'Textil Rosario', empleados: 60, presupuesto: 1000, origen: 'referido' }, 60],
+    ].map(([i, score]) => ({ name: `${i.nombre}: score ${score}`, input: [i], expect: r => {
+      const c = callsOf(r, 'crm'), s = callsOf(r, 'slack'), m = sameMail(r);
+      if (score >= 60) {
+        if (m.length) return 'Un lead caliente no recibe el email de seguimiento.';
+        if (c.length !== 1) return 'Se esperaba un contacto creado en HubSpot.';
+        if (c[0].params.email !== i.email) return `El contacto se creó con el email «${c[0].params.email}».`;
+        if (String(c[0].params.props.score) !== String(score)) return `La propiedad score vale «${c[0].params.props.score ?? ''}»; se esperaba ${score}.`;
+        if (!s.length || String(s[0].params.channel).trim() !== '#ventas') return 'Falta el aviso en #ventas.';
+        const ex = `Lead caliente: ${i.nombre} de ${i.empresa} (score ${score})`;
+        return s[0].params.text === ex || `El mensaje fue «${s[0].params.text}»; se esperaba «${ex}».`;
+      }
+      if (c.length || s.length) return 'Un lead frío no va al CRM ni a Slack.';
+      if (m.length !== 1 || m[0].params.to !== i.email) return 'Se esperaba un email al lead.';
+      return m[0].params.subject === `Gracias por tu interés, ${i.nombre}` || `El asunto fue «${m[0].params.subject}».`;
+    } })),
+    solution: () => ({ steps: [
+      N('webhook', 'Webhook', { path: '/leads' }),
+      N('code', 'Calcular score', { mode: 'each', code: "let score = 0;\nif ($json.empleados >= 50) score += 40;\nif ($json.presupuesto >= 5000) score += 40;\nif ($json.origen === 'referido') score += 20;\nreturn { ...$json, score, segmento: score >= 60 ? 'caliente' : 'frio' };" }),
+      N('if', '¿Caliente?', { cond: { left: '{{ $json.segmento }}', op: 'eq', right: 'caliente' } }, [
+        { name: 'true', steps: [N('crm', 'Crear contacto', { email: '{{ $json.email }}', name: '{{ $json.nombre }}', props: [col('score', '{{ $json.score }}')] }), N('slack', 'Avisar a ventas', { channel: '#ventas', text: `Lead caliente: ${ref('Calcular score', 'nombre')} de ${ref('Calcular score', 'empresa')} (score ${ref('Calcular score', 'score')})` })] },
+        { name: 'false', steps: [N('mail', 'Email de seguimiento', { to: '{{ $json.email }}', subject: 'Gracias por tu interés, {{ $json.nombre }}', body: 'Te vamos a escribir con novedades.' })] },
+      ]),
+    ] }),
+  },
+  {
+    id: 'enriquecer', cat: 'Conexión con servicios', level: 'Intermedio', title: 'Enriquecer un lead con una API',
+    story: 'El formulario solo pide nombre y email. Antes de guardar el lead, el workflow consulta una API con el dominio del email para sumar la empresa y la industria.',
+    objectives: ['Armar una URL dinámica en HTTP Request.', 'Entender que, después de una llamada, $json es la respuesta de la API.', 'Combinar datos de dos nodos con Edit Fields.'],
+    reqs: [
+      'Trigger: <b>Webhook</b>.',
+      '<b>HTTP Request</b>: GET a <code>https://api.enriquecer-demo.example/empresa?dominio=</code> seguido del dominio del email: <code>{{ $json.email.split(\'@\')[1] }}</code>.',
+      '<b>Edit Fields (Set)</b>: conservá la respuesta y agregá <code>nombre</code> y <code>email</code> leyéndolos del Webhook.',
+      '<b>Google Sheets · Append Row</b> en la hoja <code>Leads enriquecidos</code>: columnas <code>Nombre</code>, <code>Email</code>, <code>Empresa</code> e <code>Industria</code>.',
+    ],
+    mock: 'La API responde, por ejemplo: {"empresa":"ACME Logística","industria":"Transporte","empleados":340}',
+    hints: ['El nombre y el email ya no están en $json después del HTTP Request: usá {{ $(\'Webhook\').item.json.nombre }}.', 'Ejecutá y abrí cada paso para ver qué campos entrega.'],
+    real: ['En una API real casi siempre hace falta autenticación: se configura en la credencial del HTTP Request, no en la URL.', 'Conviene activar Retry On Fail para tolerar caídas momentáneas.', 'Revisá el límite de llamadas (rate limit) del proveedor.'],
+    sample: [{ nombre: 'Diego Luna', email: 'diego@acme-logistica.example' }], http: enrichApi,
+    checks: [['Llama a la API de enriquecimiento', f => all(f).some(n => n.op === 'http' && n.p.url.includes('api.enriquecer-demo.example/empresa'))]],
+    tests: [[{ nombre: 'Diego Luna', email: 'diego@acme-logistica.example' }, 'acme-logistica.example'], [{ nombre: 'Paula Ríos', email: 'paula@verde-sa.example' }, 'verde-sa.example']].map(([i, dom]) => ({ name: `Lead de ${dom}`, input: [i], http: enrichApi, expect: r => {
+      const h = callsOf(r, 'http')[0]; if (!h) return 'No se llamó a la API.';
+      if (!h.params.url.endsWith('dominio=' + dom)) return `La URL fue «${h.params.url}»; tiene que terminar en dominio=${dom}.`;
+      const s = callsOf(r, 'sheets')[0]; if (!s) return 'No se agregó la fila.';
+      if (String(s.params.sheet).trim() !== 'Leads enriquecidos') return `La hoja es «${s.params.sheet}».`;
+      const v = s.params.values, e = ENRICH[dom];
+      for (const [k, val] of [['Nombre', i.nombre], ['Email', i.email], ['Empresa', e.empresa], ['Industria', e.industria]]) if (v[k] !== val) return `La columna ${k} vale «${v[k] ?? ''}»; se esperaba «${val}».`;
+      return true;
+    } })),
+    solution: () => ({ steps: [
+      N('webhook', 'Webhook', { path: '/lead' }),
+      N('http', 'Consultar empresa', { method: 'GET', url: "https://api.enriquecer-demo.example/empresa?dominio={{ $json.email.split('@')[1] }}" }),
+      N('set', 'Unir datos', { keep: true, fields: [col('nombre', ref('Webhook', 'nombre')), col('email', ref('Webhook', 'email'))] }),
+      N('sheets', 'Guardar lead', { doc: 'CRM', sheet: 'Leads enriquecidos', columns: [col('Nombre', '{{ $json.nombre }}'), col('Email', '{{ $json.email }}'), col('Empresa', '{{ $json.empresa }}'), col('Industria', '{{ $json.industria }}')] }),
+    ] }),
+  },
+  {
+    id: 'tickets-ia', cat: 'Flujos con IA', level: 'Intermedio', title: 'Clasificar tickets de soporte con IA',
+    story: 'Los tickets llegan todos mezclados. Un modelo de IA lee el mensaje, lo clasifica en una categoría y el workflow lo deriva al canal correcto.',
+    objectives: ['Escribir un prompt que incluya los datos del item.', 'Pedirle al modelo una salida corta y predecible.', 'Enrutar con Switch según la respuesta de la IA.'],
+    reqs: [
+      'Trigger: <b>Webhook</b>.',
+      '<b>OpenAI · Message a model</b>: un prompt que pida clasificar el mensaje en una sola palabra (<code>facturacion</code>, <code>tecnico</code> u <code>otro</code>) e incluya <code>{{ $json.mensaje }}</code>.',
+      '<b>Switch</b> sobre <code>{{ $json.text }}</code>: <code>facturacion</code> → <b>Slack</b> <code>#facturacion</code>; <code>tecnico</code> → <b>Slack</b> <code>#soporte-tecnico</code>; respaldo → <b>Gmail</b> a <code>soporte@' + DEMO + '</code>.',
+      'El texto de Slack y el asunto del email tienen que incluir el <code>id</code> del ticket.',
+    ],
+    mock: 'El modelo es simulado: responde la categoría correcta solo si el prompt incluye el mensaje del ticket.',
+    hints: ['La respuesta del modelo queda en $json.text. El id del ticket quedó en el Webhook: {{ $(\'Webhook\').item.json.id }}.', 'Si todo cae en "otro", revisá que el prompt tenga {{ $json.mensaje }}.'],
+    real: ['Pedí siempre un formato cerrado ("respondé solo con una de estas palabras") y dejá una ruta de respaldo: el modelo puede devolver algo inesperado.', 'n8n también tiene el nodo Text Classifier y el AI Agent con Chat Model, memoria y herramientas.', 'Cada llamada consume tokens: clasificá con un modelo chico y barato.'],
+    sample: [{ id: 'T-501', cliente: 'Laura Gil', mensaje: 'Me cobraron dos veces la factura de octubre.' }], ai: ticketAi,
+    checks: [['Usa un nodo de IA', f => has(f, 'ai')], ['Enruta con Switch', f => has(f, 'router')]],
+    tests: TICKETS.map(([id, cliente, mensaje, cat]) => ({ name: `Ticket ${id} (${cat})`, input: [{ id, cliente, mensaje }], ai: ticketAi, expect: r => {
+      const a = callsOf(r, 'ai')[0]; if (!a) return 'No se llamó al modelo.';
+      if (!a.params.prompt.includes(mensaje)) return 'El prompt no incluye el mensaje del ticket.';
+      const s = callsOf(r, 'slack'), m = sameMail(r);
+      if (cat === 'otro') { if (s.length) return 'Un ticket sin categoría no va a Slack.'; if (m.length !== 1 || m[0].params.to !== 'soporte@' + DEMO) return `Se esperaba un email a soporte@${DEMO}.`; return m[0].params.subject.includes(id) || 'El asunto tiene que incluir el id del ticket.'; }
+      if (m.length) return 'Un ticket clasificado no va por email.';
+      const ch = cat === 'facturacion' ? '#facturacion' : '#soporte-tecnico';
+      if (s.length !== 1 || String(s[0].params.channel).trim() !== ch) return `Se esperaba un mensaje en ${ch}.`;
+      return s[0].params.text.includes(id) || 'El texto tiene que incluir el id del ticket.';
+    } })),
+    solution: () => { const txt = `Ticket ${ref('Webhook', 'id')}: ${ref('Webhook', 'mensaje')}`, c = v => ({ left: '{{ $json.text }}', op: 'eq', right: v }); return { steps: [
+      N('webhook', 'Webhook', { path: '/tickets' }),
+      N('ai', 'Clasificar', { prompt: 'Clasificá este mensaje de soporte. Respondé solo con una palabra: facturacion, tecnico u otro.\n\nMensaje: {{ $json.mensaje }}' }),
+      N('router', 'Por categoría', {}, [
+        { name: 'facturacion', cond: c('facturacion'), steps: [N('slack', 'A facturación', { channel: '#facturacion', text: txt })] },
+        { name: 'tecnico', cond: c('tecnico'), steps: [N('slack', 'A soporte técnico', { channel: '#soporte-tecnico', text: txt })] },
+        { name: 'otro', fallback: true, cond: c(''), steps: [N('mail', 'A la casilla general', { to: 'soporte@' + DEMO, subject: `Ticket ${ref('Webhook', 'id')} sin clasificar`, body: ref('Webhook', 'mensaje') })] },
+      ]),
+    ] }; },
+  },
+  {
+    id: 'email-ia', cat: 'Flujos con IA', level: 'Avanzado', title: 'Extraer datos de un email con IA',
+    story: 'Los pedidos llegan por email, escritos de cualquier manera. La IA extrae cliente, producto y cantidad en JSON, y un Code lo convierte en datos listos para la hoja.',
+    objectives: ['Pedirle a un modelo una salida en JSON.', 'Parsear y validar esa salida con Code.', 'Convertir tipos: de texto a número.'],
+    reqs: [
+      'Trigger: <b>Webhook</b> (recibe <code>de</code>, <code>asunto</code> y <code>cuerpo</code>).',
+      '<b>OpenAI · Message a model</b>: pedí un JSON con <code>cliente</code>, <code>producto</code> y <code>cantidad</code>, e incluí <code>{{ $json.cuerpo }}</code>.',
+      '<b>Code</b>: <code>JSON.parse($json.text)</code> y devolvé <code>cliente</code>, <code>producto</code> y <code>cantidad</code> como <b>número</b>.',
+      '<b>Google Sheets</b> en la hoja <code>Pedidos por email</code>: columnas <code>Cliente</code>, <code>Producto</code>, <code>Cantidad</code> y <code>Email</code> (el remitente).',
+    ],
+    mock: 'El modelo simulado devuelve, por ejemplo: {"cliente":"Marta Ríos","producto":"Termo 1L","cantidad":"12"}. La cantidad llega como texto.',
+    hints: ['La IA devuelve texto: hasta que no hacés JSON.parse no podés leer sus campos.', 'Number("12") convierte el texto en número.', 'El remitente está en el Webhook: {{ $(\'Webhook\').item.json.de }}.'],
+    real: ['Los modelos a veces envuelven el JSON en texto o en ```: en n8n podés usar Structured Output Parser o el nodo Information Extractor para forzar el formato.', 'Validá siempre los campos antes de escribirlos en un sistema.'],
+    sample: [{ de: 'marta@cliente.example', asunto: 'Pedido', cuerpo: 'Hola, soy Marta Ríos. Necesito 12 unidades de Termo 1L para el viernes.' }], ai: mailAi,
+    checks: [['Usa un nodo de IA', f => has(f, 'ai')], ['Usa un nodo Code', f => has(f, 'code')]],
+    tests: [['marta@cliente.example', 'Hola, soy Marta Ríos. Necesito 12 unidades de Termo 1L para el viernes.', 'Marta Ríos', 'Termo 1L', 12], ['pablo@otro.example', 'Buen día, soy Pablo Díaz. Necesito 3 unidades de Mate imperial.', 'Pablo Díaz', 'Mate imperial', 3]].map(([de, cuerpo, cli, prod, cant]) => ({ name: `Pedido de ${cli}`, input: [{ de, asunto: 'Pedido', cuerpo }], ai: mailAi, expect: r => {
+      const s = callsOf(r, 'sheets')[0]; if (!s) return 'No se agregó la fila.';
+      if (String(s.params.sheet).trim() !== 'Pedidos por email') return `La hoja es «${s.params.sheet}».`;
+      const v = s.params.values;
+      if (v.Cliente !== cli) return `Cliente vale «${v.Cliente ?? ''}»; se esperaba «${cli}». ¿El prompt incluye el cuerpo del email?`;
+      if (v.Producto !== prod) return `Producto vale «${v.Producto ?? ''}»; se esperaba «${prod}».`;
+      if (v.Cantidad !== cant) return `Cantidad vale ${JSON.stringify(v.Cantidad)}; se esperaba el número ${cant}.`;
+      return v.Email === de || `Email vale «${v.Email ?? ''}»; se esperaba «${de}».`;
+    } })),
+    solution: () => ({ steps: [
+      N('webhook', 'Webhook', { path: '/emails' }),
+      N('ai', 'Extraer pedido', { prompt: 'Extraé los datos del pedido y respondé solo con JSON: {"cliente": "", "producto": "", "cantidad": ""}\n\nEmail: {{ $json.cuerpo }}' }),
+      N('code', 'Parsear JSON', { mode: 'each', code: 'const d = JSON.parse($json.text);\nreturn { cliente: d.cliente, producto: d.producto, cantidad: Number(d.cantidad) };' }),
+      N('sheets', 'Registrar pedido', { doc: 'Pedidos', sheet: 'Pedidos por email', columns: [col('Cliente', '{{ $json.cliente }}'), col('Producto', '{{ $json.producto }}'), col('Cantidad', '{{ $json.cantidad }}'), col('Email', ref('Webhook', 'de'))] }),
+    ] }),
+  },
+  {
+    id: 'reporte', cat: 'Análisis de datos', level: 'Intermedio', title: 'Reporte semanal: la mejor región',
+    story: 'Cada lunes, dirección quiere saber qué región vendió más. El workflow lee la hoja de ventas, cuenta solo lo cobrado y avisa el resultado.',
+    objectives: ['Leer filas de una hoja como items.', 'Agrupar y sumar con Summarize.', 'Ordenar y quedarse con el primero (Sort y Limit).'],
+    reqs: [
+      'Trigger: <b>Schedule Trigger</b>.',
+      '<b>Google Sheets · Get Row(s)</b> de la hoja <code>Ventas</code>.',
+      '<b>Filter</b>: <code>estado</code> es igual a <code>pagado</code>.',
+      '<b>Summarize</b>: <code>sum</code> de <code>monto</code>, agrupado por <code>region</code>.',
+      '<b>Sort</b> por <code>sum_monto</code> descendente y <b>Limit</b> en 1.',
+      '<b>Slack</b> a <code>#reportes</code>: <code>Mejor región: REGION ($TOTAL)</code>.',
+    ],
+    mock: 'La hoja Ventas tiene las columnas fecha, region, monto y estado (pagado, pendiente o anulado).',
+    hints: ['Cada fila de la hoja es un item. Summarize devuelve un item por región.', 'El campo sumado se llama sum_monto.', 'Si filtrás después de sumar, contás ventas que no se cobraron.'],
+    real: ['Con muchas filas, filtrá en el propio nodo de Google Sheets para traer menos datos.', 'Para reportes más ricos podés armar una tabla en HTML o Markdown con un nodo Code.'],
+    sample: [{}], rows: () => VENTAS_A,
+    checks: [['Lee la hoja Ventas', f => all(f).some(n => n.op === 'sheetsRead' && n.p.sheet.trim() === 'Ventas')], ['Resume con Summarize o Code', f => has(f, 'summarize') || has(f, 'code')]],
+    tests: [['Semana 1', VENTAS_A, 'Mejor región: Norte ($4200)'], ['Semana 2', VENTAS_B, 'Mejor región: Sur ($4500)']].map(([name, data, ex]) => ({ name, input: [{}], rows: () => data, expect: r => {
+      const s = callsOf(r, 'slack'); if (s.length !== 1) return `Se esperaba un solo mensaje y hubo ${s.length}.`;
+      if (String(s[0].params.channel).trim() !== '#reportes') return 'El canal tiene que ser #reportes.';
+      return s[0].params.text === ex || `El mensaje fue «${s[0].params.text}»; se esperaba «${ex}».`;
+    } })),
+    solution: () => ({ steps: [
+      N('schedule', 'Cada lunes', { every: 'Todos los lunes', at: '08:00' }), N('sheetsRead', 'Leer ventas', { doc: 'Ventas', sheet: 'Ventas' }),
+      N('filter', 'Solo pagadas', { cond: { left: '{{ $json.estado }}', op: 'eq', right: 'pagado' } }),
+      N('summarize', 'Total por región', { fields: [col('monto', 'sum')], groupBy: 'region' }),
+      N('sort', 'Mayor primero', { field: 'sum_monto', dir: 'desc' }), N('limit', 'La mejor', { max: '1' }),
+      N('slack', 'Avisar', { channel: '#reportes', text: 'Mejor región: {{ $json.region }} (${{ $json.sum_monto }})' }),
+    ] }),
+  },
+  {
+    id: 'limpieza', cat: 'Análisis de datos', level: 'Avanzado', title: 'Limpiar y resumir datos con Code',
+    story: 'Un sistema viejo manda los pedidos con duplicados y con los montos como texto. Finanzas necesita un resumen confiable: cuántos pedidos, total, promedio y el mayor.',
+    objectives: ['Usar Code en modo Run Once for All Items.', 'Quitar duplicados y convertir tipos.', 'Devolver un único item con el resumen.'],
+    reqs: [
+      'Trigger: <b>Webhook</b> (recibe <code>pedidos</code>, una lista).',
+      '<b>Split Out</b> sobre <code>pedidos</code>.',
+      '<b>Code</b> en modo <i>Run Once for All Items</i>: quitá los duplicados por <code>id</code>, convertí <code>monto</code> a número y devolvé un solo item con <code>cantidad</code>, <code>total</code>, <code>promedio</code> (redondeado) y <code>mayor</code>.',
+      '<b>Gmail</b> a <code>finanzas@' + DEMO + '</code>: asunto <code>Resumen: N pedidos por $TOTAL</code> y el promedio en el cuerpo.',
+    ],
+    hints: ['En este modo, $input.all() devuelve todos los items: cada uno tiene sus datos en .json.', 'Devolvé una lista: return [{ json: { cantidad, total, promedio, mayor } }].', 'También podés resolverlo con Remove Duplicates y Summarize: lo que se verifica es el resultado.'],
+    real: ['Run Once for All Items es el modo por defecto del nodo Code.', 'Para volúmenes grandes conviene procesar por lotes (Loop Over Items).'],
+    sample: [{ pedidos: [{ id: 'A1', monto: '1200' }, { id: 'A2', monto: '300' }, { id: 'A1', monto: '1200' }, { id: 'A3', monto: '2000' }] }],
+    checks: [['Separa la lista en items', f => has(f, 'split')]],
+    tests: [['Con un duplicado', [['A1', '1200'], ['A2', '300'], ['A1', '1200'], ['A3', '2000']], 'Resumen: 3 pedidos por $3500', '1167'], ['Sin duplicados', [['B1', '500'], ['B2', '1500']], 'Resumen: 2 pedidos por $2000', '1000']].map(([name, list, subj, avg]) => ({ name, input: [{ pedidos: list.map(([id, monto]) => ({ id, monto })) }], expect: r => {
+      const m = sameMail(r); if (m.length !== 1) return `Se esperaba un solo email y hubo ${m.length}.`;
+      if (m[0].params.to !== 'finanzas@' + DEMO) return `El email fue a «${m[0].params.to}».`;
+      if (m[0].params.subject !== subj) return `El asunto fue «${m[0].params.subject}»; se esperaba «${subj}».`;
+      return m[0].params.body.includes(avg) || `El cuerpo tiene que incluir el promedio (${avg}).`;
+    } })),
+    solution: () => ({ steps: [
+      N('webhook', 'Webhook', { path: '/pedidos-legacy' }), N('split', 'Por pedido', { field: 'pedidos' }),
+      N('code', 'Limpiar y resumir', { mode: 'all', code: 'const vistos = new Set();\nconst montos = [];\nfor (const item of $input.all()) {\n  if (vistos.has(item.json.id)) continue;\n  vistos.add(item.json.id);\n  montos.push(Number(item.json.monto));\n}\nconst total = montos.reduce((a, b) => a + b, 0);\nreturn [{ json: { cantidad: montos.length, total, promedio: Math.round(total / montos.length), mayor: Math.max(...montos) } }];' }),
+      N('mail', 'Enviar resumen', { to: 'finanzas@' + DEMO, subject: 'Resumen: {{ $json.cantidad }} pedidos por ${{ $json.total }}', body: 'Promedio: ${{ $json.promedio }}. Pedido mayor: ${{ $json.mayor }}.' }),
+    ] }),
+  }
+);
+
+const REVIEWS = [['Nora Paz', 'nora@mail.example', 1, 'El pedido llegó tarde y con la caja rota.'], ['Hugo Lima', 'hugo@mail.example', 5, 'Excelente atención, llegó antes de lo esperado.']];
+const reviewAi = p => { const r = REVIEWS.find(x => p.includes(x[0]) && p.includes(x[3])); return r ? `Hola ${r[0]}, gracias por tu reseña. Tomamos nota de lo que nos contás.` : 'Gracias por tu mensaje.'; };
+const TASKS = [['sofi', 'Hay que mandar la propuesta a Banco Litoral antes del 2026-12-01, es urgente.', { titulo: 'Mandar la propuesta a Banco Litoral', fecha: '2026-12-01', prioridad: 'alta' }], ['leo', 'Cuando puedas, ordená la carpeta de contratos. Fecha tentativa 2026-12-20.', { titulo: 'Ordenar la carpeta de contratos', fecha: '2026-12-20', prioridad: 'normal' }]];
+const taskAi = p => (TASKS.find(t => p.includes(t[1])) || [])[2] || { titulo: '', fecha: '', prioridad: '' };
+
+PROJ.zapier.push(
+  {
+    id: 'corporativos', cat: 'Leads', level: 'Inicial', title: 'Solo leads corporativos al CRM',
+    story: 'El formulario recibe muchos leads con emails personales. Al CRM solo tienen que entrar los corporativos, con el nombre y el email prolijos, y ventas tiene que enterarse.',
+    objectives: ['Limpiar datos con Formatter.', 'Detener el Zap con Filter.', 'Entender qué pasos consumen tasks.'],
+    reqs: [
+      'Trigger: <b>Webhooks by Zapier · Catch Hook</b>.',
+      '<b>Formatter</b>: <code>email</code> en minúsculas y <code>nombre</code> sin espacios de más y con mayúscula inicial: <code>{{capitalize(trim(1.nombre))}}</code>.',
+      '<b>Filter</b>: el email <i>no contiene</i> <code>gmail.com</code>.',
+      '<b>HubSpot · Create Contact</b> con el email y el nombre ya formateados.',
+      '<b>Gmail</b> a <code>ventas@' + DEMO + '</code> con asunto <code>Nuevo lead corporativo: NOMBRE</code>.',
+    ],
+    hints: ['Los datos formateados salen del paso 2: {{2.email}} y {{2.nombre}}.', 'Cuando el Filter no se cumple, el Zap termina ahí sin error: es lo esperado.'],
+    real: ['El Filter que detiene el Zap no consume tasks: ponelo antes de las acciones pagas.', 'En Zapier real elegís los campos de una lista; no se escriben las llaves a mano.'],
+    sample: [{ nombre: '  julia torres ', email: 'JULIA@Constructora-Norte.example' }],
+    checks: [['Tiene un Formatter', f => has(f, 'set')], ['Tiene un Filter', f => has(f, 'filter')]],
+    tests: [
+      { name: 'Lead corporativo', input: [{ nombre: '  julia torres ', email: 'JULIA@Constructora-Norte.example' }], expect: r => {
+        const c = callsOf(r, 'crm')[0]; if (!c) return 'No se creó el contacto en HubSpot.';
+        if (c.params.email !== 'julia@constructora-norte.example') return `El email quedó «${c.params.email}».`;
+        if (c.params.name !== 'Julia Torres') return `El nombre quedó «${c.params.name}»; se esperaba «Julia Torres».`;
+        const m = sameMail(r)[0]; if (!m || m.params.to !== 'ventas@' + DEMO) return 'Falta el email a ventas.';
+        return m.params.subject === 'Nuevo lead corporativo: Julia Torres' || `El asunto fue «${m.params.subject}».`;
+      } },
+      { name: 'Lead con Gmail', input: [{ nombre: 'pedro gomez', email: 'Pedro.Gomez@GMAIL.com' }], expect: r => (!callsOf(r, 'crm').length && !sameMail(r).length) || 'Un lead con Gmail no tiene que llegar al CRM ni avisar a ventas.' },
+    ],
+    solution: () => ({ steps: [
+      N('webhook', 'Nuevo lead', { path: '/leads' }),
+      N('set', 'Limpiar datos', { keep: false, fields: [col('email', '{{lower(1.email)}}'), col('nombre', '{{capitalize(trim(1.nombre))}}')] }),
+      N('filter', 'Solo corporativos', { cond: { left: '{{2.email}}', op: 'ncontains', right: 'gmail.com' } }),
+      N('crm', 'Crear contacto', { email: '{{2.email}}', name: '{{2.nombre}}' }),
+      N('mail', 'Avisar a ventas', { to: 'ventas@' + DEMO, subject: 'Nuevo lead corporativo: {{2.nombre}}', body: '{{2.email}}' }),
+    ] }),
+  },
+  {
+    id: 'asignar', cat: 'Nodos de programación', level: 'Intermedio', title: 'Asignar vendedor con Code by Zapier',
+    story: 'Cada lead tiene que ir al vendedor de su país, y los de monto alto se marcan con prioridad. Son reglas simples, pero no hay una app que las resuelva: va con código.',
+    objectives: ['Pasar datos al código con Input Data.', 'Recordar que inputData siempre trae texto.', 'Devolver campos nuevos con output.'],
+    reqs: [
+      'Trigger: <b>Catch Hook</b>.',
+      '<b>Code by Zapier</b> con Input Data <code>pais</code> y <code>monto</code>. Tiene que devolver <code>vendedor</code> (AR → <code>ana@' + DEMO + '</code>, MX → <code>luis@' + DEMO + '</code>, el resto → <code>equipo@' + DEMO + '</code>) y <code>prioridad</code> (<code>alta</code> si el monto es ≥ 3000, si no <code>normal</code>).',
+      '<b>Google Sheets</b> en la hoja <code>Asignaciones</code>: columnas <code>Lead</code>, <code>Vendedor</code> y <code>Prioridad</code>.',
+      '<b>Slack</b> a <code>#leads</code>: <code>Lead NOMBRE → VENDEDOR (prioridad PRIORIDAD)</code>.',
+    ],
+    hints: ['inputData.monto es texto: comparalo con Number(inputData.monto) >= 3000.', 'Asigná el resultado así: output = { vendedor, prioridad };', 'El resultado del código es el paso 2: {{2.vendedor}}.'],
+    real: ['Code by Zapier corre JavaScript o Python, con límites de tiempo y memoria: sirve para lógica corta, no para procesos pesados.', 'Antes de escribir código, fijate si Formatter o Lookup Table ya lo resuelven.'],
+    sample: [{ nombre: 'Omar Ruiz', email: 'omar@cliente.example', pais: 'AR', monto: '4500' }],
+    checks: [['Usa Code by Zapier', f => has(f, 'code')]],
+    tests: [['Omar Ruiz', 'AR', '4500', 'ana', 'alta'], ['Lía Campos', 'MX', '500', 'luis', 'normal'], ['Raúl Peña', 'CL', '3000', 'equipo', 'alta']].map(([nombre, pais, monto, v, pr]) => ({ name: `${nombre} (${pais}, $${monto})`, input: [{ nombre, email: 'x@cliente.example', pais, monto }], expect: r => {
+      const vend = `${v}@${DEMO}`, s = callsOf(r, 'sheets')[0]; if (!s) return 'No se agregó la fila en Asignaciones.';
+      if (String(s.params.sheet).trim() !== 'Asignaciones') return `La hoja es «${s.params.sheet}».`;
+      const val = s.params.values;
+      if (val.Lead !== nombre || val.Vendedor !== vend || val.Prioridad !== pr) return `La fila fue ${JSON.stringify(val)}; se esperaba Lead «${nombre}», Vendedor «${vend}», Prioridad «${pr}».`;
+      const k = callsOf(r, 'slack')[0], ex = `Lead ${nombre} → ${vend} (prioridad ${pr})`;
+      if (!k || String(k.params.channel).trim() !== '#leads') return 'Falta el aviso en #leads.';
+      return k.params.text === ex || `El mensaje fue «${k.params.text}»; se esperaba «${ex}».`;
+    } })),
+    solution: () => ({ steps: [
+      N('webhook', 'Nuevo lead', { path: '/leads' }),
+      N('code', 'Asignar vendedor', { inputs: [col('pais', '{{1.pais}}'), col('monto', '{{1.monto}}')], code: `const mapa = { AR: 'ana@${DEMO}', MX: 'luis@${DEMO}' };\noutput = {\n  vendedor: mapa[inputData.pais] || 'equipo@${DEMO}',\n  prioridad: Number(inputData.monto) >= 3000 ? 'alta' : 'normal'\n};` }),
+      N('sheets', 'Registrar', { doc: 'Ventas', sheet: 'Asignaciones', columns: [col('Lead', '{{1.nombre}}'), col('Vendedor', '{{2.vendedor}}'), col('Prioridad', '{{2.prioridad}}')] }),
+      N('slack', 'Avisar', { channel: '#leads', text: 'Lead {{1.nombre}} → {{2.vendedor}} (prioridad {{2.prioridad}})' }),
+    ] }),
+  },
+  {
+    id: 'resenas-ia', cat: 'Flujos con IA', level: 'Intermedio', title: 'Responder reseñas con IA',
+    story: 'Cada reseña merece una respuesta. La IA redacta un borrador; si la reseña es mala, lo revisa una persona antes de contestar, y si es buena, se envía sola.',
+    objectives: ['Generar texto con AI by Zapier usando datos del trigger.', 'Dividir el Zap con Paths.', 'Dejar a una persona en el medio cuando el riesgo es alto.'],
+    reqs: [
+      'Trigger: <b>Catch Hook</b> (recibe <code>cliente</code>, <code>email</code>, <code>estrellas</code> y <code>comentario</code>).',
+      '<b>AI by Zapier</b>: un prompt que pida una respuesta breve e incluya el nombre del cliente y el comentario.',
+      '<b>Paths</b>. Camino A, <code>estrellas</code> menor que <code>3</code>: <b>Slack</b> a <code>#atencion-urgente</code> con el nombre del cliente y el borrador de la IA.',
+      'Camino de respaldo: <b>Gmail</b> al cliente con asunto <code>Gracias por tu reseña, NOMBRE</code> y el texto de la IA como cuerpo.',
+    ],
+    mock: 'El modelo simulado redacta la respuesta solo si el prompt incluye el nombre del cliente y su comentario.',
+    hints: ['El texto que genera la IA está en {{2.text}}.', 'El paso de IA va antes de Paths para que los dos caminos puedan usar su resultado.'],
+    real: ['Para respuestas a clientes enojados, dejá siempre revisión humana: la IA puede prometer algo que no corresponde.', 'En AI by Zapier definís el prompt y los campos de salida; cada ejecución consume tasks.'],
+    sample: [{ cliente: 'Nora Paz', email: 'nora@mail.example', estrellas: 1, comentario: 'El pedido llegó tarde y con la caja rota.' }], ai: reviewAi,
+    checks: [['Usa un paso de IA', f => has(f, 'ai')], ['Divide con Paths', f => has(f, 'router')]],
+    tests: REVIEWS.map(([cliente, email, estrellas, comentario]) => ({ name: `Reseña de ${estrellas} estrella(s)`, input: [{ cliente, email, estrellas, comentario }], ai: reviewAi, expect: r => {
+      const reply = `Hola ${cliente}, gracias por tu reseña. Tomamos nota de lo que nos contás.`, s = callsOf(r, 'slack'), m = sameMail(r);
+      if (estrellas < 3) {
+        if (m.length) return 'Una reseña mala no se responde sola por email.';
+        if (s.length !== 1 || String(s[0].params.channel).trim() !== '#atencion-urgente') return 'Se esperaba un aviso en #atencion-urgente.';
+        if (!s[0].params.text.includes(cliente)) return 'El aviso tiene que incluir el nombre del cliente.';
+        return s[0].params.text.includes(reply) || 'El aviso tiene que incluir el borrador de la IA. ¿El prompt tiene el nombre y el comentario?';
+      }
+      if (s.length) return 'Una reseña buena no va a #atencion-urgente.';
+      if (m.length !== 1 || m[0].params.to !== email) return 'Se esperaba un email al cliente.';
+      if (m[0].params.subject !== `Gracias por tu reseña, ${cliente}`) return `El asunto fue «${m[0].params.subject}».`;
+      return m[0].params.body === reply || 'El cuerpo tiene que ser el texto de la IA. ¿El prompt tiene el nombre y el comentario?';
+    } })),
+    solution: () => ({ steps: [
+      N('webhook', 'Nueva reseña', { path: '/resenas' }),
+      N('ai', 'Redactar respuesta', { prompt: 'Escribí una respuesta breve y amable para {{1.cliente}}, que dejó esta reseña: {{1.comentario}}' }),
+      N('router', 'Según estrellas', {}, [
+        { name: 'Mala experiencia', cond: { left: '{{1.estrellas}}', op: 'lt', right: '3' }, steps: [N('slack', 'Pedir revisión', { channel: '#atencion-urgente', text: 'Reseña de {{1.cliente}} ({{1.estrellas}} estrellas). Borrador: {{2.text}}' })] },
+        { name: 'Resto', fallback: true, cond: { left: '', op: 'eq', right: '' }, steps: [N('mail', 'Responder', { to: '{{1.email}}', subject: 'Gracias por tu reseña, {{1.cliente}}', body: '{{2.text}}' })] },
+      ]),
+    ] }),
+  },
+  {
+    id: 'tarea-ia', cat: 'Flujos con IA', level: 'Avanzado', title: 'De un mensaje a una tarea con IA',
+    story: 'El equipo pide cosas por chat y después se pierden. La IA lee el mensaje, saca el título, la fecha y la prioridad, y el Zap crea la tarjeta en Trello. Si es urgente, también avisa.',
+    objectives: ['Usar la IA para extraer campos estructurados.', 'Mapear esos campos en otra app.', 'Combinar una acción fija con un Filter posterior.'],
+    reqs: [
+      'Trigger: <b>Catch Hook</b> (recibe <code>usuario</code> y <code>texto</code>).',
+      '<b>AI by Zapier</b>: pedí <code>titulo</code>, <code>fecha</code> y <code>prioridad</code>, e incluí <code>{{1.texto}}</code>.',
+      '<b>Trello · Create Card</b> en la lista <code>Pendientes</code>: título y vencimiento de la IA, y el usuario en la descripción.',
+      '<b>Filter</b>: <code>prioridad</code> es igual a <code>alta</code>. Después, <b>Slack</b> a <code>#urgentes</code>: <code>Tarea urgente: TITULO (vence FECHA)</code>.',
+    ],
+    mock: 'El modelo simulado devuelve campos listos, por ejemplo: titulo, fecha y prioridad (alta o normal).',
+    hints: ['Los campos de la IA se leen como {{2.titulo}}, {{2.fecha}} y {{2.prioridad}}.', 'El Filter va después de Trello: la tarjeta se crea siempre y solo el aviso depende de la prioridad.'],
+    real: ['En AI by Zapier definís los campos de salida y su tipo, así el siguiente paso los puede mapear.', 'Revisá las fechas: los modelos se confunden con "el viernes" o "la semana que viene" si no les das la fecha de hoy.'],
+    sample: [{ usuario: TASKS[0][0], texto: TASKS[0][1] }], ai: taskAi,
+    checks: [['Usa un paso de IA', f => has(f, 'ai')], ['Crea la tarjeta en Trello', f => has(f, 'task')]],
+    tests: TASKS.map(([usuario, texto, o]) => ({ name: `Tarea de prioridad ${o.prioridad}`, input: [{ usuario, texto }], ai: taskAi, expect: r => {
+      const t = callsOf(r, 'task')[0]; if (!t) return 'No se creó la tarjeta.';
+      if (String(t.params.list).trim() !== 'Pendientes') return `La lista es «${t.params.list}».`;
+      if (t.params.title !== o.titulo) return `El título fue «${t.params.title}»; se esperaba «${o.titulo}». ¿El prompt incluye el texto?`;
+      if (t.params.due !== o.fecha) return `El vencimiento fue «${t.params.due}»; se esperaba ${o.fecha}.`;
+      if (!t.params.description.includes(usuario)) return 'La descripción tiene que incluir el usuario.';
+      const s = callsOf(r, 'slack');
+      if (o.prioridad !== 'alta') return !s.length || 'Una tarea normal no avisa en #urgentes.';
+      const ex = `Tarea urgente: ${o.titulo} (vence ${o.fecha})`;
+      if (s.length !== 1 || String(s[0].params.channel).trim() !== '#urgentes') return 'Falta el aviso en #urgentes.';
+      return s[0].params.text === ex || `El mensaje fue «${s[0].params.text}»; se esperaba «${ex}».`;
+    } })),
+    solution: () => ({ steps: [
+      N('webhook', 'Mensaje del chat', { path: '/chat' }),
+      N('ai', 'Extraer tarea', { prompt: 'Extraé titulo, fecha (AAAA-MM-DD) y prioridad (alta o normal) de este mensaje: {{1.texto}}' }),
+      N('task', 'Crear tarjeta', { list: 'Pendientes', title: '{{2.titulo}}', due: '{{2.fecha}}', description: 'Pedido por {{1.usuario}}' }),
+      N('filter', 'Solo urgentes', { cond: { left: '{{2.prioridad}}', op: 'eq', right: 'alta' } }),
+      N('slack', 'Avisar', { channel: '#urgentes', text: 'Tarea urgente: {{2.titulo}} (vence {{2.fecha}})' }),
+    ] }),
+  },
+  {
+    id: 'reporte-diario', cat: 'Análisis de datos', level: 'Avanzado', title: 'Reporte diario de ventas con Code',
+    story: 'Al cierre del día, el equipo quiere un mensaje con cuántas ventas hubo, el total y quién vendió más. Los datos están en una hoja.',
+    objectives: ['Traer varias filas en un solo paso.', 'Recorrer y agregar una lista con código.', 'Armar un mensaje con los resultados.'],
+    reqs: [
+      'Trigger: <b>Schedule by Zapier</b>.',
+      '<b>Google Sheets · Get Many Spreadsheet Rows</b> de la hoja <code>Ventas hoy</code>.',
+      '<b>Code by Zapier</b> con Input Data <code>filas</code> ← <code>{{2.rows}}</code>. Devolvé <code>cantidad</code>, <code>total</code> y <code>mejor</code> (el vendedor que más sumó).',
+      '<b>Slack</b> a <code>#reportes</code>: <code>Ventas de hoy: N ventas por $TOTAL. Mejor vendedor: NOMBRE</code>.',
+    ],
+    mock: 'Cada fila tiene vendedor y monto. En el simulador la lista llega al código como texto JSON.',
+    hints: ['Empezá con const filas = JSON.parse(inputData.filas);', 'Sumá por vendedor en un objeto y ordená para encontrar el mayor.', 'El resultado del código es el paso 3.'],
+    real: ['En Zapier real, las listas llegan como "line items" o texto separado por comas, según la app: revisá el formato en la prueba del paso.', 'Para acumular datos durante el día existe Digest by Zapier.'],
+    sample: [{}], rows: () => HOY_A,
+    checks: [['Lee la hoja Ventas hoy', f => all(f).some(n => n.op === 'sheetsRead' && n.p.sheet.trim() === 'Ventas hoy')], ['Usa Code by Zapier', f => has(f, 'code')]],
+    tests: [['Día con 4 ventas', HOY_A, 'Ventas de hoy: 4 ventas por $5200. Mejor vendedor: Ana'], ['Día con 2 ventas', HOY_B, 'Ventas de hoy: 2 ventas por $6500. Mejor vendedor: Rita']].map(([name, data, ex]) => ({ name, input: [{}], rows: () => data, expect: r => {
+      const s = callsOf(r, 'slack'); if (s.length !== 1) return `Se esperaba un mensaje y hubo ${s.length}.`;
+      if (String(s[0].params.channel).trim() !== '#reportes') return 'El canal tiene que ser #reportes.';
+      return s[0].params.text === ex || `El mensaje fue «${s[0].params.text}»; se esperaba «${ex}».`;
+    } })),
+    solution: () => ({ steps: [
+      N('schedule', 'Cada día 18:00', { at: '18:00' }), N('sheetsRead', 'Leer ventas', { doc: 'Ventas', sheet: 'Ventas hoy' }),
+      N('code', 'Calcular resumen', { inputs: [col('filas', '{{2.rows}}')], code: 'const filas = JSON.parse(inputData.filas);\nconst porVendedor = {};\nlet total = 0;\nfilas.forEach(f => {\n  total += Number(f.monto);\n  porVendedor[f.vendedor] = (porVendedor[f.vendedor] || 0) + Number(f.monto);\n});\nconst mejor = Object.entries(porVendedor).sort((a, b) => b[1] - a[1])[0][0];\noutput = { cantidad: filas.length, total, mejor };' }),
+      N('slack', 'Publicar reporte', { channel: '#reportes', text: 'Ventas de hoy: {{3.cantidad}} ventas por ${{3.total}}. Mejor vendedor: {{3.mejor}}' }),
+    ] }),
+  },
+  {
+    id: 'monitoreo', cat: 'Análisis de datos', level: 'Avanzado', title: 'Detectar anomalías en métricas',
+    story: 'Un monitor manda métricas de cada servicio. El Zap calcula la tasa de error, deja todo registrado y reacciona distinto según la gravedad.',
+    objectives: ['Calcular un indicador con código.', 'Clasificar con umbrales.', 'Usar Paths con más de una condición y sin camino de respaldo.'],
+    reqs: [
+      'Trigger: <b>Catch Hook</b> (recibe <code>servicio</code>, <code>latencia_ms</code>, <code>errores</code> y <code>total</code>, como texto).',
+      '<b>Code by Zapier</b>: devolvé <code>tasa</code> (porcentaje de errores con un decimal) y <code>estado</code>: <code>critico</code> si la tasa es mayor que 5 o la latencia mayor que 2000; <code>alerta</code> si la tasa es mayor que 1; si no, <code>ok</code>.',
+      '<b>Google Sheets</b> en la hoja <code>Monitoreo</code>: columnas <code>Servicio</code>, <code>Tasa</code> y <code>Estado</code>. Se registra siempre.',
+      '<b>Paths</b>. <code>critico</code>: <b>Slack</b> a <code>#incidentes</code> y <b>Trello</b> en la lista <code>Incidentes</code> con título <code>Incidente en SERVICIO</code>. <code>alerta</code>: <b>Slack</b> a <code>#monitoreo</code>. Con <code>ok</code> no pasa nada más.',
+    ],
+    hints: ['Tasa con un decimal: Math.round(errores / total * 1000) / 10.', 'Acordate de convertir con Number(): todo llega como texto.', 'Quitá la marca de respaldo de los caminos: si el estado es ok, ninguno tiene que ejecutarse.'],
+    real: ['Para no repetir avisos del mismo incidente se puede guardar el último estado en Storage by Zapier.', 'Los umbrales deberían salir de los datos históricos del servicio.'],
+    sample: [{ servicio: 'api-pagos', latencia_ms: '2400', errores: '12', total: '400' }],
+    checks: [['Usa Code by Zapier', f => has(f, 'code')], ['Divide con Paths', f => has(f, 'router')]],
+    tests: [['api-pagos', '2400', '12', '400', '3', 'critico'], ['api-envios', '300', '8', '400', '2', 'alerta'], ['api-stock', '200', '1', '1000', '0.1', 'ok']].map(([servicio, lat, err, tot, tasa, estado]) => ({ name: `${servicio}: ${estado}`, input: [{ servicio, latencia_ms: lat, errores: err, total: tot }], expect: r => {
+      const s = callsOf(r, 'sheets')[0]; if (!s) return 'No se registró la métrica en la hoja.';
+      const v = s.params.values;
+      if (String(s.params.sheet).trim() !== 'Monitoreo' || v.Servicio !== servicio) return 'La fila tiene que ir a Monitoreo con el servicio.';
+      if (String(v.Tasa) !== tasa) return `Tasa vale «${v.Tasa ?? ''}»; se esperaba ${tasa}.`;
+      if (v.Estado !== estado) return `Estado vale «${v.Estado ?? ''}»; se esperaba «${estado}».`;
+      const k = callsOf(r, 'slack'), t = callsOf(r, 'task');
+      if (estado === 'ok') return (!k.length && !t.length) || 'Con estado ok no hay avisos ni tarjetas.';
+      if (estado === 'alerta') { if (t.length) return 'Una alerta no crea tarjeta.'; return (k.length === 1 && String(k[0].params.channel).trim() === '#monitoreo') || 'Se esperaba un aviso en #monitoreo.'; }
+      if (k.length !== 1 || String(k[0].params.channel).trim() !== '#incidentes') return 'Se esperaba un aviso en #incidentes.';
+      if (!t.length || String(t[0].params.list).trim() !== 'Incidentes') return 'Falta la tarjeta en la lista Incidentes.';
+      return t[0].params.title === `Incidente en ${servicio}` || `El título fue «${t[0].params.title}».`;
+    } })),
+    solution: () => ({ steps: [
+      N('webhook', 'Métrica', { path: '/metricas' }),
+      N('code', 'Calcular estado', { inputs: [col('latencia', '{{1.latencia_ms}}'), col('errores', '{{1.errores}}'), col('total', '{{1.total}}')], code: "const tasa = Math.round(Number(inputData.errores) / Number(inputData.total) * 1000) / 10;\nconst estado = (tasa > 5 || Number(inputData.latencia) > 2000) ? 'critico' : tasa > 1 ? 'alerta' : 'ok';\noutput = { tasa, estado };" }),
+      N('sheets', 'Registrar', { doc: 'Operaciones', sheet: 'Monitoreo', columns: [col('Servicio', '{{1.servicio}}'), col('Tasa', '{{2.tasa}}'), col('Estado', '{{2.estado}}')] }),
+      N('router', 'Según gravedad', {}, [
+        { name: 'Crítico', cond: { left: '{{2.estado}}', op: 'eq', right: 'critico' }, steps: [N('slack', 'Avisar incidente', { channel: '#incidentes', text: 'CRÍTICO en {{1.servicio}}: {{2.tasa}}% de errores, {{1.latencia_ms}} ms' }), N('task', 'Abrir incidente', { list: 'Incidentes', title: 'Incidente en {{1.servicio}}', description: 'Tasa {{2.tasa}}%' })] },
+        { name: 'Alerta', cond: { left: '{{2.estado}}', op: 'eq', right: 'alerta' }, steps: [N('slack', 'Avisar alerta', { channel: '#monitoreo', text: 'Alerta en {{1.servicio}}: {{2.tasa}}% de errores' })] },
+      ]),
+    ] }),
+  }
+);
+
+/* Modo libre: sin verificación, con respuestas simuladas que define la persona */
+Object.keys(PROJ).forEach(pf => PROJ[pf].push({
+  id: 'libre', free: true, cat: 'Modo libre', level: 'Libre', title: 'Modo libre',
+  story: `Armá cualquier ${P[pf].flow} con todos los ${P[pf].node}s disponibles y probalo con tus propios datos. Vos definís qué responden la API, la IA y la hoja.`,
+  reqs: [], checks: [], tests: [], hints: ['Cambiá los datos de prueba y las respuestas simuladas, y ejecutá de nuevo para ver cómo cambia el resultado.', 'Abrí cada paso del resultado para ver qué datos entrega.'],
+  sample: [{ nombre: 'Ana', email: 'ana@mail.example', total: 1500 }],
+}));
+const FREE_DEF = { http: '{\n  "ok": true,\n  "items": [\n    { "nombre": "Mate", "stock": 3 },\n    { "nombre": "Termo", "stock": 12 }\n  ]\n}', ai: 'Respuesta simulada de la IA.', rows: '[\n  { "producto": "Mate", "monto": 1200 },\n  { "producto": "Termo", "monto": 800 }\n]' };
+const freeMocks = pf => ((data().free ||= {})[pf] ||= { ...FREE_DEF });
+function mocksFor(j, t = {}) {
+  if (!j.free) return { http: t.http || j.http, ai: t.ai || j.ai, rows: t.rows || j.rows };
+  const m = freeMocks(state.pf), parse = (txt, what) => { try { return JSON.parse(txt); } catch (_) { throw new Error(`la respuesta simulada de ${what} no es JSON válido`); } };
+  return { http: () => parse(m.http, 'la API'), rows: () => { const r = parse(m.rows, 'la hoja'); if (!Array.isArray(r)) throw new Error('las filas simuladas tienen que ser una lista'); return r; }, ai: () => { const s = m.ai.trim(); if (s.startsWith('{')) { try { return JSON.parse(s); } catch (_) {} } return m.ai; } };
+}
+
+/* ---------------- Teoría por tema (n8n y Zapier) ---------------- */
+P.n8n.lessons.push(
+  ['IA en n8n: modelos, prompts y agentes', [
+    '<p>n8n tiene nodos de IA de dos tipos. Los <b>simples</b> hacen una tarea: enviar un mensaje a un modelo, clasificar texto (<b>Text Classifier</b>), extraer datos (<b>Information Extractor</b>) o resumir. El <b>AI Agent</b> decide por sí mismo qué pasos dar.</p>',
+    '<p>Un AI Agent se arma con sub-nodos: un <b>Chat Model</b> (el modelo), <b>Memory</b> (para recordar la conversación) y <b>Tools</b> (lo que puede usar: una API, una hoja, otro workflow).</p>',
+    '<ul><li>Incluí en el prompt los datos del item con expresiones.</li><li>Pedí un formato cerrado: una palabra de una lista o un JSON con campos fijos.</li><li>Para garantizar JSON válido usá <b>Structured Output Parser</b>.</li><li>Dejá siempre una ruta de respaldo: la respuesta puede no ser la esperada.</li></ul>',
+    '<p>Cada llamada cuesta tokens. Usá el modelo más chico que resuelva la tarea y no mandes al modelo datos que no necesita.</p>'
+  ]],
+  ['El nodo Code y el trabajo con datos', [
+    '<p>El nodo <b>Code</b> tiene dos modos:</p><ul><li><b>Run Once for All Items</b> (por defecto): el código corre una vez y ve todos los items con <code>$input.all()</code>. Devuelve una lista de <code>{ json: {...} }</code>. Sirve para sumar, agrupar o quitar duplicados.</li><li><b>Run Once for Each Item</b>: corre una vez por item, con <code>$json</code>. Devuelve un objeto.</li></ul>',
+    '<pre>// All Items\nconst total = $input.all().reduce((a, i) => a + i.json.monto, 0);\nreturn [{ json: { total } }];</pre>',
+    '<p>Antes de escribir código, mirá los nodos de datos: <b>Summarize</b> (sumar, contar, promediar, agrupar), <b>Sort</b>, <b>Limit</b>, <b>Remove Duplicates</b>, <b>Split Out</b> y <b>Aggregate</b>. Son más fáciles de mantener.</p>'
+  ]],
+  ['Conectar servicios: credenciales, APIs y webhooks', [
+    '<ul><li><b>Credentials</b>: cada servicio guarda su clave una sola vez y se reutiliza. Nunca van escritas en un nodo.</li><li><b>HTTP Request</b>: conecta cualquier API que no tenga nodo propio. Soporta autenticación, paginación y reintentos.</li><li><b>Webhook</b>: es la URL que otros sistemas llaman para disparar tu workflow.</li></ul>',
+    '<p>Después de un HTTP Request, <code>$json</code> es la <b>respuesta</b> de la API. Para volver a un dato anterior usá <code>$(\'Nombre del nodo\')</code>.</p>',
+    '<p>Buenas prácticas: activá <b>Retry On Fail</b> para errores pasajeros, respetá el rate limit del proveedor y revisá el código de respuesta (401 credencial, 404 recurso, 429 demasiadas llamadas).</p>'
+  ]]
+);
+P.zapier.lessons.push(
+  ['IA en Zapier', [
+    '<p><b>AI by Zapier</b> agrega un paso de IA a cualquier Zap: le das un prompt, le pasás datos de pasos anteriores y definís qué <b>campos de salida</b> querés (texto, número, sí/no). También hay apps como ChatGPT o Claude para usar tu propia cuenta.</p>',
+    '<ul><li>Usos típicos: resumir, clasificar, extraer datos y redactar borradores.</li><li>Mapeá en el prompt los campos del trigger.</li><li>Definí campos de salida con nombre, así el paso siguiente los puede usar.</li></ul>',
+    '<p>La IA puede equivocarse o inventar. Cuando la salida llega a un cliente o cambia datos importantes, sumá revisión humana: un aviso con el borrador antes de enviar.</p>'
+  ]],
+  ['Code by Zapier y datos', [
+    '<p><b>Code by Zapier</b> corre JavaScript o Python. Los datos entran por <b>Input Data</b>: definís nombres y los mapeás desde pasos anteriores. En el código están en <code>inputData</code>, y <b>siempre son texto</b>.</p>',
+    '<pre>const monto = Number(inputData.monto);\noutput = { prioridad: monto >= 3000 ? \'alta\' : \'normal\' };</pre>',
+    '<ul><li>Lo que asignás a <code>output</code> queda disponible para los pasos siguientes.</li><li>Tiene límites de tiempo y memoria: es para lógica corta.</li><li>Las listas suelen llegar como <b>line items</b> o texto separado por comas.</li></ul>',
+    '<p>Probá primero con <b>Formatter</b>, <b>Lookup Table</b> o <b>Filter</b>: si alcanzan, son más fáciles de mantener que el código.</p>'
+  ]],
+  ['Apps, conexiones y webhooks', [
+    '<ul><li>Cada app se conecta una vez (<b>connection</b>) y esa conexión se reutiliza en todos los Zaps.</li><li><b>Webhooks by Zapier</b> recibe datos de sistemas sin integración (Catch Hook) o llama a una API (GET, POST). Es una app premium.</li><li>Los triggers por <b>polling</b> evitan duplicados recordando el identificador de cada registro ya procesado.</li></ul>',
+    '<p>Si una app devuelve error, el paso falla y queda en el <b>Zap History</b>, desde donde se puede reintentar. Con <b>Autoreplay</b>, Zapier reintenta solo los pasos fallidos.</p>',
+    '<p>Buenas prácticas: usá una cuenta de servicio y no una personal, y revisá los permisos que pide cada conexión.</p>'
+  ]]
+);
+const QUIZ_EXTRA = {
+  n8n: [
+    ['ia', 'IA y agentes', [
+      ['¿Qué necesita un AI Agent para funcionar?', ['Un Chat Model, y opcionalmente memoria y herramientas', 'Solo un nodo Code', 'Un Webhook de producción', 'Una hoja de cálculo'], 'El Chat Model es obligatorio; Memory y Tools amplían lo que puede hacer.'],
+      ['¿Cómo conseguís que la salida del modelo sea fácil de enrutar?', ['Pidiendo un formato cerrado, como una palabra de una lista o un JSON fijo', 'Pidiendo una respuesta larga y creativa', 'Subiendo la temperatura', 'Sin dar instrucciones'], 'Una salida predecible se puede comparar en un Switch.'],
+      ['¿Por qué dejar una ruta de respaldo después de clasificar con IA?', ['Porque el modelo puede devolver algo inesperado', 'Porque n8n lo exige', 'Porque ahorra tokens', 'No hace falta'], 'Sin respaldo, un item mal clasificado se pierde sin aviso.'],
+      ['¿Qué nodo ayuda a garantizar que el modelo devuelva JSON con una estructura?', ['Structured Output Parser', 'Sort', 'Schedule Trigger', 'Remove Duplicates'], 'Valida la salida contra un esquema.'],
+    ]],
+    ['codigo', 'Código y análisis de datos', [
+      ['¿Qué modo del nodo Code usarías para sumar el total de todos los items?', ['Run Once for All Items', 'Run Once for Each Item', 'Cualquiera, da igual', 'Ninguno: no se puede'], 'Necesitás ver todos los items juntos con $input.all().'],
+      ['En modo All Items, ¿qué tiene que devolver el código?', ['Una lista de objetos { json: {...} }', 'Un texto', 'Un número', 'Nada'], 'Cada elemento de la lista es un item de salida.'],
+      ['Summarize con sum de monto agrupado por region. ¿Cómo se llama el campo de salida?', ['sum_monto', 'monto', 'total', 'region_sum'], 'El nombre es operación_campo.'],
+      ['Los montos llegan como texto ("1200"). ¿Qué hacés antes de sumar?', ['Convertirlos con Number()', 'Sumarlos igual', 'Pasarlos a mayúsculas', 'Borrarlos'], '"1200" + "300" da "1200300", no 1500.'],
+    ]],
+    ['conexiones', 'Conexión con servicios', [
+      ['¿Dónde se guarda la clave de una API?', ['En Credentials', 'En la URL del HTTP Request', 'En un nodo Code', 'En el nombre del workflow'], 'Así se reutiliza y no queda expuesta al exportar el workflow.'],
+      ['Después de un HTTP Request, ¿qué contiene $json?', ['La respuesta de la API', 'Los datos del Webhook', 'Las credenciales', 'Nada'], 'Para leer datos anteriores se usa $(\'Nombre del nodo\').'],
+      ['Una API responde 429. ¿Qué significa?', ['Demasiadas llamadas: superaste el rate limit', 'Credencial incorrecta', 'El recurso no existe', 'Todo bien'], '401 es credencial, 404 recurso inexistente.'],
+      ['¿Para qué sirve Retry On Fail?', ['Para reintentar un nodo ante errores pasajeros', 'Para borrar el workflow', 'Para activar el Webhook', 'Para ordenar items'], 'Útil ante cortes momentáneos de red o del proveedor.'],
+    ]],
+  ],
+  zapier: [
+    ['ia', 'IA en Zapier', [
+      ['¿Para qué sirven los campos de salida en AI by Zapier?', ['Para que los pasos siguientes puedan mapear cada dato', 'Para pagar menos', 'Para elegir el trigger', 'No existen'], 'Un campo con nombre se usa como cualquier otro dato del Zap.'],
+      ['Una reseña negativa se responde con un texto de IA. ¿Qué conviene?', ['Que una persona revise el borrador antes de enviarlo', 'Enviarlo sin mirar', 'Borrar la reseña', 'Desactivar el Zap'], 'La IA puede prometer algo que no corresponde.'],
+      ['¿Qué tenés que incluir en el prompt para que la IA trabaje sobre el caso real?', ['Los campos del trigger mapeados', 'Solo instrucciones generales', 'El nombre del Zap', 'Nada'], 'Sin los datos, el modelo responde en abstracto.'],
+      ['¿Qué riesgo propio de la IA hay que tener presente?', ['Que invente o se equivoque con seguridad aparente', 'Que borre el Zap', 'Que cambie el trigger', 'Ninguno'], 'Por eso se validan las salidas importantes.'],
+    ]],
+    ['codigo', 'Code by Zapier y datos', [
+      ['¿De qué tipo son los valores de inputData?', ['Siempre texto', 'Números', 'Depende del día', 'Objetos'], 'Hay que convertir con Number() o JSON.parse().'],
+      ['¿Cómo devolvés datos al Zap desde JavaScript?', ['Asignándolos a output', 'Con console.log', 'Con alert', 'No se puede'], 'Lo que queda en output lo usan los pasos siguientes.'],
+      ['¿Cuándo conviene usar Code by Zapier?', ['Cuando Formatter, Filter o Lookup Table no alcanzan', 'Siempre, antes que nada', 'Para procesos de varios minutos', 'Nunca'], 'Tiene límites de tiempo y memoria.'],
+      ['¿Qué app acumula datos para enviar un resumen más tarde?', ['Digest by Zapier', 'Filter by Zapier', 'Paths', 'Webhooks by Zapier'], 'Junta entradas y las libera en un resumen.'],
+    ]],
+    ['conexiones', 'Apps y conexiones', [
+      ['¿Qué hace Catch Hook?', ['Recibe datos que otro sistema envía a una URL', 'Llama a una API cada hora', 'Envía emails', 'Crea tarjetas'], 'Es el trigger de Webhooks by Zapier.'],
+      ['¿Cómo evita duplicados un trigger por polling?', ['Recordando el identificador de cada registro ya procesado', 'Borrando la app', 'Con un Filter obligatorio', 'No los evita'], 'Solo dispara con registros nuevos.'],
+      ['Un paso falló por un error de la app. ¿Dónde lo ves y lo reintentás?', ['En Zap History', 'En el trigger', 'En Formatter', 'No se puede'], 'Con Autoreplay se reintenta solo.'],
+      ['¿Qué cuenta conviene usar para conectar una app en un Zap de la empresa?', ['Una cuenta de servicio', 'La personal de quien arma el Zap', 'Cualquiera', 'Una compartida por chat'], 'Si la persona se va, el Zap sigue funcionando.'],
+    ]],
+  ],
+};
+Object.keys(P).forEach(pf => { P[pf].quizzes = [{ id: 'base', title: 'Fundamentos', qs: P[pf].quiz }, ...(QUIZ_EXTRA[pf] || []).map(([id, title, qs]) => ({ id, title, qs }))]; });
 const all = (f, out = []) => { const walk = s => s.forEach(n => { out.push(n); (n.branches || []).forEach(b => walk(b.steps)); }); walk(f.steps); return out; };
 const has = (f, op) => all(f).some(n => n.op === op);
 
 /* ---------------- Simulador ---------------- */
 class SimError extends Error {}
 const fail = m => { throw new SimError(m); };
-const FN = { upper: s => String(s ?? '').toUpperCase(), lower: s => String(s ?? '').toLowerCase(), trim: s => String(s ?? '').trim(), length: s => (s ?? '').length, round: n => Math.round(Number(n)), now: () => new Date().toISOString(), iff: (c, a, b) => (c ? a : b) };
+const FN = { upper: s => String(s ?? '').toUpperCase(), lower: s => String(s ?? '').toLowerCase(), trim: s => String(s ?? '').trim(), capitalize: s => String(s ?? '').toLowerCase().replace(/(^|\s)\S/g, c => c.toUpperCase()), length: s => (s ?? '').length, round: n => Math.round(Number(n)), now: () => new Date().toISOString(), iff: (c, a, b) => (c ? a : b) };
 function evalCode(code, item, pf) {
   try {
     if (pf === 'n8n') {
@@ -342,6 +891,7 @@ function test(cond, item, pf) {
     case 'eq': return both ? Number(l) === Number(r) : String(l ?? '') === String(r ?? '');
     case 'neq': return both ? Number(l) !== Number(r) : String(l ?? '') !== String(r ?? '');
     case 'contains': return String(l ?? '').includes(String(r ?? ''));
+    case 'ncontains': return !String(l ?? '').includes(String(r ?? ''));
     case 'gt': return both && Number(l) > Number(r); case 'gte': return both && Number(l) >= Number(r);
     case 'lt': return both && Number(l) < Number(r); case 'lte': return both && Number(l) <= Number(r);
     case 'exists': return l != null && l !== ''; case 'empty': return l == null || l === '';
@@ -349,7 +899,8 @@ function test(cond, item, pf) {
   return false;
 }
 function number(flow) { let i = 0; all(flow).forEach(n => { n.num = ++i; }); }
-function runFlow(flow, pf, input, httpMock) {
+function runFlow(flow, pf, input, mocks = {}) {
+  const httpMock = mocks.http;
   number(flow);
   const trace = [], calls = []; let error = null, failed = null;
   const child = (json, prev) => ({ json, ctx: { ...(prev ? prev.ctx : {}) }, names: { ...(prev ? prev.names : {}) } });
@@ -361,7 +912,46 @@ function runFlow(flow, pf, input, httpMock) {
     switch (n.op) {
       case 'webhook': case 'schedule': return (Array.isArray(input) && input.length ? input : [{}]).map(j => stamp(child(clone(j)), n));
       case 'set': each(it => { const o = p.keep ? { ...it.json } : {}; p.fields.forEach(f => { if (f.name.trim()) o[f.name.trim()] = ev(f.value, it, pf); }); return o; }); break;
-      case 'code': each(it => { let r; try { r = new Function('$json', 'inputData', p.code)(clone(it.json), clone(it.json)); } catch (e) { fail('El código lanzó un error: ' + e.message); } if (!r || typeof r !== 'object') fail('El código tiene que devolver un objeto: return { ... }'); return r; }); break;
+      case 'code': {
+        const norm = r => (r && typeof r === 'object' && r.json && typeof r.json === 'object' ? r.json : r);
+        const push = (r, it) => (Array.isArray(r) ? r : [r]).forEach(x => { x = norm(x); if (!x || typeof x !== 'object') fail('El código tiene que devolver un objeto (o una lista de objetos).'); out.push(stamp(child(x, it), n)); });
+        const runJs = (args, vals) => { try { return new Function(...args, pf === 'zapier' ? `let output;\n${p.code}\n;return output;` : p.code)(...vals); } catch (e) { fail('El código lanzó un error: ' + e.message); } };
+        if (pf !== 'zapier' && p.mode === 'all') {
+          const list = items.map(i => ({ json: clone(i.json) }));
+          const r = runJs(['items', '$input'], [list, { all: () => list, first: () => list[0] }]);
+          if (r === undefined) fail('El código tiene que devolver los items: return [{ json: { ... } }]');
+          push(r, items[0]);
+        } else items.forEach(it => {
+          const j = clone(it.json); let inputData = j;
+          if (pf === 'zapier') { inputData = {}; (p.inputs || []).forEach(c2 => { if (c2.name.trim()) { const v = ev(c2.value, it, pf); inputData[c2.name.trim()] = v == null ? '' : typeof v === 'object' ? JSON.stringify(v) : String(v); } }); }
+          const r = runJs(['$json', 'inputData', '$input'], [j, inputData, { item: { json: j }, all: () => [{ json: j }], first: () => ({ json: j }) }]);
+          if (r === undefined) fail(pf === 'zapier' ? 'El código tiene que asignar output = { ... }' : 'El código tiene que devolver un objeto: return { ... }');
+          push(r, it);
+        });
+        break;
+      }
+      case 'ai': each(it => { const prompt = String(req(ev(p.prompt, it, pf), 'prompt')); let r; try { r = mocks.ai ? mocks.ai(prompt, n) : 'Respuesta simulada de la IA.'; } catch (e) { fail('IA: ' + e.message); } calls.push({ app: 'ai', node: n.name, params: { prompt } }); return r && typeof r === 'object' ? { ...r, text: r.text ?? JSON.stringify(r) } : { text: String(r) }; }); break;
+      case 'crm': each(it => { const props = {}; (p.props || []).forEach(c2 => { if (c2.name.trim()) props[c2.name.trim()] = ev(c2.value, it, pf); }); const params = { email: req(ev(p.email, it, pf), 'email'), name: String(ev(p.name, it, pf) ?? ''), props }; calls.push({ app: 'crm', node: n.name, params }); return { id: 'contact_' + calls.length, email: params.email, name: params.name, ...props }; }); break;
+      case 'task': each(it => { const params = { list: req(ev(p.list, it, pf), 'lista'), title: String(req(ev(p.title, it, pf), 'título')), description: String(ev(p.description, it, pf) ?? ''), due: String(ev(p.due, it, pf) ?? '') }; calls.push({ app: 'task', node: n.name, params }); return { id: 'card_' + calls.length, ...params }; }); break;
+      case 'sheetsRead': items.forEach(it => { req(p.sheet, 'hoja'); let rows; try { rows = clone((mocks.rows ? mocks.rows(p.sheet.trim()) : []) || []); } catch (e) { fail('Hoja: ' + e.message); } if (pf === 'zapier') out.push(stamp(child({ rows, count: rows.length }, it), n)); else rows.forEach(r => out.push(stamp(child(r, it), n))); }); break;
+      case 'summarize': {
+        const defs = (p.fields || []).filter(f => f.name.trim()); if (!defs.length) fail('Agregá al menos un campo a resumir.');
+        const g = (p.groupBy || '').trim(), groups = new Map();
+        items.forEach(it => { const k = g ? it.json[g] : '_'; if (!groups.has(k)) groups.set(k, []); groups.get(k).push(it); });
+        groups.forEach((list, k) => {
+          const o = g ? { [g]: k } : {};
+          defs.forEach(f => {
+            const agg = f.value.trim().toLowerCase() || 'sum', fld = f.name.trim(), nums = list.map(i => Number(i.json[fld])).filter(v => !isNaN(v)), sum = nums.reduce((a, b) => a + b, 0);
+            if (!['sum', 'count', 'avg', 'min', 'max'].includes(agg)) fail(`Operación «${f.value}» no válida: usá sum, count, avg, min o max.`);
+            o[`${agg}_${fld}`] = agg === 'count' ? list.length : agg === 'sum' ? sum : agg === 'avg' ? (nums.length ? sum / nums.length : 0) : agg === 'min' ? Math.min(...nums) : Math.max(...nums);
+          });
+          out.push(stamp(child(o, list[0]), n));
+        });
+        break;
+      }
+      case 'sort': { const fld = String(req(p.field, 'campo')).trim(); [...items].sort((a, b) => { const x = a.json[fld], y = b.json[fld]; const c = (!isNaN(Number(x)) && !isNaN(Number(y))) ? Number(x) - Number(y) : String(x ?? '').localeCompare(String(y ?? '')); return p.dir === 'desc' ? -c : c; }).forEach(it => out.push(stamp(child(it.json, it), n))); break; }
+      case 'limit': items.slice(0, Math.max(1, parseInt(p.max, 10) || 1)).forEach(it => out.push(stamp(child(it.json, it), n))); break;
+      case 'dedupe': { const fld = String(req(p.field, 'campo')).trim(), seen = new Set(); items.forEach(it => { const k = String(it.json[fld]); if (!seen.has(k)) { seen.add(k); out.push(stamp(child(it.json, it), n)); } }); break; }
       case 'filter': each(it => (test(p.cond, it, pf) ? it.json : undefined)); break;
       case 'split': items.forEach(it => {
         req(p.field, 'lista a separar');
@@ -414,7 +1004,7 @@ function runFlow(flow, pf, input, httpMock) {
 
 /* ---------------- Datos del usuario (solo en este navegador) ---------------- */
 const KEY = 'flowdev-v1';
-const blank = () => ({ progress: {}, flows: {}, quiz: {} });
+const blank = () => ({ progress: {}, flows: {}, quiz: {}, free: {} });
 let db = { users: {}, session: null, guest: blank() };
 try { const raw = localStorage.getItem(KEY); if (raw) db = { ...db, ...JSON.parse(raw) }; } catch (_) {}
 const persist = () => { try { localStorage.setItem(KEY, JSON.stringify(db)); } catch (_) {} };
@@ -424,17 +1014,19 @@ async function hash(text) {
   if (window.crypto?.subtle) { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join(''); }
   let h = 5381; for (const ch of text) h = (Math.imul(h, 33) ^ ch.charCodeAt(0)) >>> 0; return 'x' + h.toString(16);
 }
-const TOTAL = pf => P[pf].lessons.length + PROJ[pf].length + 1;
-const doneCount = pf => Object.keys(data().progress).filter(k => k.startsWith(pf + ':')).length;
+const graded = pf => PROJ[pf].filter(j => !j.free);
+const TOTAL = pf => P[pf].lessons.length + graded(pf).length + P[pf].quizzes.length;
+const validKeys = pf => new Set([...P[pf].lessons.map((_, i) => `${pf}:L${i}`), ...graded(pf).map(j => `${pf}:P:${j.id}`), ...P[pf].quizzes.map(q => `${pf}:Q:${q.id}`)]);
+const doneCount = pf => { const v = validKeys(pf); return Object.keys(data().progress).filter(k => v.has(k)).length; };
 const pct = pf => Math.round(doneCount(pf) / TOTAL(pf) * 100);
 const mark = k => { if (!data().progress[k]) { data().progress[k] = true; persist(); } };
 
 /* ---------------- Vistas ---------------- */
-const state = { view: 'home', pf: null, tab: 'lecciones', proj: null, flow: null, sel: null, run: null, results: null, auth: 'registro', reveal: new Set(), graded: false };
+const state = { view: 'home', pf: null, tab: 'lecciones', proj: null, flow: null, sel: null, run: null, results: null, auth: 'registro', reveal: new Set(), graded: false, quizId: null };
 const view = $('#view');
 let toastT;
 function toast(m) { const t = $('#toast'); t.textContent = m; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, 2800); }
-function go(v, extra = {}) { Object.assign(state, { view: v, sel: null, run: null, results: null, reveal: new Set(), graded: false }, extra); render(); window.scrollTo(0, 0); }
+function go(v, extra = {}) { Object.assign(state, { view: v, sel: null, run: null, results: null, reveal: new Set(), graded: false, quizId: null }, extra); render(); window.scrollTo(0, 0); }
 
 function renderNav() {
   const links = [['home', 'Inicio'], ['n8n', 'n8n'], ['make', 'Make'], ['zapier', 'Zapier'], ['dash', 'Mi avance']];
@@ -444,7 +1036,7 @@ function renderNav() {
     ? `<span class="chip"><i>${esc(u.name.trim()[0]?.toUpperCase() || '?')}</i>${esc(u.name.split(' ')[0])}</span><button type="button" class="btn line sm" data-act="logout">Salir</button>`
     : `<button type="button" class="btn line sm" data-auth="ingreso">Ingresar</button><button type="button" class="btn sky sm" data-auth="registro">Crear cuenta</button>`;
 }
-const counts = () => ({ les: Object.values(P).reduce((a, p) => a + p.lessons.length, 0), pro: Object.values(PROJ).reduce((a, p) => a + p.length, 0), q: Object.values(P).reduce((a, p) => a + p.quiz.length, 0) });
+const counts = () => ({ les: Object.values(P).reduce((a, p) => a + p.lessons.length, 0), pro: Object.keys(PROJ).reduce((a, k) => a + graded(k).length, 0), q: Object.values(P).reduce((a, p) => a + p.quizzes.length, 0) });
 
 function pcard(pf) {
   const p = P[pf], d = pct(pf);
@@ -469,7 +1061,7 @@ function home() {
         <div class="tile"><span class="big">4</span><p>plataformas con el mismo método</p></div>
         <div class="tile grey">${svg('router')}<p>${c.pro + SAP.scenarios + SAP.practice} proyectos y ejercicios con verificación</p></div>
         <div class="tile grey">${svg('code')}<p>${c.les} lecciones cortas, sin relleno</p></div>
-        <div class="tile"><span class="big">${Object.keys(P).length + SAP.quizzes}</span><p>cuestionarios para repasar</p></div>
+        <div class="tile"><span class="big">${c.q + SAP.quizzes}</span><p>cuestionarios para repasar</p></div>
       </div>
     </div>
   </section>
@@ -567,31 +1159,34 @@ function dash() {
 
 const order = q => { let s = 7; for (const ch of q[0]) s = (Math.imul(s, 31) + ch.charCodeAt(0)) >>> 0; const idx = q[1].map((_, i) => i); for (let i = idx.length - 1; i > 0; i--) { s = (Math.imul(s, 1103515245) + 12345) >>> 0; const k = (s >>> 16) % (i + 1); [idx[i], idx[k]] = [idx[k], idx[i]]; } return idx; };
 function platform() {
-  const pf = state.pf, p = P[pf], pr = data().progress, tab = state.tab;
+  const pf = state.pf, p = P[pf], pr = data().progress, tab = state.tab, gr = graded(pf);
+  const item = j => `<button type="button" class="list-item" data-proj="${j.id}"><span class="pill${pr[`${pf}:P:${j.id}`] ? ' ok' : ''}">${pr[`${pf}:P:${j.id}`] ? 'Resuelto' : esc(j.level)}</span><span class="grow"><span class="h3">${esc(j.title)}</span><br><span class="dim">${esc(j.story)}</span></span><span class="arrow">${svg('arrow')}</span></button>`;
   let body = '';
   if (tab === 'lecciones') body = p.lessons.map(([t, parts], i) => `<details class="lesson${pr[`${pf}:L${i}`] ? ' done' : ''}"${i === 0 && !pr[`${pf}:L0`] ? ' open' : ''}>
       <summary><span class="n">${i + 1}</span><span class="h3" style="flex:1">${esc(t)}</span>${pr[`${pf}:L${i}`] ? '<span class="pill ok">Leída</span>' : ''}</summary>
       <div class="body">${parts.join('')}<button type="button" class="btn sm" data-act="read" data-i="${i}">${pr[`${pf}:L${i}`] ? 'Leída' : 'Marcar como leída'}</button></div></details>`).join('');
-  else if (tab === 'proyectos') body = PROJ[pf].map(j => `<button type="button" class="list-item" data-proj="${j.id}"><span class="pill${pr[`${pf}:P:${j.id}`] ? ' ok' : ''}">${pr[`${pf}:P:${j.id}`] ? 'Resuelto' : esc(j.level)}</span><span class="grow"><span class="h3">${esc(j.title)}</span><br><span class="dim">${esc(j.story)}</span></span><span class="arrow">${svg('arrow')}</span></button>`).join('');
+  else if (tab === 'proyectos') body = [...new Set(gr.map(j => j.cat))].map(c2 => `<p class="gtitle" style="margin-top:20px">${esc(c2)} · ${gr.filter(j => j.cat === c2).length}</p><div>${gr.filter(j => j.cat === c2).map(item).join('')}</div>`).join('');
+  else if (tab === 'libre') body = `<div class="grid2" style="align-items:center"><div class="stack"><h2 class="h2">Modo libre</h2><p class="lead">Armá cualquier ${esc(p.flow)} con todos los ${esc(p.node)}s: IA, código, APIs, hojas y lógica. Sin requisitos ni verificación.</p><p class="dim">Vos definís los datos de entrada y qué responden la API, la IA y la hoja de cálculo. Tu ${esc(p.flow)} queda guardado.</p><div><button type="button" class="btn" data-proj="libre">Abrir el editor libre</button></div></div><div class="tiles"><div class="tile">${svg('ai')}<p>Respuesta de la IA a tu medida</p></div><div class="tile grey">${svg('http')}<p>Respuesta de la API en JSON</p></div><div class="tile grey">${svg('sheetsRead')}<p>Filas de la hoja de cálculo</p></div><div class="tile">${svg('code')}<p>Código propio en cada paso</p></div></div></div>`;
+  else if (!state.quizId) body = p.quizzes.map(q => `<button type="button" class="list-item" data-quiz="${q.id}"><span class="pill${pr[`${pf}:Q:${q.id}`] ? ' ok' : ''}">${pr[`${pf}:Q:${q.id}`] ? 'Aprobado' : q.qs.length + ' preguntas'}</span><span class="grow"><span class="h3">${esc(q.title)}</span></span><span class="arrow">${svg('arrow')}</span></button>`).join('');
   else {
-    const ans = data().quiz[pf] || {};
-    body = p.quiz.map((q, i) => { const g = state.graded && ans[i] != null, ok = ans[i] === 0, show = state.reveal.has(i);
+    const quiz = p.quizzes.find(q => q.id === state.quizId), ans = data().quiz[`${pf}:${quiz.id}`] || {};
+    body = `<div class="row" style="justify-content:space-between;margin-bottom:14px"><button type="button" class="btn line sm" data-quiz="">← Cuestionarios</button><span class="h3">${esc(quiz.title)}</span></div>` + quiz.qs.map((q, i) => { const g = state.graded && ans[i] != null, ok = ans[i] === 0, show = state.reveal.has(i);
       return `<div class="q${g ? (ok ? ' ok' : ' bad') : ''}"><p class="t">${i + 1}. ${esc(q[0])}</p>${order(q).map(k => `<label class="${show && k === 0 ? 'right' : ''}"><input type="radio" name="q${i}" data-q="${i}" data-o="${k}"${ans[i] === k ? ' checked' : ''}><span>${esc(q[1][k])}</span></label>`).join('')}${g || show ? `<p class="why">${g ? (ok ? 'Correcto. ' : 'No es esa. ') : ''}${esc(q[2])}</p>` : ''}<div class="row" style="justify-content:flex-end;margin-top:6px"><button type="button" class="btn line sm" data-act="reveal" data-i="${i}">${show ? 'Ocultar respuesta' : 'Ver respuesta'}</button></div></div>`; }).join('')
-      + `<div class="row"><button type="button" class="btn" data-act="grade">Corregir</button>${pr[`${pf}:Q`] ? '<span class="pill ok">Aprobado</span>' : ''}</div>`;
+      + `<div class="row"><button type="button" class="btn" data-act="grade">Corregir</button>${pr[`${pf}:Q:${quiz.id}`] ? '<span class="pill ok">Aprobado</span>' : ''}</div>`;
   }
   return `<section class="card ${p.tone === 'dark' ? 'dark' : ''} flush split">
     <div class="side"><h1 class="display">${p.name}</h1><div><span class="pill">${esc(p.tag)}</span></div><p class="lead ${p.tone === 'dark' ? 'dim' : ''}">${esc(p.intro)}</p></div>
     <div class="side ${p.tone === 'dark' ? '' : 'dark'}">
       <div class="tiles">
         <div class="tile"><span class="big">${pct(pf)}%</span><p>de ${p.name} completado</p></div>
-        <div class="tile grey"><span class="big">${PROJ[pf].length}</span><p>proyectos guiados</p></div>
-        <div class="tile grey"><p class="eyebrow">Se llama</p><p>${esc(p.flow)} · ${esc(p.node)} · ${esc(p.run)}</p></div>
+        <div class="tile grey"><span class="big">${gr.length}</span><p>proyectos guiados</p></div>
+        <div class="tile grey"><span class="big">${p.quizzes.length}</span><p>${p.quizzes.length === 1 ? 'cuestionario' : 'cuestionarios por tema'}</p></div>
         <div class="tile"><span class="big">${p.lessons.length}</span><p>lecciones</p></div>
       </div>
     </div>
   </section>
   <section class="card">
-    <div class="tabs" role="tablist" style="margin-bottom:16px">${[['lecciones', 'Lecciones'], ['proyectos', 'Proyectos'], ['quiz', 'Cuestionario']].map(([k, l]) => `<button type="button" role="tab" data-tab="${k}" aria-selected="${tab === k}">${l}</button>`).join('')}</div>
+    <div class="tabs" role="tablist" style="margin-bottom:16px">${[['lecciones', 'Teoría'], ['proyectos', 'Proyectos'], ['quiz', 'Cuestionarios'], ['libre', 'Modo libre']].map(([k, l]) => `<button type="button" role="tab" data-tab="${k}" aria-selected="${tab === k}">${l}</button>`).join('')}</div>
     ${body}
   </section>`;
 }
@@ -625,13 +1220,13 @@ function project() {
   number(state.flow);
   const done = data().progress[`${pf}:P:${j.id}`];
   return `<section class="card ${p.tone === 'dark' ? 'dark' : ''}">
-    <div class="row" style="justify-content:space-between;margin-bottom:12px"><button type="button" class="btn line sm" data-go="${pf}" data-keep-tab="proyectos">← ${p.name}</button><span class="row"><span class="pill">${esc(j.level)}</span>${done ? '<span class="pill ok">Resuelto</span>' : ''}</span></div>
+    <div class="row" style="justify-content:space-between;margin-bottom:12px"><button type="button" class="btn line sm" data-go="${pf}" data-keep-tab="proyectos">← ${p.name}</button><span class="row"><span class="pill">${esc(j.cat)}</span>${j.free ? '' : `<span class="pill">${esc(j.level)}</span>`}${done ? '<span class="pill ok">Resuelto</span>' : ''}</span></div>
     <h1 class="h2">${esc(j.title)}</h1><p class="lead ${p.tone === 'dark' ? 'dim' : ''}" style="margin-top:8px;max-width:70ch">${esc(j.story)}</p>
   </section>
   <section class="work">
     <div class="stack">
       <div class="card" style="padding:16px">
-        <div class="row" style="justify-content:space-between;margin-bottom:12px"><span class="eyebrow dim">Tu ${esc(p.flow)}</span><span class="row"><button type="button" class="btn sm" data-act="run">${esc(p.run)}</button><button type="button" class="btn sky sm" data-act="verify">Verificar</button></span></div>
+        <div class="row" style="justify-content:space-between;margin-bottom:12px"><span class="eyebrow dim">Tu ${esc(p.flow)}</span><span class="row"><button type="button" class="btn sm" data-act="run">${esc(p.run)}</button>${j.free ? '' : '<button type="button" class="btn sky sm" data-act="verify">Verificar</button>'}</span></div>
         <div class="canvas"><div class="flow ${pf} ${p.layout === 'v' ? 'v' : ''}">${seqHtml(state.flow.steps, 'root', pf)}</div></div>
         <p class="note" style="margin-top:10px">Tocá <b>+</b> para agregar un ${esc(p.node)} y tocá un ${esc(p.node)} para configurarlo. El número de cada uno es el que se usa en las expresiones.</p>
       </div>
@@ -646,15 +1241,20 @@ function project() {
     </div>
     <aside class="side-panel">
       <div class="card">
-        <p class="eyebrow dim" style="margin-bottom:8px">Requisitos</p>
-        <ol class="reqs">${j.reqs.map(x => `<li>${x}</li>`).join('')}</ol>
+        ${j.objectives ? `<details style="margin-bottom:12px"><summary style="cursor:pointer;font-weight:500">Objetivos (${j.objectives.length})</summary><ul class="reqs" style="margin-top:8px">${j.objectives.map(x => `<li>${esc(x)}</li>`).join('')}</ul></details>` : ''}
+        ${j.free ? `<p class="eyebrow dim" style="margin-bottom:8px">Respuestas simuladas</p>
+        <label class="fld"><span>API (HTTP): JSON que devuelve</span><textarea class="mono" rows="4" data-mock="http" spellcheck="false">${esc(freeMocks(pf).http)}</textarea></label>
+        <label class="fld"><span>IA: texto (o JSON) que devuelve</span><textarea class="mono" rows="2" data-mock="ai" spellcheck="false">${esc(freeMocks(pf).ai)}</textarea></label>
+        <label class="fld"><span>Hoja de cálculo: lista de filas</span><textarea class="mono" rows="4" data-mock="rows" spellcheck="false">${esc(freeMocks(pf).rows)}</textarea></label>` : `<p class="eyebrow dim" style="margin-bottom:8px">Requisitos</p>
+        <ol class="reqs">${j.reqs.map(x => `<li>${x}</li>`).join('')}</ol>`}
         ${j.mock ? `<p class="note" style="margin-top:8px">${esc(j.mock)}</p>` : ''}
         <p class="eyebrow dim" style="margin:14px 0 6px">Datos de prueba</p>
         <textarea id="runInput" class="mono" rows="5" spellcheck="false">${esc(JSON.stringify(state.input ?? j.sample, null, 2))}</textarea>
         <details style="margin-top:10px"><summary style="cursor:pointer;font-weight:500">Pistas (${j.hints.length})</summary><ul class="reqs" style="margin-top:8px">${j.hints.map(x => `<li>${esc(x)}</li>`).join('')}</ul></details>
+        ${j.real ? `<details style="margin-top:8px"><summary style="cursor:pointer;font-weight:500">En ${P[pf].name} real</summary><ul class="reqs" style="margin-top:8px">${j.real.map(x => `<li>${esc(x)}</li>`).join('')}</ul></details>` : ''}
       </div>
       ${R ? `<div class="card"><div class="row" style="justify-content:space-between;margin-bottom:6px"><span class="h3">${R.all ? 'Proyecto resuelto' : 'Todavía falta'}</span><span class="pill ${R.all ? 'ok' : ''}">${R.items.filter(i => i.ok).length}/${R.items.length}</span></div><ul class="results">${R.items.map(i => `<li class="${i.ok ? 'ok' : 'bad'}"><span class="mk">${i.ok ? '✓' : '✗'}</span><span>${esc(i.label)}${!i.ok && i.detail ? `<small>${esc(i.detail)}</small>` : ''}</span></li>`).join('')}</ul></div>` : ''}
-      <div class="card" style="padding:16px"><div class="row">${state.confirm ? `<span style="flex-basis:100%">${state.confirm === 'sol' ? 'Esto reemplaza tu flujo por la solución.' : 'Esto borra tu flujo.'}</span><button type="button" class="btn sm" data-act="${state.confirm}ok">Confirmar</button><button type="button" class="btn line sm" data-act="cancel">Cancelar</button>` : `<button type="button" class="btn line sm" data-act="sol">Ver solución</button><button type="button" class="btn line sm" data-act="reset">Vaciar</button>`}</div></div>
+      <div class="card" style="padding:16px"><div class="row">${state.confirm ? `<span style="flex-basis:100%">${state.confirm === 'sol' ? 'Esto reemplaza tu flujo por la solución.' : 'Esto borra tu flujo.'}</span><button type="button" class="btn sm" data-act="${state.confirm}ok">Confirmar</button><button type="button" class="btn line sm" data-act="cancel">Cancelar</button>` : `${j.free ? '' : '<button type="button" class="btn line sm" data-act="sol">Ver solución</button>'}<button type="button" class="btn line sm" data-act="reset">Vaciar</button>`}</div></div>
     </aside>
   </section>`;
 }
@@ -669,7 +1269,7 @@ function verify() {
   j.checks.forEach(([label, t]) => { let ok = false; try { ok = !!t(f); } catch (_) {} items.push({ ok, label }); });
   let last = null;
   j.tests.forEach(t => {
-    const r = runFlow(clone(f), pf, t.input, t.http || j.http); last = r;
+    const r = runFlow(clone(f), pf, t.input, mocksFor(j, t)); last = r;
     let res = r.error ? `Falló en «${r.trace[r.trace.length - 1].name}»: ${r.error}` : null;
     if (!res) { try { res = t.expect(r); } catch (e) { res = 'No se pudo evaluar: ' + e.message; } }
     items.push({ ok: res === true, label: 'Prueba: ' + t.name, detail: res === true ? '' : String(res) });
@@ -707,7 +1307,19 @@ function openProps(id) {
     case 'filter': case 'if': f = `<p class="gtitle">Condición</p>${condUi(p.cond, 'cond.')}`; break;
     case 'router': f = `<p class="gtitle">${pf === 'zapier' ? 'Caminos' : 'Rutas'}</p>` + n.branches.map((b, i) => `<div style="border:1.5px solid var(--line);border-radius:14px;padding:10px;margin-bottom:8px"><div class="row" style="margin-bottom:8px"><input data-b="${i}" data-f="name" value="${esc(b.name)}" aria-label="Nombre" style="flex:1"><button type="button" class="x" data-act="brdel" data-i="${i}" aria-label="Quitar">×</button></div>${b.fallback ? '' : condUi(b.cond, `b${i}.`)}<label class="row"><input type="checkbox" data-b="${i}" data-f="fallback"${b.fallback ? ' checked' : ''} style="width:auto"> Es el camino de respaldo</label></div>`).join('') + `<button type="button" class="btn line sm" data-act="bradd">+ Agregar</button>`; break;
     case 'http': f = `<label class="fld"><span>Método</span><select data-k="method">${['GET', 'POST', 'PUT', 'DELETE'].map(m => `<option${p.method === m ? ' selected' : ''}>${m}</option>`).join('')}</select></label>` + t('url', 'URL', 'https://api…') + ta('body', 'Body (opcional)'); break;
-    case 'code': f = ta('code', 'JavaScript', 7) + '<p class="note">Se ejecuta una vez por item. Usá <code>$json</code> (o <code>inputData</code>) y devolvé un objeto.</p>'; break;
+    case 'code': f = (pf === 'zapier'
+      ? `<p class="gtitle">Input Data</p>${rowsUi(p.inputs || (p.inputs = []), 'inputs', 'nombre', 'dato de un paso anterior')}<p class="note" style="margin:8px 0 12px">Todo lo que entra por Input Data llega como texto en <code>inputData</code>. Convertí con <code>Number()</code> o <code>JSON.parse()</code>.</p>`
+      : `<label class="fld"><span>Modo</span><select data-k="mode"><option value="each"${p.mode !== 'all' ? ' selected' : ''}>Run Once for Each Item</option><option value="all"${p.mode === 'all' ? ' selected' : ''}>Run Once for All Items</option></select></label>`)
+      + ta('code', 'JavaScript', 9)
+      + (pf === 'zapier' ? '<p class="note">Asigná el resultado a <code>output</code>: <code>output = { campo: valor };</code></p>' : '<p class="note">Each Item: usá <code>$json</code> y devolvé un objeto. All Items: usá <code>$input.all()</code> y devolvé una lista de <code>{ json: {...} }</code>.</p>'); break;
+    case 'ai': f = ta('prompt', 'Prompt', 6) + '<p class="note">La respuesta queda en el campo <code>text</code>. Incluí en el prompt los datos que la IA tiene que leer.</p>'; break;
+    case 'crm': f = t('email', 'Email') + t('name', 'Nombre') + `<p class="gtitle">Propiedades</p>${rowsUi(p.props || (p.props = []), 'props', 'propiedad', 'valor o expresión')}`; break;
+    case 'task': f = t('list', 'Lista', 'Pendientes', false) + t('title', 'Título') + ta('description', 'Descripción') + t('due', 'Vencimiento', '2026-12-01'); break;
+    case 'sheetsRead': f = t('doc', 'Documento', 'Ventas', false) + t('sheet', 'Hoja', 'Ventas', false) + `<p class="note">${pf === 'zapier' ? 'Devuelve un solo resultado con la lista <code>rows</code>.' : 'Devuelve un ' + (pf === 'make' ? 'bundle' : 'item') + ' por cada fila.'}</p>`; break;
+    case 'summarize': f = `<p class="gtitle">Campos a resumir</p>${rowsUi(p.fields, 'fields', 'campo', 'sum, count, avg, min o max')}<div style="height:10px"></div>` + t('groupBy', 'Agrupar por (opcional)', 'region') + '<p class="note">La salida se llama <code>operación_campo</code>, por ejemplo <code>sum_monto</code>.</p>'; break;
+    case 'sort': f = t('field', 'Campo') + `<label class="fld"><span>Orden</span><select data-k="dir"><option value="asc"${p.dir !== 'desc' ? ' selected' : ''}>Ascendente</option><option value="desc"${p.dir === 'desc' ? ' selected' : ''}>Descendente</option></select></label>`; break;
+    case 'limit': f = t('max', 'Cantidad máxima de items', '1'); break;
+    case 'dedupe': f = t('field', 'Campo que identifica los duplicados', 'id'); break;
     case 'split': f = t('field', 'Lista a separar', pf === 'n8n' ? 'productos' : '{{2.productos}}'); break;
     case 'aggregate': f = t('field', 'Nombre del campo de salida', 'items'); break;
     case 'sheets': f = t('doc', 'Documento', 'CRM', false) + t('sheet', 'Hoja', 'Leads', false) + `<p class="gtitle">Columnas</p>${rowsUi(p.columns, 'columns', 'columna', 'valor o expresión')}`; break;
@@ -730,13 +1342,14 @@ dBody.addEventListener('click', e => {
     const op = b.dataset.pick, { seqId, idx } = state.picking, cat = P[state.pf].cat[op];
     const used = new Set(all(state.flow).map(x => x.name)); let name = cat[0].split(' · ')[0], k = 2; while (used.has(name)) name = `${cat[0].split(' · ')[0]} ${k++}`;
     const n = N(op, name, {}, op === 'if' ? [{ name: 'true', steps: [] }, { name: 'false', steps: [] }] : op === 'router' ? [{ name: 'Camino A', cond: { left: '', op: 'eq', right: '' }, steps: [] }, { name: 'Camino B', cond: { left: '', op: 'eq', right: '' }, fallback: true, steps: [] }] : undefined);
+    if (op === 'code') n.p.code = state.pf === 'zapier' ? 'output = { resultado: inputData.campo };' : 'return { ...$json };';
     if (seqId === 'root' && idx === 0 && state.flow.steps[0] && TRIGGERS.includes(state.flow.steps[0].op)) state.flow.steps[0] = n; else getSeq(seqId).splice(idx, 0, n);
     state.run = null; saveFlow(); render(); openProps(n.id); return;
   }
   const act = b.dataset.act, n = state.sel && findNode(state.sel);
   if (act === 'close') closeDrawer();
   else if (act === 'delnode') { const drop = s => { const i = s.findIndex(x => x.id === n.id); if (i >= 0) s.splice(i, 1); else s.forEach(x => (x.branches || []).forEach(br => drop(br.steps))); }; drop(state.flow.steps); state.run = null; saveFlow(); closeDrawer(); }
-  else if (act === 'rowadd') { n.p[b.dataset.r].push({ name: '', value: '' }); saveFlow(); openProps(n.id); }
+  else if (act === 'rowadd') { (n.p[b.dataset.r] ||= []).push({ name: '', value: b.dataset.r === 'fields' && n.op === 'summarize' ? 'sum' : '' }); saveFlow(); openProps(n.id); }
   else if (act === 'rowdel') { n.p[b.dataset.r].splice(+b.dataset.i, 1); saveFlow(); openProps(n.id); }
   else if (act === 'bradd') { n.branches.push({ name: 'Camino ' + String.fromCharCode(65 + n.branches.length), cond: { left: '', op: 'eq', right: '' }, steps: [] }); saveFlow(); openProps(n.id); }
   else if (act === 'brdel') { if (n.branches.length <= 2) return toast('Tiene que haber al menos dos caminos.'); n.branches.splice(+b.dataset.i, 1); saveFlow(); openProps(n.id); }
@@ -764,11 +1377,12 @@ function render() {
 }
 document.addEventListener('click', e => {
   if (!drawer.hidden && e.target.closest('#drawer')) return;
-  const el = e.target.closest('[data-go],[data-auth],[data-tab],[data-proj],[data-act],[data-add],[data-node]'); if (!el) return;
+  const el = e.target.closest('[data-go],[data-auth],[data-tab],[data-proj],[data-act],[data-add],[data-node],[data-quiz]'); if (!el) return;
   const d = el.dataset;
   if (d.go) { if (P[d.go]) go('platform', { pf: d.go, tab: d.keepTab || 'lecciones' }); else go(d.go, { pf: null }); return; }
   if (d.auth) return go('auth', { auth: d.auth, pf: null });
-  if (d.tab) { state.tab = d.tab; state.graded = false; state.reveal = new Set(); return render(); }
+  if (d.tab) { state.tab = d.tab; state.quizId = null; state.graded = false; state.reveal = new Set(); return render(); }
+  if (d.quiz !== undefined) { state.quizId = d.quiz || null; state.graded = false; state.reveal = new Set(); return render(); }
   if (d.proj) return openProject(d.proj);
   if (d.add !== undefined) return openPicker(d.add, +d.idx);
   if (d.node) { state.sel = d.node; render(); return openProps(d.node); }
@@ -777,8 +1391,8 @@ document.addEventListener('click', e => {
     case 'logout': db.session = null; persist(); toast('Sesión cerrada.'); return go('home', { pf: null });
     case 'read': mark(`${pf}:L${d.i}`); toast('Lección marcada como leída.'); return render();
     case 'reveal': { const i = +d.i; state.reveal.has(i) ? state.reveal.delete(i) : state.reveal.add(i); return render(); }
-    case 'grade': { const ans = data().quiz[pf] || {}; state.graded = true; if (P[pf].quiz.every((_, i) => ans[i] === 0)) { mark(`${pf}:Q`); toast('Cuestionario aprobado.'); } return render(); }
-    case 'run': { const inp = readInput(); if (!inp) return; state.run = runFlow(clone(state.flow), pf, inp, state.proj.http); state.results = null; return render(); }
+    case 'grade': { const qz = P[pf].quizzes.find(q => q.id === state.quizId), ans = data().quiz[`${pf}:${qz.id}`] || {}; state.graded = true; if (qz.qs.every((_, i) => ans[i] === 0)) { mark(`${pf}:Q:${qz.id}`); toast('Cuestionario aprobado.'); } return render(); }
+    case 'run': { const inp = readInput(); if (!inp) return; state.run = runFlow(clone(state.flow), pf, inp, mocksFor(state.proj)); state.results = null; return render(); }
     case 'verify': return verify();
     case 'sol': case 'reset': state.confirm = d.act; return render();
     case 'cancel': state.confirm = null; return render();
@@ -788,8 +1402,9 @@ document.addEventListener('click', e => {
 });
 document.addEventListener('change', e => {
   const el = e.target; if (el.dataset.q === undefined) return;
-  const pf = state.pf; (data().quiz[pf] ||= {})[+el.dataset.q] = +el.dataset.o; state.graded = false; persist();
+  (data().quiz[`${state.pf}:${state.quizId}`] ||= {})[+el.dataset.q] = +el.dataset.o; state.graded = false; persist();
 });
+document.addEventListener('input', e => { const k = e.target.dataset.mock; if (k && state.proj?.free) { freeMocks(state.pf)[k] = e.target.value; persist(); } });
 document.addEventListener('submit', async e => {
   if (e.target.id !== 'authForm') return;
   e.preventDefault();
