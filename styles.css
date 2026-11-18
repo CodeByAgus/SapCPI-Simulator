@@ -170,10 +170,6 @@ pre{font-family:var(--mono);font-size:12.5px;line-height:1.5;background:var(--in
 .fnode .nm{font-size:12.5px;font-weight:500;line-height:1.15;overflow-wrap:anywhere}
 .fnode .sb{font-size:10.5px;color:var(--muted);line-height:1.15}
 .fnode .num{position:absolute;top:-9px;left:-9px;min-width:21px;height:21px;border-radius:99px;background:var(--sky-3);color:var(--paper);font-size:11px;display:grid;place-items:center;padding:0 5px;font-variant-numeric:tabular-nums}
-.flow.make .fnode{border-radius:26px}
-.flow.make .fnode .ic{border-radius:50%;width:44px;height:44px}
-.flow.zapier .fnode{width:230px;flex-direction:row;text-align:left;padding:10px 12px;gap:10px}
-.flow.zapier .fnode .tx{display:flex;flex-direction:column;gap:2px;min-width:0}
 .branches{display:flex;flex-direction:column;gap:12px;border-left:2px solid #9b9b93;padding-left:0;margin-left:0}
 .flow.v .branches{flex-direction:row;border-left:0;border-top:2px solid #9b9b93;align-items:flex-start}
 .branch{display:flex;align-items:center}
@@ -275,64 +271,6 @@ pre{font-family:var(--mono);font-size:12.5px;line-height:1.5;background:var(--in
 .add.on{background:var(--sky-3);border-color:var(--sky-3);color:#fff;box-shadow:0 0 0 4px var(--sky)}
 .empty-flow{border:1.5px dashed #9b9b93;border-radius:99px;padding:10px 18px;font-size:13.5px;color:var(--muted);white-space:nowrap}
 
-/* ---- n8n: lienzo oscuro con grilla, nodos cuadrados y la etiqueta debajo ---- */
-.canvas.n8n{background-color:#1B1B19;background-image:radial-gradient(#3a3a35 1px,transparent 1.2px)}
-.flow.n8n .seq,.flow.n8n .branch{align-items:flex-start}
-.flow.n8n .link{height:64px}
-.flow.n8n .link::before,.flow.n8n .link::after{background:#77776f}
-.flow.n8n .fnode{width:108px;border:0;background:none;padding:0;color:var(--paper);gap:7px;box-shadow:none}
-.flow.n8n .fnode .ic{width:64px;height:64px;border-radius:16px;background:#2C2C29;border:1.5px solid #6b6b64;color:var(--sky)}
-.flow.n8n .fnode.k-trigger .ic{border-radius:32px 16px 16px 32px}
-.flow.n8n .fnode .ic svg{width:27px;height:27px}
-.flow.n8n .fnode:hover .ic{border-color:var(--paper)}
-.flow.n8n .fnode.sel .ic{border-color:var(--sky);box-shadow:0 0 0 4px rgba(220,238,251,.3)}
-.flow.n8n .fnode.ran .ic{border-color:#62c18a}
-.flow.n8n .fnode.failed .ic{border-color:#ff8f86;background:#3a2220}
-.flow.n8n .fnode .sb{color:var(--muted-dark)}
-.flow.n8n .fnode .num{top:-8px;left:12px;background:var(--sky);color:var(--ink)}
-.flow.n8n .add{background:#2C2C29;border-color:#77776f;color:var(--paper)}
-.flow.n8n .add:hover{background:var(--sky);color:var(--ink);border-color:var(--sky)}
-.flow.n8n .branches{border-color:#77776f}
-.flow.n8n .branch>.link0{background:#77776f;margin-top:31px}
-.flow.n8n .blabel{background:var(--sky);color:var(--ink);margin-top:21px}
-.canvas.n8n .empty-flow{color:var(--muted-dark);border-color:#77776f}
-
-/* ---- Make: módulos circulares con halo y conectores punteados ---- */
-.canvas.make{background-color:#F4F4F0}
-.flow.make .seq,.flow.make .branch{align-items:flex-start}
-.flow.make .link{height:76px}
-.flow.make .link::before,.flow.make .link::after{height:0;background:none;border-top:4px dotted #9b9b93;width:16px}
-.flow.make .fnode{width:116px;border:0;border-radius:0;background:none;padding:0;gap:8px;box-shadow:none}
-.flow.make .fnode .ic{width:76px;height:76px;border-radius:50%;background:var(--sky);color:var(--ink);box-shadow:0 0 0 7px rgba(169,198,220,.35)}
-.flow.make .fnode.k-tool .ic{background:var(--ink);color:var(--sky);box-shadow:0 0 0 7px rgba(17,17,16,.12)}
-.flow.make .fnode.k-trigger .ic{background:var(--sky-3);color:#fff;box-shadow:0 0 0 7px rgba(127,164,192,.3)}
-.flow.make .fnode .ic svg{width:31px;height:31px}
-.flow.make .fnode.sel .ic{outline:2.5px solid var(--ink);outline-offset:8px}
-.flow.make .fnode.ran .ic{box-shadow:0 0 0 7px #bfe6cf}
-.flow.make .fnode.failed .ic{box-shadow:0 0 0 7px #f3c2bd}
-.flow.make .fnode .num{top:-6px;left:auto;right:10px;background:var(--ink);color:var(--paper)}
-.flow.make .branches{border-left:4px dotted #9b9b93}
-.flow.make .branch>.link0{height:0;background:none;border-top:4px dotted #9b9b93;margin-top:36px}
-.flow.make .blabel{margin-top:27px}
-
-/* ---- Zapier: pasos numerados en una columna, con Paths lado a lado ---- */
-.canvas.zapier{background-color:#F7F7F3;background-image:none}
-.flow.zapier{display:flex;justify-content:center;min-width:max-content}
-.flow.zapier .fnode{width:290px;border:1.5px solid var(--line);border-radius:16px;padding:12px 14px;gap:12px;box-shadow:0 2px 0 rgba(17,17,16,.05)}
-.flow.zapier .fnode .ic{border-radius:10px;width:40px;height:40px;flex:none}
-.flow.zapier .fnode .tx{gap:1px}
-.flow.zapier .fnode .nm{font-size:14px}
-.flow.zapier .fnode .sb{font-size:11.5px}
-.flow.zapier .fnode.k-trigger{border-color:var(--ink)}
-.flow.zapier .fnode.k-trigger .sb::before{content:"Trigger · ";color:var(--ink);font-weight:500}
-.flow.zapier .fnode:hover{border-color:var(--ink);box-shadow:0 2px 0 rgba(17,17,16,.05)}
-.flow.zapier .fnode.sel{border-color:var(--sky-3);box-shadow:0 0 0 4px var(--sky)}
-.flow.zapier .link::before,.flow.zapier .link::after{background:#b9b9b1;height:12px}
-.flow.zapier .branches{gap:18px;border-color:#b9b9b1}
-.flow.zapier .branch>.link0{background:#b9b9b1}
-.flow.zapier .fnode.ran{border-color:var(--ok);background:var(--ok-soft)}
-.flow.zapier .fnode.failed{border-color:var(--bad);background:var(--bad-soft)}
-.flow.n8n .fnode.ran,.flow.n8n .fnode.failed,.flow.make .fnode.ran,.flow.make .fnode.failed{background:none}
 
 @media (max-width:980px){
   .tl{grid-template-columns:minmax(0,1fr);height:auto}

@@ -10,903 +10,589 @@ const short = (s, n = 80) => { s = String(s ?? ''); return s.length > n ? s.slic
 const IC = {
   webhook: '<path d="M13 3L5 14h6l-1 7 8-11h-6z"/>',
   schedule: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3.5 2"/>',
+  formsIn: '<rect x="5" y="3.5" width="14" height="17" rx="2.5"/><path d="M8.5 8h7M8.5 12h7M8.5 16h4"/>',
+  spItem: '<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 9h8M8 13h8M8 17h5"/><circle cx="17.5" cy="17.5" r="3" fill="currentColor" stroke="none"/>',
+  instant: '<rect x="6" y="3" width="12" height="18" rx="2.5"/><path d="M10 17.5h4"/><path d="M10 9l4 2-4 2z"/>',
   set: '<path d="M4 20l1-4.5L16 4.5l3.5 3.5L8.5 19z"/><path d="M14 6.5l3.5 3.5"/>',
+  parseJson: '<path d="M9 4C7 4 7 5.5 7 7.5S6 11 4.5 12C6 13 7 14.5 7 16.5S7 20 9 20M15 4c2 0 2 1.5 2 3.5S18 11 19.5 12C18 13 17 14.5 17 16.5S17 20 15 20"/>',
+  filter: '<path d="M4 5h16l-6.5 7.5V19l-3 1.5v-8z"/>',
+  select: '<rect x="4" y="5" width="6" height="14" rx="1.5"/><rect x="14" y="5" width="6" height="14" rx="1.5"/><path d="M10 9h4M12.5 7.5L14 9l-1.5 1.5"/>',
+  csv: '<path d="M7 3.5h7l4 4V20a.5.5 0 01-.5.5h-10.5a.5.5 0 01-.5-.5V4a.5.5 0 01.5-.5z"/><path d="M14 3.5V8h4M8.5 13h7M8.5 16.5h7M12 11v8"/>',
   if: '<path d="M4 12h6M10 12l6-6h4M10 12l6 6h4"/>',
   router: '<path d="M4 12h5M9 12l6-7h5M9 12h11M9 12l6 7h5"/>',
-  filter: '<path d="M4 5h16l-6.5 7.5V19l-3 1.5v-8z"/>',
+  foreach: '<path d="M20 12a8 8 0 11-2.3-5.6"/><path d="M20 4v4h-4"/><path d="M9 12h6M12 9v6"/>',
+  terminate: '<circle cx="12" cy="12" r="8.5"/><rect x="9" y="9" width="6" height="6" rx="1"/>',
+  varInit: '<path d="M8 4C6 4 6 6 6 8s-1 3-2 4c1 1 2 2 2 4s0 4 2 4M16 4c2 0 2 2 2 4s1 3 2 4c-1 1-2 2-2 4s0 4-2 4"/><path d="M10 10l4 4M14 10l-4 4"/>',
+  varSet: '<path d="M8 4C6 4 6 6 6 8s-1 3-2 4c1 1 2 2 2 4s0 4 2 4M16 4c2 0 2 2 2 4s1 3 2 4c-1 1-2 2-2 4s0 4-2 4"/><path d="M10 10.5h4M10 13.5h4"/>',
+  varInc: '<path d="M8 4C6 4 6 6 6 8s-1 3-2 4c1 1 2 2 2 4s0 4 2 4M16 4c2 0 2 2 2 4s1 3 2 4c-1 1-2 2-2 4s0 4-2 4"/><path d="M12 9v6M9 12h6"/>',
+  varAppend: '<path d="M8 4C6 4 6 6 6 8s-1 3-2 4c1 1 2 2 2 4s0 4 2 4M16 4c2 0 2 2 2 4s1 3 2 4c-1 1-2 2-2 4s0 4-2 4"/><path d="M10 10h4M10 13h4M10 16h2"/>',
   http: '<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c3 3 3 14 0 17M12 3.5c-3 3-3 14 0 17"/>',
-  code: '<path d="M9 7l-5 5 5 5M15 7l5 5-5 5"/>',
-  split: '<path d="M4 12h5M9 12l7-6M9 12h7M9 12l7 6"/><circle cx="18.5" cy="6" r="1.5"/><circle cx="18.5" cy="12" r="1.5"/><circle cx="18.5" cy="18" r="1.5"/>',
-  aggregate: '<path d="M20 12h-5M15 12L8 6M15 12H8M15 12l-7 6"/><circle cx="5.5" cy="6" r="1.5"/><circle cx="5.5" cy="12" r="1.5"/><circle cx="5.5" cy="18" r="1.5"/>',
-  sheets: '<rect x="4" y="4" width="16" height="16" rx="2.5"/><path d="M4 10h16M4 15h16M10 4v16"/>',
+  approval: '<path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/>',
+  ai: '<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M18.5 15.5l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/>',
   mail: '<rect x="3.5" y="5.5" width="17" height="13" rx="2.5"/><path d="M4 7l8 6 8-6"/>',
   slack: '<path d="M5 6.5A2.5 2.5 0 017.5 4h9A2.5 2.5 0 0119 6.5v6a2.5 2.5 0 01-2.5 2.5H11l-4.5 4v-4A2.5 2.5 0 015 12.5z"/>',
-  telegram: '<path d="M20.5 4L3.5 11l6 2.2L11.5 19l3-4 4 3z"/><path d="M9.5 13.2L20.5 4"/>',
-  ai: '<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M18.5 15.5l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/>',
-  crm: '<circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6"/>',
-  task: '<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 12l3 3 5-6"/>',
+  sheets: '<rect x="4" y="4" width="16" height="16" rx="2.5"/><path d="M4 10h16M4 15h16M10 4v16"/>',
   sheetsRead: '<rect x="4" y="4" width="16" height="16" rx="2.5"/><path d="M4 10h16M10 4v16M13 15h4M15.5 13l2 2-2 2"/>',
-  summarize: '<path d="M17 5H7l5 7-5 7h10"/>',
-  sort: '<path d="M7 5v14M4 16l3 3 3-3M13 7h7M13 12h5M13 17h3"/>',
-  limit: '<path d="M5 7h14M5 12h14"/><path d="M5 17h6" stroke-dasharray="2 3"/>',
-  approval: '<path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/>',
-  dedupe: '<rect x="4" y="4" width="11" height="11" rx="2"/><path d="M9 20h9a2 2 0 002-2V9"/>',
+  file: '<path d="M3.5 7.5A2 2 0 015.5 5.5H10l2 2h6.5a2 2 0 012 2V17a2 2 0 01-2 2h-13a2 2 0 01-2-2z"/><path d="M12 11v5M9.5 13.5L12 16l2.5-2.5"/>',
+  task: '<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 12l3 3 5-6"/>',
+  crm: '<ellipse cx="12" cy="6" rx="7" ry="2.5"/><path d="M5 6v12c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5V6M5 12c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5"/>',
+  pbi: '<path d="M6 20V13M10 20V8M14 20v-9M18 20V4"/>',
+  desktop: '<rect x="3.5" y="4.5" width="17" height="11.5" rx="2"/><path d="M9 20h6M12 16v4M8.5 10h3M10 8.5l1.5 1.5L10 11.5"/>',
+  respond: '<path d="M10 7L5 12l5 5"/><path d="M5 12h9a5 5 0 015 5v1"/>',
   arrow: '<path d="M5 12h13M13 6l6 6-6 6"/>',
   down: '<path d="M7 7l10 10M17 9v8H9"/>',
 };
 const svg = (k, cls = '') => `<svg viewBox="0 0 24 24" class="${cls}" aria-hidden="true">${IC[k] || IC.arrow}</svg>`;
 
-/* ---------------- Operaciones genéricas del simulador ---------------- */
-const TRIGGERS = ['webhook', 'schedule'];
-const BRANCHING = ['if', 'router'];
-const APPS = ['sheets', 'mail', 'slack', 'telegram'];
+/* ---------------- Operaciones del simulador (las de Power Automate) ---------------- */
+const TRIGGERS = ['formsIn', 'spItem', 'instant', 'webhook', 'schedule'];
+const BRANCHING = ['if', 'router', 'foreach'];
+const APPS = ['http', 'approval', 'ai', 'mail', 'slack', 'sheets', 'sheetsRead', 'file', 'task', 'crm', 'pbi', 'desktop', 'respond'];
+const cond0 = () => ({ left: '', op: 'eq', right: '' });
+const rows1 = () => [{ name: '', value: '' }];
 const DEF = {
-  webhook: () => ({ path: '/mi-webhook', method: 'POST' }),
-  schedule: () => ({ every: 'Todos los días', at: '09:00' }),
-  set: () => ({ keep: true, fields: [{ name: '', value: '' }] }),
-  filter: () => ({ cond: { left: '', op: 'eq', right: '' } }),
-  if: () => ({ cond: { left: '', op: 'eq', right: '' } }),
-  router: () => ({}),
+  formsIn: () => ({ form: '' }),
+  spItem: () => ({ site: '', list: '' }),
+  instant: () => ({ inputs: rows1() }),
+  webhook: () => ({ path: '/flujo', method: 'POST' }),
+  schedule: () => ({ every: 'Cada día', at: '09:00' }),
+  set: () => ({ fields: rows1() }),
+  parseJson: () => ({ content: '' }),
+  filter: () => ({ from: '', cond: cond0() }),
+  select: () => ({ from: '', textMode: false, value: '', fields: rows1() }),
+  csv: () => ({ from: '' }),
+  if: () => ({ cond: cond0() }),
+  router: () => ({ on: '' }),
+  foreach: () => ({ from: '' }),
+  terminate: () => ({ status: 'Failed', code: '', message: '' }),
+  varInit: () => ({ name: '', type: 'Integer', value: '' }),
+  varSet: () => ({ name: '', value: '' }),
+  varInc: () => ({ name: '', value: '1' }),
+  varAppend: () => ({ name: '', value: '' }),
   http: () => ({ method: 'GET', url: '', body: '' }),
-  code: () => ({ mode: 'each', inputs: [], code: 'return { ...$json };' }),
-  split: () => ({ field: '' }),
-  aggregate: () => ({ field: 'items' }),
-  sheets: () => ({ doc: '', sheet: '', columns: [{ name: '', value: '' }] }),
+  approval: () => ({ assignedTo: '', title: '', details: '' }),
+  ai: () => ({ prompt: '' }),
   mail: () => ({ to: '', subject: '', body: '' }),
   slack: () => ({ channel: '', text: '' }),
-  telegram: () => ({ chatId: '', text: '' }),
-  ai: () => ({ prompt: '' }),
-  crm: () => ({ email: '', name: '', props: [] }),
-  task: () => ({ list: '', title: '', description: '', due: '' }),
+  sheets: () => ({ doc: '', sheet: '', columns: rows1() }),
   sheetsRead: () => ({ doc: '', sheet: '' }),
-  summarize: () => ({ fields: [{ name: '', value: 'sum' }], groupBy: '' }),
-  sort: () => ({ field: '', dir: 'asc' }),
-  limit: () => ({ max: '1' }),
-  dedupe: () => ({ field: '' }),
-  approval: () => ({ assignedTo: '', title: '', details: '' }),
+  file: () => ({ folder: '', name: '', content: '' }),
+  task: () => ({ list: '', title: '', description: '', due: '' }),
+  crm: () => ({ table: 'Contacts', email: '', name: '', props: [] }),
+  pbi: () => ({ dataset: '', table: '', columns: rows1() }),
+  desktop: () => ({ flowName: '', inputs: rows1() }),
+  respond: () => ({ outputs: rows1() }),
 };
-const OPS = [['eq', 'es igual a'], ['neq', 'es distinto de'], ['contains', 'contiene'], ['ncontains', 'no contiene'], ['gt', 'es mayor que'], ['gte', 'es mayor o igual que'], ['lt', 'es menor que'], ['lte', 'es menor o igual que'], ['exists', 'existe'], ['empty', 'está vacío']];
+const OPS = [['eq', 'es igual a'], ['neq', 'no es igual a'], ['contains', 'contiene'], ['ncontains', 'no contiene'], ['gt', 'es mayor que'], ['gte', 'es mayor o igual que'], ['lt', 'es menor que'], ['lte', 'es menor o igual que'], ['exists', 'no está vacío'], ['empty', 'está vacío']];
 
 /* ---------------- Plataformas ---------------- */
-const P = {
-  n8n: {
-    name: 'n8n', tone: 'dark', layout: 'h', flow: 'workflow', node: 'nodo', run: 'Execute workflow', routerMode: 'first',
-    tag: 'Workflows con nodos, self-hosted o en la nube',
-    intro: 'n8n arma automatizaciones como un lienzo de nodos conectados. Podés usarlo en la nube o instalarlo en tu propio servidor, y cuando lo visual no alcanza, escribís JavaScript en un nodo Code.',
-    cheat: ['<code>{{ $json.campo }}</code> lee un campo del nodo anterior.', '<code>{{ $(\'Nombre del nodo\').item.json.campo }}</code> lee un nodo anterior por su nombre.', 'Adentro de las llaves va JavaScript: <code>{{ $json.email.toLowerCase() }}</code>.'],
-    cat: {
-      webhook: ['Webhook', 'Triggers', 'Arranca cuando llega una petición HTTP a su URL.'],
-      schedule: ['Schedule Trigger', 'Triggers', 'Arranca según un horario.'],
-      set: ['Edit Fields (Set)', 'Datos', 'Agrega o cambia campos del item.'],
-      code: ['Code', 'Datos', 'JavaScript propio sobre cada item.'],
-      split: ['Split Out', 'Datos', 'Convierte una lista en un item por elemento.'],
-      aggregate: ['Aggregate', 'Datos', 'Junta varios items en uno solo.'],
-      if: ['If', 'Lógica', 'Separa los items en true y false.'],
-      router: ['Switch', 'Lógica', 'Envía cada item a la primera salida que cumple.'],
-      filter: ['Filter', 'Lógica', 'Deja pasar solo los items que cumplen.'],
-      http: ['HTTP Request', 'Apps', 'Llama a cualquier API.'],
-      sheets: ['Google Sheets · Append Row', 'Apps', 'Agrega una fila a una hoja.'],
-      mail: ['Gmail · Send a message', 'Apps', 'Envía un email.'],
-      slack: ['Slack · Send a message', 'Apps', 'Publica en un canal.'],
-      telegram: ['Telegram · Send a text message', 'Apps', 'Envía un mensaje a un chat.'],
-      sheetsRead: ['Google Sheets · Get Row(s)', 'Apps', 'Lee las filas de una hoja: un item por fila.'],
-      crm: ['HubSpot · Create a contact', 'Apps', 'Crea un contacto en el CRM.'],
-      task: ['Trello · Create a card', 'Apps', 'Crea una tarjeta en una lista.'],
-      ai: ['OpenAI · Message a model', 'IA', 'Envía un prompt a un modelo y devuelve su respuesta en text.'],
-      summarize: ['Summarize', 'Datos', 'Suma, cuenta o promedia, con agrupación opcional.'],
-      sort: ['Sort', 'Datos', 'Ordena los items por un campo.'],
-      limit: ['Limit', 'Datos', 'Deja pasar solo los primeros items.'],
-      dedupe: ['Remove Duplicates', 'Datos', 'Quita los items repetidos según un campo.'],
-    },
-    lessons: [
-      ['Workflows, nodos e items', [
-        '<p>Un <b>workflow</b> es una cadena de <b>nodos</b>. El primero siempre es un <b>trigger</b>: define cuándo arranca (un Webhook, un horario, un evento de una app). Los demás son acciones o lógica.</p>',
-        '<p>Entre nodos no viaja "un dato", viaja una <b>lista de items</b>. Cada item es un objeto JSON. Cada nodo se ejecuta una vez por cada item que recibe: si llegan 5 items a un nodo de Slack, se envían 5 mensajes.</p>',
-        '<pre>[\n  { "json": { "nombre": "Ana", "total": 1500 } },\n  { "json": { "nombre": "Luis", "total": 300 } }\n]</pre>',
-        '<ul><li><b>Credentials</b>: las claves de cada app se guardan aparte y se reutilizan entre workflows.</li><li><b>Executions</b>: el historial de cada corrida, con los datos de cada nodo.</li></ul>'
-      ]],
-      ['Expresiones y datos', [
-        '<p>Para usar datos de un nodo anterior, escribís una <b>expresión</b> entre llaves dobles. Adentro va JavaScript.</p>',
-        '<pre>{{ $json.email }}\n{{ $json.email.toLowerCase() }}\n{{ $(\'Webhook\').item.json.nombre }}\nHola {{ $json.nombre }}, tu total es ${{ $json.total }}</pre>',
-        '<ul><li><code>$json</code> es el item que llega del nodo <b>inmediatamente anterior</b>.</li><li><code>$(\'Nombre\')</code> lee cualquier nodo anterior por su nombre. Hace falta cuando un nodo intermedio cambió los datos.</li><li>El nodo <b>Edit Fields (Set)</b> agrega o reemplaza campos; con "Include Other Input Fields" conserva los que ya venían.</li></ul>',
-        '<p>Error típico: después de un nodo de app, <code>$json</code> ya es la respuesta de esa app y no tu dato original.</p>'
-      ]],
-      ['Lógica: If, Switch y Filter', [
-        '<ul><li><b>If</b>: una condición, dos salidas (true y false). Cada item va por una.</li><li><b>Switch</b>: varias salidas; cada item va por la primera regla que cumple.</li><li><b>Filter</b>: una sola salida; los items que no cumplen se descartan.</li></ul>',
-        '<p>Para trabajar con listas: <b>Split Out</b> convierte un arreglo en un item por elemento, y <b>Aggregate</b> hace lo contrario.</p>',
-        '<p>Cuidado con los tipos: <code>"1500" &gt; 1000</code> compara texto con número. Convertí con <code>Number()</code> si el dato llega como texto.</p>'
-      ]],
-      ['Probar, activar y manejar errores', [
-        '<ul><li>El Webhook tiene dos URLs: la de <b>test</b> (solo mientras ejecutás a mano) y la de <b>producción</b> (cuando el workflow está activo).</li><li><b>Pin data</b> fija la salida de un nodo para probar el resto sin volver a dispararlo.</li><li>Un workflow con <b>Error Trigger</b> puede avisarte cuando otro falla.</li><li>En cada nodo: <b>Retry On Fail</b> reintenta, y <b>On Error</b> decide si se detiene o continúa.</li></ul>',
-        '<p>Buenas prácticas: nombrá los nodos por lo que hacen, guardá las claves solo en Credentials y probá cada nodo antes de agregar el siguiente.</p>'
-      ]],
-    ],
-    quiz: [
-      ['¿Qué viaja entre dos nodos de n8n?', ['Una lista de items, cada uno con su JSON', 'Un único texto', 'Solo el último campo modificado', 'Un archivo CSV'], 'Cada nodo se ejecuta una vez por item recibido.'],
-      ['¿Qué devuelve {{ $json.email }}?', ['El campo email del item que llega del nodo anterior', 'El email del dueño del workflow', 'El email del primer nodo, siempre', 'Un error: falta $node'], '$json es el item de entrada del nodo actual.'],
-      ['Llegan 4 items a un nodo de Slack. ¿Cuántos mensajes se envían?', ['4', '1', 'Ninguno hasta usar Aggregate', 'Depende del plan'], 'Los nodos corren una vez por item.'],
-      ['¿Qué diferencia hay entre If y Filter?', ['If tiene dos salidas; Filter descarta lo que no cumple', 'Son iguales', 'Filter tiene dos salidas e If una', 'If solo funciona con números'], 'Con If podés hacer algo distinto con los que no cumplen.'],
-      ['¿Para qué sirve la URL de test del Webhook?', ['Para recibir datos mientras ejecutás el workflow a mano', 'Para producción', 'Para ver las credenciales', 'Para exportar el workflow'], 'La de producción funciona cuando el workflow está activo.'],
-    ],
-  },
-  make: {
-    name: 'Make', tone: 'sky', layout: 'h', flow: 'escenario', node: 'módulo', run: 'Run once', routerMode: 'all',
-    tag: 'Escenarios visuales con módulos y rutas',
-    intro: 'Make (antes Integromat) arma escenarios como una cadena de módulos circulares. Se destaca por su mapeo visual de datos, el Router con filtros y el control fino de errores.',
-    cheat: ['<code>{{1.campo}}</code> lee un campo de la salida del módulo 1.', 'Hay funciones: <code>{{lower(1.email)}}</code>, <code>{{upper(1.nombre)}}</code>, <code>{{trim(1.texto)}}</code>, <code>{{if(1.total &gt; 1000; "alto"; "bajo")}}</code> (acá usá coma).', 'El número es el que aparece en la burbuja de cada módulo.'],
-    cat: {
-      webhook: ['Webhooks · Custom webhook', 'Triggers', 'Arranca cuando llega una petición a la URL.'],
-      schedule: ['Programación del escenario', 'Triggers', 'Arranca según el horario del escenario.'],
-      set: ['Tools · Set multiple variables', 'Datos', 'Define variables para usar después.'],
-      split: ['Iterator', 'Datos', 'Convierte un arreglo en un bundle por elemento.'],
-      aggregate: ['Array aggregator', 'Datos', 'Junta varios bundles en un arreglo.'],
-      router: ['Router', 'Lógica', 'Divide el flujo en rutas, cada una con su filtro.'],
-      filter: ['Filtro (entre módulos)', 'Lógica', 'Deja pasar solo los bundles que cumplen.'],
-      http: ['HTTP · Make a request', 'Apps', 'Llama a cualquier API.'],
-      sheets: ['Google Sheets · Add a Row', 'Apps', 'Agrega una fila a una hoja.'],
-      mail: ['Email · Send an Email', 'Apps', 'Envía un email.'],
-      slack: ['Slack · Create a Message', 'Apps', 'Publica en un canal.'],
-      telegram: ['Telegram Bot · Send a Text Message', 'Apps', 'Envía un mensaje a un chat.'],
-      sheetsRead: ['Google Sheets · Search Rows', 'Apps', 'Lee las filas de una hoja: un bundle por fila.'],
-      crm: ['HubSpot CRM · Create a Contact', 'Apps', 'Crea un contacto en el CRM.'],
-      task: ['Trello · Create a Card', 'Apps', 'Crea una tarjeta en una lista.'],
-      ai: ['OpenAI · Create a Completion', 'IA', 'Envía un prompt a un modelo y devuelve su respuesta en text.'],
-    },
-    lessons: [
-      ['Escenarios, módulos y bundles', [
-        '<p>Un <b>escenario</b> es una cadena de <b>módulos</b>. El primero es el trigger. Hay triggers <b>instantáneos</b> (webhooks: arrancan apenas llega el dato) y <b>programados</b> (revisan cada cierto tiempo si hay algo nuevo).</p>',
-        '<p>Cada módulo entrega <b>bundles</b>: paquetes de datos. Si un módulo entrega 3 bundles, los módulos siguientes se ejecutan 3 veces.</p>',
-        '<p>Cada ejecución de un módulo consume crédito de tu plan (Make las llamó históricamente <b>operaciones</b>). Por eso conviene filtrar temprano: lo que no pasa un filtro no gasta en los módulos siguientes.</p>'
-      ]],
-      ['Mapeo y funciones', [
-        '<p>Al hacer clic en un campo se abre el panel de mapeo, con las salidas de los módulos anteriores. Cada dato se identifica con el número del módulo.</p>',
-        '<pre>{{1.email}}\n{{lower(1.email)}}\nNuevo lead: {{1.nombre}} ({{2.email}})</pre>',
-        '<ul><li>Funciones de texto: <code>lower</code>, <code>upper</code>, <code>trim</code>, <code>length</code>.</li><li>Generales: <code>if(condición; valor si; valor no)</code>.</li><li><b>Set multiple variables</b> guarda valores calculados para reutilizarlos más adelante.</li></ul>',
-        '<p>En Make real los argumentos de las funciones se separan con punto y coma. En este simulador usá coma.</p>'
-      ]],
-      ['Router, filtros, Iterator y Aggregator', [
-        '<ul><li><b>Router</b>: abre varias rutas. Cada ruta tiene un <b>filtro</b>; el bundle sigue por todas las rutas cuyo filtro cumple. La <b>ruta de respaldo</b> (fallback) se usa solo si ninguna otra cumple.</li><li><b>Filtro</b>: se configura en la línea entre dos módulos.</li><li><b>Iterator</b>: toma un arreglo y entrega un bundle por elemento.</li><li><b>Array aggregator</b>: junta los bundles de nuevo en un arreglo.</li></ul>',
-        '<p>Patrón frecuente: HTTP trae una lista → Iterator → filtro → acción por cada elemento.</p>'
-      ]],
-      ['Ejecución y manejo de errores', [
-        '<ul><li><b>Run once</b> ejecuta el escenario una vez para probarlo y muestra una burbuja con los datos de cada módulo.</li><li>Un webhook necesita recibir un dato de ejemplo para "aprender" la estructura.</li><li>El escenario corre solo cuando lo activás (ON) y definís su programación.</li></ul>',
-        '<p>Cada módulo puede tener una ruta de error con una directiva: <b>Ignore</b> (seguir), <b>Resume</b> (seguir con un valor de reemplazo), <b>Break</b> (guardar para reintentar), <b>Rollback</b> (deshacer) o <b>Commit</b> (terminar guardando lo hecho).</p>'
-      ]],
-    ],
-    quiz: [
-      ['¿Qué es un bundle?', ['Un paquete de datos que entrega un módulo', 'Un grupo de escenarios', 'Una credencial', 'Un tipo de webhook'], 'Los módulos siguientes se ejecutan una vez por bundle.'],
-      ['¿Qué significa {{2.email}}?', ['El campo email de la salida del módulo 2', 'El segundo email de una lista', 'El email multiplicado por 2', 'Un error de sintaxis'], 'El número identifica al módulo de origen.'],
-      ['En un Router, ¿cuándo se usa la ruta de respaldo?', ['Solo cuando ningún otro filtro cumple', 'Siempre, además de las otras', 'Nunca en producción', 'Cuando hay un error'], 'Es el "si no" del Router.'],
-      ['¿Qué hace el Iterator?', ['Entrega un bundle por cada elemento de un arreglo', 'Junta bundles en un arreglo', 'Repite el escenario cada minuto', 'Filtra por condición'], 'El Array aggregator hace lo contrario.'],
-      ['¿Por qué conviene filtrar temprano?', ['Porque lo que no pasa el filtro no consume en los módulos siguientes', 'Porque los filtros son gratis siempre', 'Porque Make lo exige', 'No conviene'], 'Menos ejecuciones de módulos, menos consumo.'],
-    ],
-  },
-  zapier: {
-    name: 'Zapier', tone: 'white', layout: 'v', flow: 'Zap', node: 'paso', run: 'Test Zap', routerMode: 'all',
-    tag: 'Zaps paso a paso, con miles de apps',
-    intro: 'Zapier es la forma más directa de conectar apps: un Zap es un trigger seguido de acciones, de arriba hacia abajo. Tiene el catálogo de integraciones más grande y casi no requiere conocimientos técnicos.',
-    cheat: ['<code>{{1.campo}}</code> representa un campo del paso 1 (en Zapier lo elegís de una lista).', 'Formatter acepta funciones: <code>{{lower(1.email)}}</code>, <code>{{upper(1.nombre)}}</code>, <code>{{trim(1.texto)}}</code>.', 'El número es el del paso en el Zap.'],
-    cat: {
-      webhook: ['Webhooks by Zapier · Catch Hook', 'Triggers', 'Arranca cuando llega una petición a la URL.'],
-      schedule: ['Schedule by Zapier', 'Triggers', 'Arranca cada día, semana u hora.'],
-      set: ['Formatter by Zapier', 'Datos', 'Transforma texto, números y fechas.'],
-      code: ['Code by Zapier', 'Datos', 'JavaScript propio.'],
-      split: ['Looping by Zapier', 'Datos', 'Repite los pasos siguientes por cada elemento.'],
-      router: ['Paths', 'Lógica', 'Divide el Zap en caminos con reglas.'],
-      filter: ['Filter by Zapier', 'Lógica', 'El Zap sigue solo si se cumple la condición.'],
-      http: ['Webhooks by Zapier · GET/POST', 'Apps', 'Llama a cualquier API.'],
-      sheets: ['Google Sheets · Create Spreadsheet Row', 'Apps', 'Agrega una fila a una hoja.'],
-      mail: ['Gmail · Send Email', 'Apps', 'Envía un email.'],
-      slack: ['Slack · Send Channel Message', 'Apps', 'Publica en un canal.'],
-      telegram: ['Telegram · Send Message', 'Apps', 'Envía un mensaje a un chat.'],
-      sheetsRead: ['Google Sheets · Get Many Spreadsheet Rows', 'Apps', 'Trae varias filas en una lista llamada rows.'],
-      crm: ['HubSpot · Create Contact', 'Apps', 'Crea un contacto en el CRM.'],
-      task: ['Trello · Create Card', 'Apps', 'Crea una tarjeta en una lista.'],
-      ai: ['AI by Zapier', 'IA', 'Envía un prompt a un modelo y devuelve su respuesta en text.'],
-    },
-    lessons: [
-      ['Zaps: trigger y acciones', [
-        '<p>Un <b>Zap</b> tiene un <b>trigger</b> (el evento que lo dispara) y una o más <b>acciones</b>, en orden. Se lee de arriba hacia abajo.</p>',
-        '<ul><li>Triggers <b>instantáneos</b>: la app avisa apenas ocurre el evento.</li><li>Triggers por <b>polling</b>: Zapier revisa cada tantos minutos, según tu plan.</li></ul>',
-        '<p>Cada paso se <b>prueba</b> por separado con un registro de ejemplo antes de publicar el Zap.</p>'
-      ]],
-      ['Mapear campos y Formatter', [
-        '<p>En cada campo de una acción elegís datos de pasos anteriores desde una lista. Zapier los muestra como etiquetas con el número del paso.</p>',
-        '<pre>Nuevo lead: {{1.nombre}} ({{2.email}})</pre>',
-        '<p><b>Formatter by Zapier</b> transforma datos sin código: mayúsculas y minúsculas, recortar espacios, formatear fechas y números, o buscar un valor en una tabla.</p>',
-        '<p>Para lógica más compleja está <b>Code by Zapier</b> (JavaScript o Python).</p>'
-      ]],
-      ['Filter, Paths y Looping', [
-        '<ul><li><b>Filter</b>: si la condición no se cumple, el Zap se detiene ahí.</li><li><b>Paths</b>: divide el Zap en caminos; cada uno tiene reglas y sus propias acciones. Se ejecutan todos los caminos cuyas reglas se cumplen, y hay un camino de respaldo opcional.</li><li><b>Looping</b>: repite los pasos siguientes por cada valor de una lista.</li></ul>',
-        '<p>Regla práctica: usá Filter para "seguir o no seguir" y Paths para "hacer cosas distintas según el caso".</p>'
-      ]],
-      ['Tasks, historial y buenas prácticas', [
-        '<p>Zapier cobra por <b>tasks</b>: cada acción que se completa con éxito cuenta una. El trigger y los filtros que detienen el Zap no cuentan.</p>',
-        '<ul><li><b>Zap History</b> muestra cada ejecución, los datos de cada paso y permite reintentar las fallidas.</li><li>Poné el Filter lo más arriba posible para no gastar tasks de más.</li><li>Nombrá los Zaps y los pasos de forma clara, y agrupalos en carpetas.</li></ul>'
-      ]],
-    ],
-    quiz: [
-      ['¿De qué se compone un Zap?', ['Un trigger y una o más acciones', 'Solo acciones', 'Dos triggers', 'Un trigger sin acciones'], 'El trigger dispara y las acciones se ejecutan en orden.'],
-      ['¿Qué cuenta como task?', ['Cada acción completada con éxito', 'Cada vez que se dispara el trigger', 'Cada filtro evaluado', 'Cada Zap creado'], 'Los triggers y los filtros que detienen el Zap no consumen tasks.'],
-      ['¿Qué pasa si un Filter no se cumple?', ['El Zap se detiene en ese paso', 'Se salta el filtro y sigue', 'Se borra el Zap', 'Se ejecuta el camino B'], 'Para hacer algo distinto en cada caso se usa Paths.'],
-      ['¿Para qué sirve Formatter?', ['Para transformar texto, números y fechas sin código', 'Para enviar emails', 'Para crear webhooks', 'Para pagar el plan'], 'Por ejemplo, pasar un email a minúsculas.'],
-      ['¿Qué hace Looping by Zapier?', ['Repite los pasos siguientes por cada valor de una lista', 'Reinicia el Zap cada hora', 'Une dos Zaps', 'Filtra duplicados'], 'Es el equivalente a iterar una lista.'],
-    ],
-  },
-};
 // SAP CPI tiene su propio taller (editor BPMN y simulador de iFlows) en una página aparte
 const SAP = { href: 'sap-cpi/index.html', scenarios: 11, practice: 9, quizzes: 20 };
 const SOON = [
   ['MuleSoft', 'Integración y APIs de Salesforce: flows de Mule, conectores y DataWeave.'],
   ['KNIME', 'Workflows de nodos para preparar, analizar y transformar datos.'],
 ];
-const FREE = ['n8n', 'make', 'zapier'];
-
-/* ---------------- Proyectos (tres escenarios, adaptados a cada plataforma) ---------------- */
 const N = (op, name, p = {}, branches) => ({ id: uid(), op, name, p: { ...DEF[op](), ...p }, ...(branches ? { branches } : {}) });
 const col = (name, value) => ({ name, value });
 const callsOf = (r, app) => r.calls.filter(c => c.app === app);
-const PRODUCTS = { productos: [{ sku: 'A1', nombre: 'Mate imperial', stock: 2 }, { sku: 'B2', nombre: 'Bombilla alpaca', stock: 14 }, { sku: 'C3', nombre: 'Termo 1L', stock: 0 }, { sku: 'D4', nombre: 'Yerba 1kg', stock: 30 }] };
-const FULL = { productos: [{ sku: 'A1', nombre: 'Mate imperial', stock: 20 }, { sku: 'B2', nombre: 'Bombilla alpaca', stock: 14 }] };
-
-function projects(pf) {
-  const p = P[pf], c = p.cat, n8 = pf === 'n8n';
-  const j = f => n8 ? `{{ $json.${f} }}` : `{{1.${f}}}`;
-  const stockApp = pf === 'zapier' ? 'slack' : 'telegram';
-  const stockDest = pf === 'zapier' ? '#stock' : '-100200300';
-  return [
-    {
-      id: 'lead', level: 'Inicial', title: 'Lead del formulario a una hoja y aviso',
-      story: 'Cada vez que alguien completa el formulario de la web, el lead tiene que quedar en la hoja "Leads" con el email en minúsculas, y el equipo tiene que enterarse por Slack.',
-      reqs: [
-        `Trigger: <b>${c.webhook[0]}</b>.`,
-        `<b>${c.set[0]}</b>: campo <code>email</code> en minúsculas. ${n8 ? 'Usá <code>{{ $json.email.toLowerCase() }}</code> y conservá los demás campos.' : 'Usá <code>{{lower(1.email)}}</code>.'}`,
-        `<b>${c.sheets[0]}</b> en la hoja <code>Leads</code> con las columnas <code>Nombre</code>, <code>Email</code> e <code>Interes</code>.`,
-        `<b>${c.slack[0]}</b> al canal <code>#leads</code> con el texto <code>Nuevo lead: NOMBRE (EMAIL)</code>.`,
-      ],
-      hints: [n8 ? 'Después de Google Sheets, $json es la fila creada: sus campos se llaman como las columnas (Nombre, Email).' : 'El email en minúsculas sale del paso 2; el nombre y el interés siguen estando en el paso 1.', 'Si un campo sale vacío, revisá en el resultado de la ejecución qué entrega cada paso.'],
-      sample: [{ nombre: 'Ana Pérez', email: 'ANA@MAIL.COM', interes: 'Automatización', origen: 'landing' }],
-      checks: [['Empieza con un webhook', f => f.steps[0]?.op === 'webhook'], ['Tiene un paso que transforma el email', f => has(f, 'set') || has(f, 'code')]],
-      tests: [['Lead de Ana', [{ nombre: 'Ana Pérez', email: 'ANA@MAIL.COM', interes: 'Automatización', origen: 'landing' }]], ['Lead de Bruno', [{ nombre: 'Bruno Díaz', email: 'Bruno.Diaz@Empresa.COM', interes: 'CRM', origen: 'ads' }]]].map(([name, input]) => ({ name, input, expect: r => {
-        const i = input[0], em = i.email.toLowerCase();
-        const s = callsOf(r, 'sheets')[0]; if (!s) return 'No se agregó ninguna fila en Google Sheets.';
-        if (String(s.params.sheet).trim() !== 'Leads') return `La hoja es «${s.params.sheet}»; tiene que ser Leads.`;
-        const v = s.params.values;
-        if (v.Nombre !== i.nombre) return `La columna Nombre vale «${v.Nombre ?? ''}»; se esperaba «${i.nombre}».`;
-        if (v.Email !== em) return `La columna Email vale «${v.Email ?? ''}»; se esperaba «${em}».`;
-        if (v.Interes !== i.interes) return `La columna Interes vale «${v.Interes ?? ''}»; se esperaba «${i.interes}».`;
-        const k = callsOf(r, 'slack')[0]; if (!k) return 'No se envió el mensaje de Slack.';
-        if (String(k.params.channel).trim() !== '#leads') return `El canal es «${k.params.channel}»; tiene que ser #leads.`;
-        return k.params.text === `Nuevo lead: ${i.nombre} (${em})` || `El mensaje fue «${k.params.text}»; se esperaba «Nuevo lead: ${i.nombre} (${em})».`;
-      } })),
-      solution: () => ({ steps: [
-        N('webhook', 'Formulario web', { path: '/lead' }),
-        N('set', 'Normalizar email', { keep: n8, fields: [col('email', n8 ? '{{ $json.email.toLowerCase() }}' : '{{lower(1.email)}}')] }),
-        N('sheets', 'Guardar lead', { doc: 'CRM', sheet: 'Leads', columns: [col('Nombre', n8 ? '{{ $json.nombre }}' : '{{1.nombre}}'), col('Email', n8 ? '{{ $json.email }}' : '{{2.email}}'), col('Interes', n8 ? '{{ $json.interes }}' : '{{1.interes}}')] }),
-        N('slack', 'Avisar al equipo', { channel: '#leads', text: n8 ? 'Nuevo lead: {{ $json.Nombre }} ({{ $json.Email }})' : 'Nuevo lead: {{1.nombre}} ({{2.email}})' }),
-      ] }),
-    },
-    {
-      id: 'pedidos', level: 'Intermedio', title: 'Clasificar pedidos por monto',
-      story: 'Los pedidos de más de $1000 tienen que avisarse al equipo de ventas en Slack. Los demás reciben un email de confirmación automático.',
-      reqs: [
-        `Trigger: <b>${c.webhook[0]}</b>.`,
-        n8 ? `<b>${c.if[0]}</b> con la condición <code>{{ $json.total }}</code> es mayor que <code>1000</code>.` : `<b>${c.router[0]}</b> con dos ${pf === 'make' ? 'rutas' : 'caminos'}: uno con la condición <code>{{1.total}}</code> es mayor que <code>1000</code> y otro de respaldo.`,
-        `Si es mayor: <b>${c.slack[0]}</b> al canal <code>#ventas-grandes</code>, con el número de pedido y el cliente en el texto.`,
-        `Si no: <b>${c.mail[0]}</b> al <code>email</code> del pedido, con el número de pedido en el asunto.`,
-      ],
-      hints: ['Un pedido de exactamente 1000 no es "mayor que 1000": va por el camino del email.', n8 ? 'El If termina la cadena principal: agregá los pasos dentro de cada rama.' : 'Marcá uno de los caminos como respaldo para que reciba todo lo que no cumple la condición.'],
-      sample: [{ pedido: 'P-1001', cliente: 'ACME', total: 1500, email: 'compras@acme.example' }],
-      checks: [['Empieza con un webhook', f => f.steps[0]?.op === 'webhook'], ['Tiene una bifurcación', f => has(f, 'if') || has(f, 'router')]],
-      tests: [['Pedido de $1500', 1500, true], ['Pedido de $300', 300, false], ['Pedido de $1000 exactos', 1000, false]].map(([name, total, big]) => ({ name, input: [{ pedido: 'P-' + total, cliente: 'ACME', total, email: 'compras@acme.example' }], expect: r => {
-        const s = callsOf(r, 'slack'), m = callsOf(r, 'mail');
-        if (big) {
-          if (m.length) return 'Un pedido grande no tiene que enviar el email.';
-          if (s.length !== 1) return 'Se esperaba un mensaje de Slack.';
-          if (String(s[0].params.channel).trim() !== '#ventas-grandes') return `El canal es «${s[0].params.channel}»; tiene que ser #ventas-grandes.`;
-          return (s[0].params.text.includes('P-' + total) && s[0].params.text.includes('ACME')) || `El texto «${s[0].params.text}» tiene que incluir el pedido y el cliente.`;
-        }
-        if (s.length) return 'Un pedido chico no tiene que avisar por Slack.';
-        if (m.length !== 1) return 'Se esperaba un email de confirmación.';
-        if (m[0].params.to !== 'compras@acme.example') return `El email fue a «${m[0].params.to}»; tiene que ir al email del pedido.`;
-        return m[0].params.subject.includes('P-' + total) || `El asunto «${m[0].params.subject}» tiene que incluir el número de pedido.`;
-      } })),
-      solution: () => {
-        const sl = N('slack', 'Avisar a ventas', { channel: '#ventas-grandes', text: `Pedido grande ${j('pedido')} de ${j('cliente')}: $${j('total')}` });
-        const ml = N('mail', 'Confirmar al cliente', { to: j('email'), subject: `Recibimos tu pedido ${j('pedido')}`, body: `Gracias, ${j('cliente')}.` });
-        const cond = { left: j('total'), op: 'gt', right: '1000' };
-        return { steps: [N('webhook', 'Nuevo pedido', { path: '/pedidos' }), n8
-          ? N('if', '¿Pedido grande?', { cond }, [{ name: 'true', steps: [sl] }, { name: 'false', steps: [ml] }])
-          : N('router', 'Por monto', {}, [{ name: 'Grandes', cond, steps: [sl] }, { name: 'Resto', fallback: true, cond: { left: '', op: 'eq', right: '' }, steps: [ml] }])] };
-      },
-    },
-    {
-      id: 'stock', level: 'Avanzado', title: 'Consultar una API y avisar el stock bajo',
-      story: 'Todos los días a las 9, el flujo consulta la API de la tienda y avisa por cada producto que tenga menos de 5 unidades.',
-      reqs: [
-        `Trigger: <b>${c.schedule[0]}</b>.`,
-        `<b>${c.http[0]}</b>: GET a <code>https://api.tienda-demo.example/productos</code>.`,
-        `<b>${c.split[0]}</b> sobre la lista <code>productos</code>${n8 ? '' : ' (<code>{{2.productos}}</code>)'}.`,
-        `<b>${c.filter[0]}</b>: stock menor que <code>5</code>.`,
-        `<b>${c[stockApp][0]}</b> a <code>${stockDest}</code> con el texto <code>Stock bajo: NOMBRE (STOCK)</code>.`,
-      ],
-      mock: 'La API responde: ' + JSON.stringify(PRODUCTS),
-      hints: [n8 ? 'En Split Out va el nombre del campo que tiene la lista: productos.' : 'Después del paso 3, cada producto se lee como {{3.nombre}} y {{3.stock}}.', 'Si no hay productos con stock bajo, no se envía ningún mensaje: es el comportamiento correcto.'],
-      sample: [{}], http: () => PRODUCTS,
-      checks: [['Empieza con un trigger programado', f => f.steps[0]?.op === 'schedule'], ['Llama a la API de productos', f => all(f).some(n => n.op === 'http' && /api\.tienda-demo\.example\/productos\/?$/.test(n.p.url.trim()))]],
-      tests: [
-        { name: 'Dos productos con stock bajo', input: [{}], http: () => PRODUCTS, expect: r => { const t = callsOf(r, stockApp).map(x => x.params.text).sort().join(' | '); const ex = 'Stock bajo: Mate imperial (2) | Stock bajo: Termo 1L (0)'; if (t !== ex) return `Los avisos fueron «${t || 'ninguno'}»; se esperaba «${ex}».`; const d = callsOf(r, stockApp)[0].params; return String(d.channel ?? d.chatId).trim() === stockDest || `El destino tiene que ser ${stockDest}.`; } },
-        { name: 'Todo con stock suficiente', input: [{}], http: () => FULL, expect: r => callsOf(r, stockApp).length === 0 || 'Con todo en stock no hay que enviar avisos.' },
-      ],
-      solution: () => ({ steps: [
-        N('schedule', 'Cada día 9:00'), N('http', 'Traer productos', { method: 'GET', url: 'https://api.tienda-demo.example/productos' }),
-        N('split', 'Por producto', { field: n8 ? 'productos' : '{{2.productos}}' }),
-        N('filter', 'Stock bajo', { cond: { left: n8 ? '{{ $json.stock }}' : '{{3.stock}}', op: 'lt', right: '5' } }),
-        N(stockApp, 'Avisar', { [stockApp === 'slack' ? 'channel' : 'chatId']: stockDest, text: n8 ? 'Stock bajo: {{ $json.nombre }} ({{ $json.stock }})' : 'Stock bajo: {{3.nombre}} ({{3.stock}})' }),
-      ] }),
-    },
-  ];
-}
-const PROJ = { n8n: projects('n8n'), make: projects('make'), zapier: projects('zapier') };
-
-/* ---------------- Proyectos por tema (n8n y Zapier) ---------------- */
-Object.values(PROJ).forEach(list => list.forEach(j => { j.cat = 'Primeros pasos'; }));
+const all = (f, out = []) => { const walk = s => s.forEach(n => { out.push(n); (n.branches || []).forEach(b => walk(b.steps)); }); walk(f.steps); return out; };
+const has = (f, op) => all(f).some(n => n.op === op);
 const DEMO = 'empresa-demo.example';
-const sameMail = r => callsOf(r, 'mail');
-const ENRICH = { 'acme-logistica.example': { empresa: 'ACME Logística', industria: 'Transporte', empleados: 340 }, 'verde-sa.example': { empresa: 'Verde SA', industria: 'Agro', empleados: 45 } };
-const enrichApi = ({ url }) => { const m = String(url).match(/[?&]dominio=([^&\s]+)/); if (!m) throw new Error('400: falta el parámetro dominio en la URL'); return ENRICH[m[1]] || { empresa: null, industria: null, empleados: null }; };
-const TICKETS = [['T-501', 'Laura Gil', 'Me cobraron dos veces la factura de octubre.', 'facturacion'], ['T-502', 'Iván Sosa', 'La app se cierra sola cuando abro el panel.', 'tecnico'], ['T-503', 'Mora Paz', '¿Tienen local en Rosario?', 'otro']];
-const ticketAi = p => (TICKETS.find(t => p.includes(t[2])) || [])[3] || 'otro';
-const mailAi = p => { const n = p.match(/soy ([A-ZÁÉÍÓÚÑ][a-záéíóúñ]+ [A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)/), q = p.match(/(\d+) unidades de ([^.\n]+?)(?= para|\.|$)/m); return JSON.stringify(n && q ? { cliente: n[1], producto: q[2].trim(), cantidad: q[1] } : { cliente: '', producto: '', cantidad: '' }); };
-const VENTAS_A = [['Norte', 1200, 'pagado'], ['Norte', 3000, 'pagado'], ['Sur', 2500, 'pagado'], ['Sur', 900, 'pendiente'], ['Centro', 5000, 'pendiente']].map(([region, monto, estado], i) => ({ fecha: `2026-11-0${i + 1}`, region, monto, estado }));
-const VENTAS_B = [['Norte', 800, 'pagado'], ['Sur', 2600, 'pagado'], ['Sur', 1900, 'pagado'], ['Centro', 4000, 'pagado'], ['Centro', 9000, 'anulado']].map(([region, monto, estado], i) => ({ fecha: `2026-11-1${i}`, region, monto, estado }));
-const HOY_A = [['Ana', 1500], ['Luis', 900], ['Ana', 2000], ['Rita', 800]].map(([vendedor, monto]) => ({ vendedor, monto }));
-const HOY_B = [['Luis', 3000], ['Rita', 3500]].map(([vendedor, monto]) => ({ vendedor, monto }));
-const jsonCt = v => /^application\/json$/i.test(String(v || ''));
-const ref = (node, f) => `{{ $('${node}').item.json.${f} }}`;
+const pa = s => `@{${s}}`;
+const tb = f => pa(`triggerBody()?['${f}']`);
+const bd = (a, f) => pa(`body('${a}')?['${f}']`);
+const it = f => pa(`items('Apply_to_each')?['${f}']`);
+const vr = n => pa(`variables('${n}')`);
 
-PROJ.n8n.push(
-  {
-    id: 'scoring', cat: 'Leads', level: 'Intermedio', title: 'Lead scoring con Code y CRM',
-    story: 'Ventas pierde tiempo con leads que no califican. El workflow tiene que puntuar cada lead, cargar en el CRM solo los calientes y mandar a los demás un email de seguimiento.',
-    objectives: ['Escribir lógica propia en un nodo Code (Run Once for Each Item).', 'Bifurcar con If según un campo calculado.', 'Leer datos de un nodo anterior por su nombre.'],
-    reqs: [
-      'Trigger: <b>Webhook</b>.',
-      '<b>Code</b> que agregue <code>score</code> y <code>segmento</code>: +40 si <code>empleados</code> ≥ 50, +40 si <code>presupuesto</code> ≥ 5000, +20 si <code>origen</code> es <code>referido</code>. <code>segmento</code> es <code>caliente</code> con score ≥ 60 y <code>frio</code> si no.',
-      '<b>If</b>: <code>{{ $json.segmento }}</code> es igual a <code>caliente</code>.',
-      'true: <b>HubSpot · Create a contact</b> (email, nombre y la propiedad <code>score</code>) y <b>Slack</b> a <code>#ventas</code>: <code>Lead caliente: NOMBRE de EMPRESA (score N)</code>.',
-      'false: <b>Gmail</b> al email del lead con asunto <code>Gracias por tu interés, NOMBRE</code>.',
-    ],
-    hints: ['En el Code, devolvé el item completo más los campos nuevos: return { ...$json, score, segmento }.', 'Después de HubSpot, $json es el contacto creado. Para el Slack leé el nodo Code por su nombre: {{ $(\'Nombre del nodo\').item.json.empresa }}.'],
-    real: ['El Webhook se prueba con la URL de test mientras ejecutás a mano.', 'HubSpot, Slack y Gmail necesitan una credencial cada uno (Credentials).', 'En un caso real, las reglas del score conviene acordarlas con el equipo de ventas y revisarlas cada tanto.'],
-    sample: [{ nombre: 'Carla Soto', email: 'carla@industrias-sur.example', empresa: 'Industrias Sur', empleados: 120, presupuesto: 8000, origen: 'referido' }],
-    checks: [['Usa un nodo Code', f => has(f, 'code')], ['Bifurca con If', f => has(f, 'if')]],
-    tests: [
-      [{ nombre: 'Carla Soto', email: 'carla@industrias-sur.example', empresa: 'Industrias Sur', empleados: 120, presupuesto: 8000, origen: 'referido' }, 100],
-      [{ nombre: 'Tomás Vera', email: 'tomas@kiosco.example', empresa: 'Kiosco Vera', empleados: 3, presupuesto: 6000, origen: 'ads' }, 40],
-      [{ nombre: 'Elsa Ruiz', email: 'elsa@textil-rosario.example', empresa: 'Textil Rosario', empleados: 60, presupuesto: 1000, origen: 'referido' }, 60],
-    ].map(([i, score]) => ({ name: `${i.nombre}: score ${score}`, input: [i], expect: r => {
-      const c = callsOf(r, 'crm'), s = callsOf(r, 'slack'), m = sameMail(r);
-      if (score >= 60) {
-        if (m.length) return 'Un lead caliente no recibe el email de seguimiento.';
-        if (c.length !== 1) return 'Se esperaba un contacto creado en HubSpot.';
-        if (c[0].params.email !== i.email) return `El contacto se creó con el email «${c[0].params.email}».`;
-        if (String(c[0].params.props.score) !== String(score)) return `La propiedad score vale «${c[0].params.props.score ?? ''}»; se esperaba ${score}.`;
-        if (!s.length || String(s[0].params.channel).trim() !== '#ventas') return 'Falta el aviso en #ventas.';
-        const ex = `Lead caliente: ${i.nombre} de ${i.empresa} (score ${score})`;
-        return s[0].params.text === ex || `El mensaje fue «${s[0].params.text}»; se esperaba «${ex}».`;
-      }
-      if (c.length || s.length) return 'Un lead frío no va al CRM ni a Slack.';
-      if (m.length !== 1 || m[0].params.to !== i.email) return 'Se esperaba un email al lead.';
-      return m[0].params.subject === `Gracias por tu interés, ${i.nombre}` || `El asunto fue «${m[0].params.subject}».`;
-    } })),
-    solution: () => ({ steps: [
-      N('webhook', 'Webhook', { path: '/leads' }),
-      N('code', 'Calcular score', { mode: 'each', code: "let score = 0;\nif ($json.empleados >= 50) score += 40;\nif ($json.presupuesto >= 5000) score += 40;\nif ($json.origen === 'referido') score += 20;\nreturn { ...$json, score, segmento: score >= 60 ? 'caliente' : 'frio' };" }),
-      N('if', '¿Caliente?', { cond: { left: '{{ $json.segmento }}', op: 'eq', right: 'caliente' } }, [
-        { name: 'true', steps: [N('crm', 'Crear contacto', { email: '{{ $json.email }}', name: '{{ $json.nombre }}', props: [col('score', '{{ $json.score }}')] }), N('slack', 'Avisar a ventas', { channel: '#ventas', text: `Lead caliente: ${ref('Calcular score', 'nombre')} de ${ref('Calcular score', 'empresa')} (score ${ref('Calcular score', 'score')})` })] },
-        { name: 'false', steps: [N('mail', 'Email de seguimiento', { to: '{{ $json.email }}', subject: 'Gracias por tu interés, {{ $json.nombre }}', body: 'Te vamos a escribir con novedades.' })] },
-      ]),
-    ] }),
-  },
-  {
-    id: 'enriquecer', cat: 'Conexión con servicios', level: 'Intermedio', title: 'Enriquecer un lead con una API',
-    story: 'El formulario solo pide nombre y email. Antes de guardar el lead, el workflow consulta una API con el dominio del email para sumar la empresa y la industria.',
-    objectives: ['Armar una URL dinámica en HTTP Request.', 'Entender que, después de una llamada, $json es la respuesta de la API.', 'Combinar datos de dos nodos con Edit Fields.'],
-    reqs: [
-      'Trigger: <b>Webhook</b>.',
-      '<b>HTTP Request</b>: GET a <code>https://api.enriquecer-demo.example/empresa?dominio=</code> seguido del dominio del email: <code>{{ $json.email.split(\'@\')[1] }}</code>.',
-      '<b>Edit Fields (Set)</b>: conservá la respuesta y agregá <code>nombre</code> y <code>email</code> leyéndolos del Webhook.',
-      '<b>Google Sheets · Append Row</b> en la hoja <code>Leads enriquecidos</code>: columnas <code>Nombre</code>, <code>Email</code>, <code>Empresa</code> e <code>Industria</code>.',
-    ],
-    mock: 'La API responde, por ejemplo: {"empresa":"ACME Logística","industria":"Transporte","empleados":340}',
-    hints: ['El nombre y el email ya no están en $json después del HTTP Request: usá {{ $(\'Webhook\').item.json.nombre }}.', 'Ejecutá y abrí cada paso para ver qué campos entrega.'],
-    real: ['En una API real casi siempre hace falta autenticación: se configura en la credencial del HTTP Request, no en la URL.', 'Conviene activar Retry On Fail para tolerar caídas momentáneas.', 'Revisá el límite de llamadas (rate limit) del proveedor.'],
-    sample: [{ nombre: 'Diego Luna', email: 'diego@acme-logistica.example' }], http: enrichApi,
-    checks: [['Llama a la API de enriquecimiento', f => all(f).some(n => n.op === 'http' && n.p.url.includes('api.enriquecer-demo.example/empresa'))]],
-    tests: [[{ nombre: 'Diego Luna', email: 'diego@acme-logistica.example' }, 'acme-logistica.example'], [{ nombre: 'Paula Ríos', email: 'paula@verde-sa.example' }, 'verde-sa.example']].map(([i, dom]) => ({ name: `Lead de ${dom}`, input: [i], http: enrichApi, expect: r => {
-      const h = callsOf(r, 'http')[0]; if (!h) return 'No se llamó a la API.';
-      if (!h.params.url.endsWith('dominio=' + dom)) return `La URL fue «${h.params.url}»; tiene que terminar en dominio=${dom}.`;
-      const s = callsOf(r, 'sheets')[0]; if (!s) return 'No se agregó la fila.';
-      if (String(s.params.sheet).trim() !== 'Leads enriquecidos') return `La hoja es «${s.params.sheet}».`;
-      const v = s.params.values, e = ENRICH[dom];
-      for (const [k, val] of [['Nombre', i.nombre], ['Email', i.email], ['Empresa', e.empresa], ['Industria', e.industria]]) if (v[k] !== val) return `La columna ${k} vale «${v[k] ?? ''}»; se esperaba «${val}».`;
-      return true;
-    } })),
-    solution: () => ({ steps: [
-      N('webhook', 'Webhook', { path: '/lead' }),
-      N('http', 'Consultar empresa', { method: 'GET', url: "https://api.enriquecer-demo.example/empresa?dominio={{ $json.email.split('@')[1] }}" }),
-      N('set', 'Unir datos', { keep: true, fields: [col('nombre', ref('Webhook', 'nombre')), col('email', ref('Webhook', 'email'))] }),
-      N('sheets', 'Guardar lead', { doc: 'CRM', sheet: 'Leads enriquecidos', columns: [col('Nombre', '{{ $json.nombre }}'), col('Email', '{{ $json.email }}'), col('Empresa', '{{ $json.empresa }}'), col('Industria', '{{ $json.industria }}')] }),
-    ] }),
-  },
-  {
-    id: 'tickets-ia', cat: 'Flujos con IA', level: 'Intermedio', title: 'Clasificar tickets de soporte con IA',
-    story: 'Los tickets llegan todos mezclados. Un modelo de IA lee el mensaje, lo clasifica en una categoría y el workflow lo deriva al canal correcto.',
-    objectives: ['Escribir un prompt que incluya los datos del item.', 'Pedirle al modelo una salida corta y predecible.', 'Enrutar con Switch según la respuesta de la IA.'],
-    reqs: [
-      'Trigger: <b>Webhook</b>.',
-      '<b>OpenAI · Message a model</b>: un prompt que pida clasificar el mensaje en una sola palabra (<code>facturacion</code>, <code>tecnico</code> u <code>otro</code>) e incluya <code>{{ $json.mensaje }}</code>.',
-      '<b>Switch</b> sobre <code>{{ $json.text }}</code>: <code>facturacion</code> → <b>Slack</b> <code>#facturacion</code>; <code>tecnico</code> → <b>Slack</b> <code>#soporte-tecnico</code>; respaldo → <b>Gmail</b> a <code>soporte@' + DEMO + '</code>.',
-      'El texto de Slack y el asunto del email tienen que incluir el <code>id</code> del ticket.',
-    ],
-    mock: 'El modelo es simulado: responde la categoría correcta solo si el prompt incluye el mensaje del ticket.',
-    hints: ['La respuesta del modelo queda en $json.text. El id del ticket quedó en el Webhook: {{ $(\'Webhook\').item.json.id }}.', 'Si todo cae en "otro", revisá que el prompt tenga {{ $json.mensaje }}.'],
-    real: ['Pedí siempre un formato cerrado ("respondé solo con una de estas palabras") y dejá una ruta de respaldo: el modelo puede devolver algo inesperado.', 'n8n también tiene el nodo Text Classifier y el AI Agent con Chat Model, memoria y herramientas.', 'Cada llamada consume tokens: clasificá con un modelo chico y barato.'],
-    sample: [{ id: 'T-501', cliente: 'Laura Gil', mensaje: 'Me cobraron dos veces la factura de octubre.' }], ai: ticketAi,
-    checks: [['Usa un nodo de IA', f => has(f, 'ai')], ['Enruta con Switch', f => has(f, 'router')]],
-    tests: TICKETS.map(([id, cliente, mensaje, cat]) => ({ name: `Ticket ${id} (${cat})`, input: [{ id, cliente, mensaje }], ai: ticketAi, expect: r => {
-      const a = callsOf(r, 'ai')[0]; if (!a) return 'No se llamó al modelo.';
-      if (!a.params.prompt.includes(mensaje)) return 'El prompt no incluye el mensaje del ticket.';
-      const s = callsOf(r, 'slack'), m = sameMail(r);
-      if (cat === 'otro') { if (s.length) return 'Un ticket sin categoría no va a Slack.'; if (m.length !== 1 || m[0].params.to !== 'soporte@' + DEMO) return `Se esperaba un email a soporte@${DEMO}.`; return m[0].params.subject.includes(id) || 'El asunto tiene que incluir el id del ticket.'; }
-      if (m.length) return 'Un ticket clasificado no va por email.';
-      const ch = cat === 'facturacion' ? '#facturacion' : '#soporte-tecnico';
-      if (s.length !== 1 || String(s[0].params.channel).trim() !== ch) return `Se esperaba un mensaje en ${ch}.`;
-      return s[0].params.text.includes(id) || 'El texto tiene que incluir el id del ticket.';
-    } })),
-    solution: () => { const txt = `Ticket ${ref('Webhook', 'id')}: ${ref('Webhook', 'mensaje')}`, c = v => ({ left: '{{ $json.text }}', op: 'eq', right: v }); return { steps: [
-      N('webhook', 'Webhook', { path: '/tickets' }),
-      N('ai', 'Clasificar', { prompt: 'Clasificá este mensaje de soporte. Respondé solo con una palabra: facturacion, tecnico u otro.\n\nMensaje: {{ $json.mensaje }}' }),
-      N('router', 'Por categoría', {}, [
-        { name: 'facturacion', cond: c('facturacion'), steps: [N('slack', 'A facturación', { channel: '#facturacion', text: txt })] },
-        { name: 'tecnico', cond: c('tecnico'), steps: [N('slack', 'A soporte técnico', { channel: '#soporte-tecnico', text: txt })] },
-        { name: 'otro', fallback: true, cond: c(''), steps: [N('mail', 'A la casilla general', { to: 'soporte@' + DEMO, subject: `Ticket ${ref('Webhook', 'id')} sin clasificar`, body: ref('Webhook', 'mensaje') })] },
-      ]),
-    ] }; },
-  },
-  {
-    id: 'email-ia', cat: 'Flujos con IA', level: 'Avanzado', title: 'Extraer datos de un email con IA',
-    story: 'Los pedidos llegan por email, escritos de cualquier manera. La IA extrae cliente, producto y cantidad en JSON, y un Code lo convierte en datos listos para la hoja.',
-    objectives: ['Pedirle a un modelo una salida en JSON.', 'Parsear y validar esa salida con Code.', 'Convertir tipos: de texto a número.'],
-    reqs: [
-      'Trigger: <b>Webhook</b> (recibe <code>de</code>, <code>asunto</code> y <code>cuerpo</code>).',
-      '<b>OpenAI · Message a model</b>: pedí un JSON con <code>cliente</code>, <code>producto</code> y <code>cantidad</code>, e incluí <code>{{ $json.cuerpo }}</code>.',
-      '<b>Code</b>: <code>JSON.parse($json.text)</code> y devolvé <code>cliente</code>, <code>producto</code> y <code>cantidad</code> como <b>número</b>.',
-      '<b>Google Sheets</b> en la hoja <code>Pedidos por email</code>: columnas <code>Cliente</code>, <code>Producto</code>, <code>Cantidad</code> y <code>Email</code> (el remitente).',
-    ],
-    mock: 'El modelo simulado devuelve, por ejemplo: {"cliente":"Marta Ríos","producto":"Termo 1L","cantidad":"12"}. La cantidad llega como texto.',
-    hints: ['La IA devuelve texto: hasta que no hacés JSON.parse no podés leer sus campos.', 'Number("12") convierte el texto en número.', 'El remitente está en el Webhook: {{ $(\'Webhook\').item.json.de }}.'],
-    real: ['Los modelos a veces envuelven el JSON en texto o en ```: en n8n podés usar Structured Output Parser o el nodo Information Extractor para forzar el formato.', 'Validá siempre los campos antes de escribirlos en un sistema.'],
-    sample: [{ de: 'marta@cliente.example', asunto: 'Pedido', cuerpo: 'Hola, soy Marta Ríos. Necesito 12 unidades de Termo 1L para el viernes.' }], ai: mailAi,
-    checks: [['Usa un nodo de IA', f => has(f, 'ai')], ['Usa un nodo Code', f => has(f, 'code')]],
-    tests: [['marta@cliente.example', 'Hola, soy Marta Ríos. Necesito 12 unidades de Termo 1L para el viernes.', 'Marta Ríos', 'Termo 1L', 12], ['pablo@otro.example', 'Buen día, soy Pablo Díaz. Necesito 3 unidades de Mate imperial.', 'Pablo Díaz', 'Mate imperial', 3]].map(([de, cuerpo, cli, prod, cant]) => ({ name: `Pedido de ${cli}`, input: [{ de, asunto: 'Pedido', cuerpo }], ai: mailAi, expect: r => {
-      const s = callsOf(r, 'sheets')[0]; if (!s) return 'No se agregó la fila.';
-      if (String(s.params.sheet).trim() !== 'Pedidos por email') return `La hoja es «${s.params.sheet}».`;
-      const v = s.params.values;
-      if (v.Cliente !== cli) return `Cliente vale «${v.Cliente ?? ''}»; se esperaba «${cli}». ¿El prompt incluye el cuerpo del email?`;
-      if (v.Producto !== prod) return `Producto vale «${v.Producto ?? ''}»; se esperaba «${prod}».`;
-      if (v.Cantidad !== cant) return `Cantidad vale ${JSON.stringify(v.Cantidad)}; se esperaba el número ${cant}.`;
-      return v.Email === de || `Email vale «${v.Email ?? ''}»; se esperaba «${de}».`;
-    } })),
-    solution: () => ({ steps: [
-      N('webhook', 'Webhook', { path: '/emails' }),
-      N('ai', 'Extraer pedido', { prompt: 'Extraé los datos del pedido y respondé solo con JSON: {"cliente": "", "producto": "", "cantidad": ""}\n\nEmail: {{ $json.cuerpo }}' }),
-      N('code', 'Parsear JSON', { mode: 'each', code: 'const d = JSON.parse($json.text);\nreturn { cliente: d.cliente, producto: d.producto, cantidad: Number(d.cantidad) };' }),
-      N('sheets', 'Registrar pedido', { doc: 'Pedidos', sheet: 'Pedidos por email', columns: [col('Cliente', '{{ $json.cliente }}'), col('Producto', '{{ $json.producto }}'), col('Cantidad', '{{ $json.cantidad }}'), col('Email', ref('Webhook', 'de'))] }),
-    ] }),
-  },
-  {
-    id: 'reporte', cat: 'Análisis de datos', level: 'Intermedio', title: 'Reporte semanal: la mejor región',
-    story: 'Cada lunes, dirección quiere saber qué región vendió más. El workflow lee la hoja de ventas, cuenta solo lo cobrado y avisa el resultado.',
-    objectives: ['Leer filas de una hoja como items.', 'Agrupar y sumar con Summarize.', 'Ordenar y quedarse con el primero (Sort y Limit).'],
-    reqs: [
-      'Trigger: <b>Schedule Trigger</b>.',
-      '<b>Google Sheets · Get Row(s)</b> de la hoja <code>Ventas</code>.',
-      '<b>Filter</b>: <code>estado</code> es igual a <code>pagado</code>.',
-      '<b>Summarize</b>: <code>sum</code> de <code>monto</code>, agrupado por <code>region</code>.',
-      '<b>Sort</b> por <code>sum_monto</code> descendente y <b>Limit</b> en 1.',
-      '<b>Slack</b> a <code>#reportes</code>: <code>Mejor región: REGION ($TOTAL)</code>.',
-    ],
-    mock: 'La hoja Ventas tiene las columnas fecha, region, monto y estado (pagado, pendiente o anulado).',
-    hints: ['Cada fila de la hoja es un item. Summarize devuelve un item por región.', 'El campo sumado se llama sum_monto.', 'Si filtrás después de sumar, contás ventas que no se cobraron.'],
-    real: ['Con muchas filas, filtrá en el propio nodo de Google Sheets para traer menos datos.', 'Para reportes más ricos podés armar una tabla en HTML o Markdown con un nodo Code.'],
-    sample: [{}], rows: () => VENTAS_A,
-    checks: [['Lee la hoja Ventas', f => all(f).some(n => n.op === 'sheetsRead' && n.p.sheet.trim() === 'Ventas')], ['Resume con Summarize o Code', f => has(f, 'summarize') || has(f, 'code')]],
-    tests: [['Semana 1', VENTAS_A, 'Mejor región: Norte ($4200)'], ['Semana 2', VENTAS_B, 'Mejor región: Sur ($4500)']].map(([name, data, ex]) => ({ name, input: [{}], rows: () => data, expect: r => {
-      const s = callsOf(r, 'slack'); if (s.length !== 1) return `Se esperaba un solo mensaje y hubo ${s.length}.`;
-      if (String(s[0].params.channel).trim() !== '#reportes') return 'El canal tiene que ser #reportes.';
-      return s[0].params.text === ex || `El mensaje fue «${s[0].params.text}»; se esperaba «${ex}».`;
-    } })),
-    solution: () => ({ steps: [
-      N('schedule', 'Cada lunes', { every: 'Todos los lunes', at: '08:00' }), N('sheetsRead', 'Leer ventas', { doc: 'Ventas', sheet: 'Ventas' }),
-      N('filter', 'Solo pagadas', { cond: { left: '{{ $json.estado }}', op: 'eq', right: 'pagado' } }),
-      N('summarize', 'Total por región', { fields: [col('monto', 'sum')], groupBy: 'region' }),
-      N('sort', 'Mayor primero', { field: 'sum_monto', dir: 'desc' }), N('limit', 'La mejor', { max: '1' }),
-      N('slack', 'Avisar', { channel: '#reportes', text: 'Mejor región: {{ $json.region }} (${{ $json.sum_monto }})' }),
-    ] }),
-  },
-  {
-    id: 'limpieza', cat: 'Análisis de datos', level: 'Avanzado', title: 'Limpiar y resumir datos con Code',
-    story: 'Un sistema viejo manda los pedidos con duplicados y con los montos como texto. Finanzas necesita un resumen confiable: cuántos pedidos, total, promedio y el mayor.',
-    objectives: ['Usar Code en modo Run Once for All Items.', 'Quitar duplicados y convertir tipos.', 'Devolver un único item con el resumen.'],
-    reqs: [
-      'Trigger: <b>Webhook</b> (recibe <code>pedidos</code>, una lista).',
-      '<b>Split Out</b> sobre <code>pedidos</code>.',
-      '<b>Code</b> en modo <i>Run Once for All Items</i>: quitá los duplicados por <code>id</code>, convertí <code>monto</code> a número y devolvé un solo item con <code>cantidad</code>, <code>total</code>, <code>promedio</code> (redondeado) y <code>mayor</code>.',
-      '<b>Gmail</b> a <code>finanzas@' + DEMO + '</code>: asunto <code>Resumen: N pedidos por $TOTAL</code> y el promedio en el cuerpo.',
-    ],
-    hints: ['En este modo, $input.all() devuelve todos los items: cada uno tiene sus datos en .json.', 'Devolvé una lista: return [{ json: { cantidad, total, promedio, mayor } }].', 'También podés resolverlo con Remove Duplicates y Summarize: lo que se verifica es el resultado.'],
-    real: ['Run Once for All Items es el modo por defecto del nodo Code.', 'Para volúmenes grandes conviene procesar por lotes (Loop Over Items).'],
-    sample: [{ pedidos: [{ id: 'A1', monto: '1200' }, { id: 'A2', monto: '300' }, { id: 'A1', monto: '1200' }, { id: 'A3', monto: '2000' }] }],
-    checks: [['Separa la lista en items', f => has(f, 'split')]],
-    tests: [['Con un duplicado', [['A1', '1200'], ['A2', '300'], ['A1', '1200'], ['A3', '2000']], 'Resumen: 3 pedidos por $3500', '1167'], ['Sin duplicados', [['B1', '500'], ['B2', '1500']], 'Resumen: 2 pedidos por $2000', '1000']].map(([name, list, subj, avg]) => ({ name, input: [{ pedidos: list.map(([id, monto]) => ({ id, monto })) }], expect: r => {
-      const m = sameMail(r); if (m.length !== 1) return `Se esperaba un solo email y hubo ${m.length}.`;
-      if (m[0].params.to !== 'finanzas@' + DEMO) return `El email fue a «${m[0].params.to}».`;
-      if (m[0].params.subject !== subj) return `El asunto fue «${m[0].params.subject}»; se esperaba «${subj}».`;
-      return m[0].params.body.includes(avg) || `El cuerpo tiene que incluir el promedio (${avg}).`;
-    } })),
-    solution: () => ({ steps: [
-      N('webhook', 'Webhook', { path: '/pedidos-legacy' }), N('split', 'Por pedido', { field: 'pedidos' }),
-      N('code', 'Limpiar y resumir', { mode: 'all', code: 'const vistos = new Set();\nconst montos = [];\nfor (const item of $input.all()) {\n  if (vistos.has(item.json.id)) continue;\n  vistos.add(item.json.id);\n  montos.push(Number(item.json.monto));\n}\nconst total = montos.reduce((a, b) => a + b, 0);\nreturn [{ json: { cantidad: montos.length, total, promedio: Math.round(total / montos.length), mayor: Math.max(...montos) } }];' }),
-      N('mail', 'Enviar resumen', { to: 'finanzas@' + DEMO, subject: 'Resumen: {{ $json.cantidad }} pedidos por ${{ $json.total }}', body: 'Promedio: ${{ $json.promedio }}. Pedido mayor: ${{ $json.mayor }}.' }),
-    ] }),
-  }
-);
+/* Teoría: 20 clases, cada una con su cuestionario (la opción correcta va primero) */
+const CLASSES = [
+  ['Power Platform: panorama y licencias', [
+    '<p><b>Microsoft Power Platform</b> reúne las herramientas low-code de Microsoft: <b>Power Apps</b> (aplicaciones), <b>Power Automate</b> (flujos), <b>Power BI</b> (reportes), <b>Copilot Studio</b> (agentes) y <b>Dataverse</b> (la base de datos común).</p>',
+    '<p>Microsoft 365 incluye un uso básico de Power Automate con conectores <b>standard</b>. Los conectores <b>premium</b> (HTTP, Dataverse, SQL, SAP), los flujos de escritorio con ejecución desatendida, AI Builder y las aprobaciones avanzadas requieren licencias pagas: <b>Power Automate Premium</b> por usuario, <b>Process</b> por flujo o bot, o pago por uso con Azure.</p>',
+    '<p>Por eso, en la práctica, Power Automate se aprende dentro de una empresa que ya pagó las licencias.</p>'
+  ], [
+    ['¿Qué herramienta de Power Platform se usa para automatizar procesos con flujos?', ['Power Automate', 'Power BI', 'Power Pages', 'Dataverse'], 'Power BI es para reportes y Dataverse es la base de datos.'],
+    ['¿Qué conector requiere licencia premium?', ['HTTP', 'Office 365 Outlook', 'Microsoft Teams', 'OneDrive for Business'], 'HTTP, Dataverse, SQL y SAP son premium.'],
+    ['¿Qué licencia se asigna a un flujo en lugar de a una persona?', ['Power Automate Process', 'Microsoft 365 E3', 'Power BI Pro', 'Power Apps per app'], 'Process sirve para flujos y bots de uso compartido.'],
+    ['¿Qué es Dataverse?', ['La base de datos de Power Platform', 'Un conector de Excel', 'Un tipo de flujo', 'Un reporte de Power BI'], 'Guarda tablas con seguridad, relaciones y auditoría.'],
+  ]],
+  ['Entornos, seguridad y administración', [
+    '<p>Todo vive dentro de un <b>entorno</b> (environment): flujos, apps, conexiones y datos de Dataverse. Lo habitual es tener entornos de <b>desarrollo</b>, <b>pruebas</b> y <b>producción</b>.</p>',
+    '<ul><li>Los permisos se manejan con <b>roles de seguridad</b> (Environment Maker, System Administrator).</li><li>El <b>Power Platform admin center</b> administra entornos, capacidad y políticas.</li><li>Las <b>políticas de datos (DLP)</b> agrupan conectores en Business, Non-business y Blocked: un flujo no puede mezclar grupos.</li></ul>',
+    '<p>Un error común es crear todo en el entorno por defecto (Default), que comparte toda la organización.</p>'
+  ], [
+    ['¿Para qué sirven varios entornos?', ['Para separar desarrollo, pruebas y producción', 'Para pagar menos', 'Para usar otro idioma', 'No sirven'], 'Así un cambio en desarrollo no rompe lo que está en producción.'],
+    ['¿Qué controla una política de DLP?', ['Qué conectores se pueden combinar en un flujo', 'El horario de ejecución', 'El tamaño de los archivos', 'El idioma del diseñador'], 'Business y Non-business no se pueden mezclar.'],
+    ['¿Desde dónde se administran los entornos?', ['Power Platform admin center', 'Power BI Desktop', 'Outlook', 'Planner'], 'También se ven capacidad, licencias y políticas.'],
+    ['¿Qué riesgo tiene trabajar siempre en el entorno Default?', ['Lo comparte toda la organización y es difícil de gobernar', 'Es más lento', 'No tiene conectores', 'Ninguno'], 'Conviene usar entornos propios para cada equipo o proyecto.'],
+  ]],
+  ['Tipos de flujo y conectores', [
+    '<ul><li><b>Automatizado</b>: arranca con un evento (llega un email, se crea un elemento).</li><li><b>Instantáneo</b>: lo dispara una persona con un botón o desde Power Apps.</li><li><b>Programado</b>: corre por horario (Recurrence).</li><li><b>De escritorio</b>: RPA con Power Automate Desktop.</li></ul>',
+    '<p>Cada acción pertenece a un <b>conector</b> y usa una <b>conexión</b>: la cuenta con la que se autentica. Una misma conexión sirve para varios flujos.</p>',
+    '<p>Si no existe un conector para un servicio, se puede crear un <b>conector personalizado</b> a partir de una definición OpenAPI.</p>'
+  ], [
+    ['¿Qué tipo de flujo corre todos los días a las 8?', ['Programado', 'Automatizado', 'Instantáneo', 'De escritorio'], 'Usa el trigger Recurrence.'],
+    ['¿Qué es una conexión?', ['La cuenta con la que un conector se autentica', 'Una línea entre dos acciones', 'Un entorno', 'Un tipo de licencia'], 'Se crea una vez y se reutiliza.'],
+    ['Un servicio interno tiene API pero no conector. ¿Qué podés hacer?', ['Crear un conector personalizado o usar HTTP', 'Nada', 'Usar Excel', 'Pedir un entorno nuevo'], 'El conector personalizado se arma desde OpenAPI.'],
+    ['¿Qué tipo de flujo maneja aplicaciones de escritorio con clics y teclado?', ['De escritorio (Power Automate Desktop)', 'Programado', 'Instantáneo', 'Automatizado'], 'Es la parte de RPA de Power Automate.'],
+  ]],
+  ['Triggers', [
+    '<p>El <b>trigger</b> es el primer paso. Ejemplos: <i>When a new response is submitted</i> (Forms), <i>When an item is created</i> (SharePoint), <i>When a new email arrives</i> (Outlook), <i>PowerApps (V2)</i>, <i>When a HTTP request is received</i> y <i>Recurrence</i>.</p>',
+    '<ul><li>Los triggers por <b>polling</b> revisan cada tanto si hay novedades; los de <b>webhook</b> reciben el aviso al instante.</li><li>Las <b>trigger conditions</b> evitan que el flujo arranque si no se cumple una expresión, sin consumir ejecuciones.</li></ul>',
+    '<p>Los datos del trigger se leen con <code>@{triggerBody()?[\'campo\']}</code>.</p>'
+  ], [
+    ['¿Qué trigger usarías para reaccionar cuando alguien completa un formulario?', ['When a new response is submitted', 'Recurrence', 'Apply to each', 'Compose'], 'Es el trigger de Microsoft Forms.'],
+    ['¿Para qué sirven las trigger conditions?', ['Para que el flujo no arranque si no se cumple una condición', 'Para repetir el flujo', 'Para cambiar la conexión', 'Para crear variables'], 'Ahorran ejecuciones innecesarias.'],
+    ['¿Cómo se lee el campo email del trigger?', ["@{triggerBody()?['email']}", '{{ $json.email }}', '${header.email}', '{{1.email}}'], 'Las otras opciones son de otras herramientas.'],
+    ['¿Cuál es el trigger de un flujo programado?', ['Recurrence', 'When an item is created', 'PowerApps (V2)', 'Terminate'], 'Define frecuencia, hora y zona horaria.'],
+  ]],
+  ['Expresiones y contenido dinámico', [
+    '<p>El <b>contenido dinámico</b> del diseñador son expresiones del lenguaje de Workflow Definition, escritas entre <code>@{ }</code>.</p>',
+    '<pre>@{triggerBody()?[\'email\']}\n@{toLower(triggerBody()?[\'email\'])}\n@{concat(trim(triggerBody()?[\'nombre\']), \' \', triggerBody()?[\'apellido\'])}\n@{replace(triggerBody()?[\'dni\'], \'.\', \'\')}\n@{div(mul(int(triggerBody()?[\'monto\']), 121), 100)}</pre>',
+    '<ul><li>Para leer otra acción: <code>body(\'Nombre_de_la_accion\')</code> u <code>outputs(\'Compose\')</code>, con guiones bajos en lugar de espacios.</li><li><code>?[\'campo\']</code> devuelve vacío si el campo no existe.</li><li>No hay operadores <code>+</code> ni <code>*</code>: se usan <code>add</code>, <code>sub</code>, <code>mul</code> y <code>div</code>.</li></ul>'
+  ], [
+    ['¿Cómo se suma en una expresión?', ['add(a, b)', 'a + b', 'sum(a, b)', 'plus(a, b)'], 'Las operaciones son funciones: add, sub, mul, div.'],
+    ['La acción se llama "Send an email (V2)". ¿Cómo la referenciás?', ["body('Send_an_email_(V2)')", "body('Send an email (V2)')", 'body(Send_an_email)', "step('Send an email (V2)')"], 'Los espacios se reemplazan por guiones bajos.'],
+    ['¿Qué devuelve replace(\'30.123.456\', \'.\', \'\')?', ['30123456', '30.123.456', '30', 'Un error'], 'Reemplaza todas las apariciones.'],
+    ['¿Qué hace el ? en triggerBody()?[\'telefono\']?', ['Devuelve vacío si el campo no existe', 'Hace obligatorio el campo', 'Lo convierte en texto', 'Pide el valor al usuario'], 'Evita que el flujo falle por un campo faltante.'],
+  ]],
+  ['Operaciones de datos', [
+    '<ul><li><b>Compose</b>: arma un valor u objeto para reutilizarlo.</li><li><b>Parse JSON</b>: convierte un JSON en campos que se pueden usar en el contenido dinámico.</li><li><b>Filter array</b>: deja solo los elementos de una lista que cumplen una condición; cada elemento es <code>item()</code>.</li><li><b>Select</b>: transforma cada elemento en otro objeto o, en modo texto, en un valor simple.</li><li><b>Create CSV table</b> y <b>Create HTML table</b>: convierten una lista en una tabla.</li></ul>',
+    '<pre>Filter array → From: @{body(\'Parse_JSON\')?[\'pedidos\']}\n               @{item()?[\'estado\']} es igual a pendiente\n@{length(body(\'Filter_array\'))}\n@{join(body(\'Select\'), \', \')}</pre>',
+    '<p>Filter array y Select procesan toda la lista en una sola acción: son mucho más rápidos que un Apply to each.</p>'
+  ], [
+    ['¿Qué representa item() dentro de Filter array?', ['El elemento que se está evaluando', 'El trigger', 'La última acción', 'Una variable'], 'Se usa en la condición: item()?[\'estado\'].'],
+    ['¿Cómo contás los elementos que dejó un Filter array?', ["length(body('Filter_array'))", "count(Filter_array)", "items('Filter_array')", 'No se puede'], 'length funciona con listas y textos.'],
+    ['¿Qué hace Select en modo texto?', ['Convierte cada elemento en un valor simple', 'Ordena la lista', 'Filtra la lista', 'Crea un archivo'], 'Sirve para después unir los valores con join().'],
+    ['¿Por qué preferir Filter array a un Apply to each con Condition?', ['Procesa toda la lista en una acción y consume menos', 'Es obligatorio', 'Permite enviar emails', 'No hay diferencia'], 'Menos acciones, menos tiempo y menos límites.'],
+  ]],
+  ['Control: Condition, Switch y Apply to each', [
+    '<ul><li><b>Condition</b>: dos ramas, Sí y No. Después de la Condition el flujo sigue con lo que esté debajo.</li><li><b>Switch</b>: compara un valor (<i>On</i>) con cada caso; si ninguno coincide, va al <b>Default</b>.</li><li><b>Apply to each</b>: repite las acciones de adentro por cada elemento de una lista. El elemento actual es <code>items(\'Apply_to_each\')</code>.</li><li><b>Do until</b>: repite hasta que se cumpla una condición.</li></ul>',
+    '<p>Por defecto, Apply to each corre en orden. Se puede activar la <b>concurrencia</b> para procesar varios elementos a la vez, pero entonces las variables pueden pisarse.</p>'
+  ], [
+    ['¿Qué pasa después de una Condition?', ['El flujo sigue con las acciones de debajo', 'El flujo termina', 'Se repite', 'Vuelve al trigger'], 'Las ramas Sí y No se juntan al final.'],
+    ['Llega un valor que no coincide con ningún caso del Switch. ¿Qué se ejecuta?', ['El Default', 'El primer caso', 'Nada y el flujo falla', 'Todos los casos'], 'Por eso conviene definir siempre el Default.'],
+    ['Dentro de Apply to each, ¿cómo leés el campo nombre del elemento actual?', ["items('Apply_to_each')?['nombre']", "item()?['nombre']", "triggerBody()?['nombre']", "variables('nombre')"], 'item() es para Filter array y Select.'],
+    ['¿Qué riesgo tiene activar la concurrencia en Apply to each?', ['Que varias iteraciones modifiquen la misma variable a la vez', 'Que no se ejecute', 'Que se borre la lista', 'Ninguno'], 'Con variables compartidas conviene dejarlo en orden.'],
+  ]],
+  ['Manejo de errores', [
+    '<p>Cada acción tiene <b>Configure run after</b>: define si corre cuando la anterior terminó bien, falló, se saltó o venció el tiempo.</p>',
+    '<ul><li>Patrón <b>try/catch</b>: un <b>Scope</b> "Try" con las acciones, y un Scope "Catch" configurado para correr solo si el primero falló.</li><li><b>Terminate</b> termina el flujo con estado Succeeded, Failed o Cancelled y un mensaje.</li><li>Las acciones HTTP y de conectores tienen <b>retry policy</b> para reintentar errores pasajeros.</li></ul>',
+    '<p>Validar los datos al principio y terminar con un mensaje claro ahorra horas de búsqueda en el historial.</p>'
+  ], [
+    ['¿Cómo se arma un try/catch?', ['Con dos Scopes y Configure run after', 'Con un Switch', 'Con Apply to each', 'No se puede'], 'El Scope "Catch" corre cuando "Try" falla.'],
+    ['¿Qué hace Terminate con estado Failed?', ['Termina el flujo marcándolo como fallido, con un mensaje', 'Reinicia el flujo', 'Saltea la acción', 'Envía un email'], 'El mensaje aparece en el historial.'],
+    ['¿Qué configurás para reintentar una llamada HTTP que falla a veces?', ['La retry policy de la acción', 'Una trigger condition', 'Un entorno nuevo', 'Una variable'], 'Se puede elegir exponencial o intervalo fijo.'],
+    ['¿Para qué sirve validar los datos al inicio del flujo?', ['Para cortar temprano con un error claro', 'Para que corra más rápido siempre', 'Para crear variables', 'No sirve'], 'Evita errores confusos más adelante.'],
+  ]],
+  ['Excel y SharePoint como origen de datos', [
+    '<p><b>Excel Online (Business)</b> trabaja sobre <b>tablas</b>, no sobre rangos: <i>List rows present in a table</i> devuelve las filas en <code>value</code> y <i>Add a row into a table</i> agrega una.</p>',
+    '<p><b>SharePoint</b> trabaja con <b>listas</b>: <i>When an item is created</i>, <i>Get items</i>, <i>Create item</i> y <i>Update item</i>. Es más robusto que Excel para varios usuarios a la vez.</p>',
+    '<ul><li>List rows trae 256 filas por defecto: para más, activá la paginación.</li><li>Se puede filtrar en origen con una <b>Filter Query</b> OData para traer menos datos.</li><li>Excel bloquea el archivo mientras alguien lo edita; SharePoint no.</li></ul>'
+  ], [
+    ['¿Sobre qué trabaja el conector de Excel?', ['Tablas', 'Rangos sueltos', 'Gráficos', 'Macros'], 'Si el dato no está en una tabla, el conector no lo ve.'],
+    ['¿Dónde quedan las filas que devuelve List rows present in a table?', ['En value', 'En rows', 'En items', 'En body directo'], 'Por eso se recorre body(...)?[\'value\'].'],
+    ['¿Cuántas filas trae List rows por defecto?', ['256', '10', 'Todas', '5000'], 'Para más, se activa la paginación.'],
+    ['¿Por qué una lista de SharePoint suele ser mejor que Excel como base de datos?', ['Soporta varios usuarios a la vez sin bloquear', 'Es más linda', 'No necesita conexión', 'Es premium'], 'Excel se bloquea mientras alguien edita.'],
+  ]],
+  ['Outlook y Teams', [
+    '<ul><li><b>Send an email (V2)</b> envía desde el buzón de la conexión; <b>Send an email from a shared mailbox</b> desde un buzón compartido.</li><li><b>Post message in a chat or channel</b> publica en un canal o chat de Teams, como usuario o como Flow bot.</li><li>Las <b>tarjetas adaptables</b> permiten mostrar datos con formato y pedir una respuesta (<i>Post adaptive card and wait for a response</i>).</li></ul>',
+    '<p>Para notificaciones de sistema conviene publicar como <b>Flow bot</b> o desde una cuenta de servicio, no con la cuenta personal de quien armó el flujo.</p>'
+  ], [
+    ['¿Qué acción envía un mensaje a un canal de Teams?', ['Post message in a chat or channel', 'Send an email (V2)', 'Create a task', 'Compose'], 'Se elige equipo, canal y quién publica.'],
+    ['¿Qué permite una tarjeta adaptable?', ['Mostrar datos con formato y pedir una respuesta', 'Crear tablas de Excel', 'Cambiar licencias', 'Reemplazar un trigger'], 'El flujo puede esperar esa respuesta.'],
+    ['¿Desde qué cuenta conviene enviar notificaciones de un proceso de la empresa?', ['Una cuenta de servicio o el Flow bot', 'La personal de quien armó el flujo', 'Cualquiera', 'Una cuenta de prueba'], 'Si la persona se va, el flujo sigue funcionando.'],
+    ['¿Qué acción usarías para enviar desde el buzón de soporte@?', ['Send an email from a shared mailbox', 'Send an email (V2)', 'Post message', 'Create file'], 'La conexión necesita permisos sobre ese buzón.'],
+  ]],
+  ['Aprobaciones', [
+    '<p><b>Start and wait for an approval</b> envía una solicitud por Teams, Outlook y la app de aprobaciones, y el flujo espera. El resultado queda en <code>outcome</code>: <b>Approve</b> o <b>Reject</b>.</p>',
+    '<ul><li>Tipos: <i>Approve/Reject - First to respond</i>, <i>Everyone must approve</i> y respuestas personalizadas.</li><li>Para varios niveles (jefe y después finanzas) se encadenan aprobaciones con Conditions.</li><li>Una ejecución puede esperar hasta 30 días; para más, se diseña con tiempos límite y recordatorios.</li></ul>',
+    '<p>Patrón útil: si se rechaza, avisar y <b>Terminate</b> con estado Succeeded para no seguir evaluando.</p>'
+  ], [
+    ['¿Qué valores devuelve outcome en una aprobación básica?', ['Approve o Reject', 'Sí o No', 'true o false', '1 o 0'], 'Con eso se arma la Condition siguiente.'],
+    ['¿Cómo se arma una aprobación en dos niveles?', ['Encadenando aprobaciones con Conditions', 'Con un solo Compose', 'Con Recurrence', 'No se puede'], 'Primero el jefe y, si aprueba, finanzas.'],
+    ['¿Cuánto puede esperar una ejecución por una aprobación?', ['Hasta 30 días', '1 hora', 'Para siempre', '5 minutos'], 'Es el límite de duración de una ejecución.'],
+    ['Rechazaron la solicitud y no hay nada más que hacer. ¿Qué usás?', ['Terminate con estado Succeeded', 'Terminate con estado Failed', 'Un Switch', 'Una variable'], 'No es un error: el proceso terminó como corresponde.'],
+  ]],
+  ['Dataverse', [
+    '<p><b>Dataverse</b> es la base de datos de Power Platform: tablas con columnas tipadas, relaciones, reglas de negocio, seguridad por roles y auditoría.</p>',
+    '<ul><li>Acciones: <i>Add a new row</i>, <i>List rows</i>, <i>Get a row by ID</i>, <i>Update a row</i>.</li><li>Trigger: <i>When a row is added, modified or deleted</i>.</li><li><i>List rows</i> acepta filtros OData y FetchXML.</li></ul>',
+    '<p>Es un conector premium. Las apps model-driven y Dynamics 365 guardan sus datos en Dataverse.</p>'
+  ], [
+    ['¿Qué es una tabla de Dataverse?', ['Un conjunto de filas con columnas tipadas y seguridad', 'Una hoja de Excel', 'Un canal de Teams', 'Un flujo'], 'Es más robusta que Excel o SharePoint.'],
+    ['¿Qué trigger reacciona a cambios en Dataverse?', ['When a row is added, modified or deleted', 'Recurrence', 'When a new email arrives', 'Manually trigger a flow'], 'Se puede filtrar por columnas.'],
+    ['¿Qué tipo de conector es Dataverse?', ['Premium', 'Standard', 'Personalizado', 'De escritorio'], 'Requiere licencia de Power Automate o Power Apps.'],
+    ['¿Qué productos guardan sus datos en Dataverse?', ['Dynamics 365 y las apps model-driven', 'Outlook', 'Excel', 'Planner'], 'Por eso aparece en casi todos los proyectos de Dynamics.'],
+  ]],
+  ['HTTP y APIs', [
+    '<p>El conector <b>HTTP</b> (premium) llama a cualquier API: GET, POST, PUT, PATCH o DELETE, con headers, body y autenticación (Basic, OAuth, certificado, Azure AD).</p>',
+    '<ul><li>La respuesta queda en <code>body(\'HTTP\')</code> y el código en <code>outputs(\'HTTP\')?[\'statusCode\']</code>.</li><li>Las claves nunca van en la URL: van en la autenticación o en Azure Key Vault.</li><li>El trigger <i>When a HTTP request is received</i> expone el flujo como un endpoint.</li></ul>',
+    '<p>Si una API se usa en muchos flujos, conviene un <b>conector personalizado</b>.</p>'
+  ], [
+    ['¿Dónde queda la respuesta de una llamada HTTP?', ["En body('HTTP')", 'En triggerBody()', "En variables('HTTP')", 'En el entorno'], 'El código de estado está en outputs.'],
+    ['¿Dónde no deberías poner una clave de API?', ['En la URL', 'En Azure Key Vault', 'En la autenticación de la acción', 'En un conector personalizado'], 'La URL queda registrada en el historial.'],
+    ['¿Qué trigger convierte un flujo en un endpoint que otros sistemas pueden llamar?', ['When a HTTP request is received', 'Recurrence', 'When a new response is submitted', 'Apply to each'], 'Genera una URL al guardar el flujo.'],
+    ['¿Cómo sabés si la API respondió con error?', ["Revisando outputs('HTTP')?['statusCode']", 'Mirando el color de la acción', 'No se puede', 'Con un Switch vacío'], 'Un 200 es éxito; 4xx y 5xx son errores.'],
+  ]],
+  ['AI Builder y Copilot', [
+    '<p><b>AI Builder</b> agrega modelos de IA a los flujos: <b>prompts</b> (<i>Run a prompt</i>), procesamiento de <b>facturas</b> y documentos, clasificación de texto, análisis de sentimiento y extracción de entidades.</p>',
+    '<ul><li>Consume <b>créditos de AI Builder</b>, incluidos en algunas licencias o comprados aparte.</li><li>Pedí respuestas con formato fijo (una palabra de una lista o un JSON) y convertí con <code>json()</code>.</li><li><b>Copilot</b> en Power Automate permite describir un flujo en lenguaje natural para que lo arme.</li></ul>',
+    '<p>Toda salida de IA que afecte a un cliente o a un pago tiene que tener revisión humana.</p>'
+  ], [
+    ['¿Qué consume AI Builder?', ['Créditos de AI Builder', 'Nada', 'Ejecuciones de Excel', 'Horas de Power BI'], 'Es un costo aparte de la licencia del flujo.'],
+    ['Le pedís a un prompt un JSON. ¿Qué hacés antes de usar sus campos?', ['Convertirlo con json()', 'Pasarlo a mayúsculas', 'Enviarlo por Teams', 'Nada'], 'La respuesta llega como texto.'],
+    ['¿Qué modelo de AI Builder sirve para leer facturas en PDF?', ['Procesamiento de facturas', 'Análisis de sentimiento', 'Clasificación de texto', 'Copilot'], 'Extrae proveedor, fecha, total y más.'],
+    ['¿Cuándo hace falta revisión humana de una salida de IA?', ['Cuando afecta a un cliente o a un pago', 'Nunca', 'Solo los viernes', 'Solo en Excel'], 'La IA puede equivocarse con seguridad aparente.'],
+  ]],
+  ['Power Automate Desktop (RPA)', [
+    '<p><b>Power Automate Desktop</b> automatiza aplicaciones de escritorio y web con clics, teclado y lectura de pantalla: sistemas viejos sin API, SAP GUI, Excel de escritorio.</p>',
+    '<ul><li>Un flujo de nube lo llama con <i>Run a flow built with Power Automate for desktop</i>, pasándole entradas y recibiendo salidas.</li><li><b>Atendido</b>: corre con un usuario conectado. <b>Desatendido</b>: corre solo en una máquina, y requiere licencia Process o Premium con add-on.</li><li>La máquina se registra en un <b>machine group</b>.</li></ul>',
+    '<p>RPA es frágil ante cambios de pantalla: si existe API o conector, siempre es mejor.</p>'
+  ], [
+    ['¿Cuándo conviene usar RPA?', ['Cuando el sistema no tiene API ni conector', 'Siempre', 'Para enviar emails', 'Para leer Excel en la nube'], 'Si hay API, es más estable usarla.'],
+    ['¿Qué acción de un flujo de nube ejecuta un flujo de escritorio?', ['Run a flow built with Power Automate for desktop', 'Apply to each', 'HTTP', 'Compose'], 'Le pasa entradas y recibe salidas.'],
+    ['¿Qué diferencia hay entre atendido y desatendido?', ['Atendido necesita un usuario conectado; desatendido corre solo', 'Son iguales', 'Desatendido es gratis', 'Atendido no tiene salidas'], 'El desatendido requiere licencia específica.'],
+    ['¿Por qué RPA es frágil?', ['Depende de la pantalla, que puede cambiar', 'Porque es lento', 'Porque no usa Excel', 'No es frágil'], 'Un cambio de diseño en la app rompe el flujo.'],
+  ]],
+  ['Power Apps y Power Automate', [
+    '<p>Una app de <b>Power Apps</b> puede ejecutar un flujo con el trigger <b>PowerApps (V2)</b>, que define entradas tipadas (texto, número, email, archivo).</p>',
+    '<ul><li>El flujo devuelve datos a la app con <b>Respond to a PowerApp or flow</b>.</li><li>En la app se llama así: <code>Set(res, MiFlujo.Run(txtNombre.Text, txtEmail.Text))</code> y después <code>res.mensaje</code>.</li><li>El flujo corre con las conexiones de quien usa la app, salvo que se configure de otra forma.</li></ul>',
+    '<p>Sirve para tareas que la app no puede hacer sola: enviar emails con formato, llamar APIs o generar archivos.</p>'
+  ], [
+    ['¿Qué trigger se usa para llamar un flujo desde Power Apps?', ['PowerApps (V2)', 'Recurrence', 'When a HTTP request is received', 'When an item is created'], 'Define las entradas que manda la app.'],
+    ['¿Cómo devuelve datos el flujo a la app?', ['Con Respond to a PowerApp or flow', 'Con Send an email', 'Con Compose', 'No puede'], 'Las salidas se leen en la app.'],
+    ['¿Cómo se ejecuta el flujo desde Power Fx?', ['MiFlujo.Run(...)', 'Run(MiFlujo)', 'Flow.Start(MiFlujo)', 'Call MiFlujo'], 'Se guarda el resultado con Set().'],
+    ['¿Para qué se usa un flujo desde una app?', ['Para tareas que la app no hace sola, como llamar APIs o enviar emails', 'Para dibujar pantallas', 'Para cambiar colores', 'Para nada'], 'La app se ocupa de la interfaz y el flujo del proceso.'],
+  ]],
+  ['Power BI y análisis de datos con flujos', [
+    '<p>Los flujos preparan y mueven datos para <b>Power BI</b>: <i>Add rows to a dataset</i> agrega filas a un dataset de streaming o push, y <i>Refresh a dataset</i> actualiza un modelo.</p>',
+    '<ul><li>Para sumar o contar dentro de un flujo se usan <b>variables</b>: <i>Initialize variable</i> al principio, <i>Increment variable</i> dentro de Apply to each.</li><li>Las variables se inicializan en el nivel superior del flujo, nunca dentro de un bucle.</li><li>Desde Power BI, el visual de Power Automate permite lanzar un flujo con los datos filtrados en el reporte.</li></ul>',
+    '<p>Para volúmenes grandes, el cálculo conviene hacerlo en Power BI o en una base de datos, no en el flujo.</p>'
+  ], [
+    ['¿Dónde se inicializa una variable?', ['En el nivel superior del flujo, antes de usarla', 'Dentro de Apply to each', 'En el trigger', 'En Power BI'], 'Initialize variable no se puede usar dentro de un bucle.'],
+    ['¿Qué acción suma un valor a una variable numérica?', ['Increment variable', 'Set variable', 'Compose', 'Append to array variable'], 'Set variable reemplaza el valor.'],
+    ['¿Qué acción manda datos a un dataset de Power BI?', ['Add rows to a dataset', 'Create file', 'Send an email', 'Parse JSON'], 'Sirve para datasets push o streaming.'],
+    ['¿Dónde conviene calcular sobre millones de filas?', ['En Power BI o en una base de datos', 'En un Apply to each', 'En una variable', 'En Teams'], 'Los flujos tienen límites de acciones y tiempo.'],
+  ]],
+  ['Soluciones y ALM', [
+    '<p>Una <b>solución</b> empaqueta flujos, apps, tablas y conectores para moverlos entre entornos. Es la base del ciclo de vida (<b>ALM</b>).</p>',
+    '<ul><li><b>Referencias de conexión</b>: el flujo apunta a una referencia, y en cada entorno se elige la conexión real.</li><li><b>Variables de entorno</b>: URLs, IDs de listas o correos que cambian entre desarrollo y producción.</li><li>Las soluciones se exportan como <b>no administradas</b> (para desarrollo) y se importan como <b>administradas</b> en producción.</li><li><b>Pipelines</b> de Power Platform o Azure DevOps y GitHub automatizan el despliegue.</li></ul>'
+  ], [
+    ['¿Para qué sirve una solución?', ['Para mover flujos y apps entre entornos', 'Para pagar licencias', 'Para crear conexiones personales', 'Para borrar historial'], 'Es la unidad de despliegue.'],
+    ['¿Qué resuelven las variables de entorno?', ['Valores que cambian entre desarrollo y producción', 'Errores de expresiones', 'Licencias', 'Idiomas'], 'Por ejemplo, la URL de una API o un ID de lista.'],
+    ['¿Cómo se importa una solución en producción?', ['Como administrada', 'Como no administrada', 'Copiando el flujo a mano', 'Desde Excel'], 'Las administradas no se editan en producción.'],
+    ['¿Qué son las referencias de conexión?', ['Un intermediario que permite elegir la conexión en cada entorno', 'Un tipo de trigger', 'Un conector premium', 'Una política DLP'], 'Evitan rearmar el flujo en cada entorno.'],
+  ]],
+  ['Monitoreo, límites y rendimiento', [
+    '<p>El <b>historial de ejecuciones</b> (run history) muestra las entradas, salidas y duración de cada acción, y permite reenviar una ejecución.</p>',
+    '<ul><li>Cada licencia tiene un límite de <b>solicitudes a la plataforma</b> por día; si se supera, el flujo se ralentiza.</li><li>Los conectores tienen sus propios límites de llamadas.</li><li>Para mejorar el rendimiento: filtrar en origen, usar Filter array y Select en vez de bucles, y activar la concurrencia con cuidado.</li><li>El <b>Power Platform admin center</b> y el <b>CoE Starter Kit</b> dan reportes de uso de toda la organización.</li></ul>'
+  ], [
+    ['¿Dónde ves las entradas y salidas de cada acción de una ejecución?', ['En el historial de ejecuciones', 'En el entorno', 'En la política DLP', 'En Planner'], 'También podés reenviar la ejecución.'],
+    ['¿Qué pasa si un flujo supera el límite de solicitudes de la licencia?', ['Se ralentiza', 'Se borra', 'Se vuelve premium', 'No pasa nada'], 'Se aplica throttling.'],
+    ['¿Qué mejora el rendimiento de un flujo con muchas filas?', ['Filtrar en origen y usar Filter array y Select', 'Agregar más Conditions', 'Usar más variables', 'Enviar más emails'], 'Menos acciones por ejecución.'],
+    ['¿Qué herramienta da reportes de uso de toda la organización?', ['El CoE Starter Kit', 'Outlook', 'Planner', 'Power Automate Desktop'], 'Se instala en un entorno propio.'],
+  ]],
+  ['Gobierno y buenas prácticas', [
+    '<ul><li>Nombrá las acciones por lo que hacen: <i>Obtener facturas vencidas</i> en lugar de <i>List rows present in a table 2</i>.</li><li>Usá <b>cuentas de servicio</b> para las conexiones de procesos de la empresa.</li><li>Guardá secretos en <b>Azure Key Vault</b> o en las conexiones, nunca en el flujo.</li><li>Agregá notas y Scopes para que otra persona entienda el flujo.</li><li>Definí un <b>Center of Excellence (CoE)</b>: quién puede crear flujos, en qué entornos y con qué conectores.</li></ul>',
+    '<p>Un buen flujo no solo funciona: se entiende, se puede mover a producción y avisa cuando falla.</p>'
+  ], [
+    ['¿Qué cuenta conviene usar para las conexiones de un proceso de la empresa?', ['Una cuenta de servicio', 'La personal de quien armó el flujo', 'Cualquiera', 'Una de prueba'], 'Si la persona se va, el flujo sigue funcionando.'],
+    ['¿Dónde se guardan los secretos?', ['En Azure Key Vault o en las conexiones', 'En un Compose', 'En el nombre del flujo', 'En la URL'], 'Así no quedan expuestos en el historial.'],
+    ['¿Por qué renombrar las acciones?', ['Para que el flujo se entienda y las expresiones sean legibles', 'Porque es obligatorio', 'Para que sea más rápido', 'No hace falta'], 'body(\'Obtener_facturas_vencidas\') se entiende solo.'],
+    ['¿Qué es un Center of Excellence (CoE)?', ['El equipo y las reglas que gobiernan Power Platform en la empresa', 'Un entorno de pruebas', 'Un conector', 'Un tipo de licencia'], 'Define quién crea qué y dónde.'],
+  ]],
+];
 
-const REVIEWS = [['Nora Paz', 'nora@mail.example', 1, 'El pedido llegó tarde y con la caja rota.'], ['Hugo Lima', 'hugo@mail.example', 5, 'Excelente atención, llegó antes de lo esperado.']];
-const reviewAi = p => { const r = REVIEWS.find(x => p.includes(x[0]) && p.includes(x[3])); return r ? `Hola ${r[0]}, gracias por tu reseña. Tomamos nota de lo que nos contás.` : 'Gracias por tu mensaje.'; };
-const TASKS = [['sofi', 'Hay que mandar la propuesta a Banco Litoral antes del 2026-12-01, es urgente.', { titulo: 'Mandar la propuesta a Banco Litoral', fecha: '2026-12-01', prioridad: 'alta' }], ['leo', 'Cuando puedas, ordená la carpeta de contratos. Fecha tentativa 2026-12-20.', { titulo: 'Ordenar la carpeta de contratos', fecha: '2026-12-20', prioridad: 'normal' }]];
-const taskAi = p => (TASKS.find(t => p.includes(t[1])) || [])[2] || { titulo: '', fecha: '', prioridad: '' };
-
-PROJ.zapier.push(
-  {
-    id: 'corporativos', cat: 'Leads', level: 'Inicial', title: 'Solo leads corporativos al CRM',
-    story: 'El formulario recibe muchos leads con emails personales. Al CRM solo tienen que entrar los corporativos, con el nombre y el email prolijos, y ventas tiene que enterarse.',
-    objectives: ['Limpiar datos con Formatter.', 'Detener el Zap con Filter.', 'Entender qué pasos consumen tasks.'],
-    reqs: [
-      'Trigger: <b>Webhooks by Zapier · Catch Hook</b>.',
-      '<b>Formatter</b>: <code>email</code> en minúsculas y <code>nombre</code> sin espacios de más y con mayúscula inicial: <code>{{capitalize(trim(1.nombre))}}</code>.',
-      '<b>Filter</b>: el email <i>no contiene</i> <code>gmail.com</code>.',
-      '<b>HubSpot · Create Contact</b> con el email y el nombre ya formateados.',
-      '<b>Gmail</b> a <code>ventas@' + DEMO + '</code> con asunto <code>Nuevo lead corporativo: NOMBRE</code>.',
-    ],
-    hints: ['Los datos formateados salen del paso 2: {{2.email}} y {{2.nombre}}.', 'Cuando el Filter no se cumple, el Zap termina ahí sin error: es lo esperado.'],
-    real: ['El Filter que detiene el Zap no consume tasks: ponelo antes de las acciones pagas.', 'En Zapier real elegís los campos de una lista; no se escriben las llaves a mano.'],
-    sample: [{ nombre: '  julia torres ', email: 'JULIA@Constructora-Norte.example' }],
-    checks: [['Tiene un Formatter', f => has(f, 'set')], ['Tiene un Filter', f => has(f, 'filter')]],
-    tests: [
-      { name: 'Lead corporativo', input: [{ nombre: '  julia torres ', email: 'JULIA@Constructora-Norte.example' }], expect: r => {
-        const c = callsOf(r, 'crm')[0]; if (!c) return 'No se creó el contacto en HubSpot.';
-        if (c.params.email !== 'julia@constructora-norte.example') return `El email quedó «${c.params.email}».`;
-        if (c.params.name !== 'Julia Torres') return `El nombre quedó «${c.params.name}»; se esperaba «Julia Torres».`;
-        const m = sameMail(r)[0]; if (!m || m.params.to !== 'ventas@' + DEMO) return 'Falta el email a ventas.';
-        return m.params.subject === 'Nuevo lead corporativo: Julia Torres' || `El asunto fue «${m.params.subject}».`;
-      } },
-      { name: 'Lead con Gmail', input: [{ nombre: 'pedro gomez', email: 'Pedro.Gomez@GMAIL.com' }], expect: r => (!callsOf(r, 'crm').length && !sameMail(r).length) || 'Un lead con Gmail no tiene que llegar al CRM ni avisar a ventas.' },
-    ],
-    solution: () => ({ steps: [
-      N('webhook', 'Nuevo lead', { path: '/leads' }),
-      N('set', 'Limpiar datos', { keep: false, fields: [col('email', '{{lower(1.email)}}'), col('nombre', '{{capitalize(trim(1.nombre))}}')] }),
-      N('filter', 'Solo corporativos', { cond: { left: '{{2.email}}', op: 'ncontains', right: 'gmail.com' } }),
-      N('crm', 'Crear contacto', { email: '{{2.email}}', name: '{{2.nombre}}' }),
-      N('mail', 'Avisar a ventas', { to: 'ventas@' + DEMO, subject: 'Nuevo lead corporativo: {{2.nombre}}', body: '{{2.email}}' }),
-    ] }),
+const P = {
+  pa: {
+    name: 'Power Platform', short: 'Power Automate', tone: 'sky', layout: 'v', flow: 'flujo', node: 'acción', run: 'Probar', enterprise: true,
+    tag: 'Power Automate y Power Platform de Microsoft',
+    intro: 'Power Automate es la herramienta de flujos de Microsoft Power Platform. Conecta Outlook, Teams, Excel, SharePoint, Dataverse y cientos de servicios, y se combina con Power Apps, Power BI y AI Builder. Los conectores premium, la automatización de escritorio y AI Builder requieren licencia paga.',
+    cheat: ['Las expresiones van entre <code>@{ }</code>: <code>@{triggerBody()?[\'email\']}</code>.', 'La salida de una acción se lee por su nombre, con guiones bajos: <code>@{body(\'Run_a_prompt\')?[\'text\']}</code> u <code>outputs(\'Compose\')</code>.', 'En Apply to each: <code>@{items(\'Apply_to_each\')?[\'campo\']}</code>. En Filter array y Select: <code>@{item()?[\'campo\']}</code>.', 'Variables: <code>@{variables(\'total\')}</code>. Funciones: <code>toLower</code>, <code>concat</code>, <code>replace</code>, <code>add</code>, <code>mul</code>, <code>div</code>, <code>int</code>, <code>json</code>, <code>length</code>, <code>join</code>, <code>empty</code>, <code>and</code>, <code>not</code>.'],
+    cat: {
+      formsIn: ['When a new response is submitted', 'Triggers', 'Microsoft Forms: arranca cuando alguien envía el formulario.'],
+      spItem: ['When an item is created', 'Triggers', 'SharePoint: arranca cuando se crea un elemento en una lista.'],
+      instant: ['PowerApps (V2)', 'Triggers', 'Power Apps: la app ejecuta el flujo y le pasa entradas.'],
+      webhook: ['When a HTTP request is received', 'Triggers', 'Request (premium): el flujo recibe una petición HTTP.'],
+      schedule: ['Recurrence', 'Triggers', 'Schedule: el flujo corre por horario.'],
+      if: ['Condition', 'Control', 'Dos ramas, Sí y No. Después, el flujo sigue con lo de abajo.'],
+      router: ['Switch', 'Control', 'Compara un valor con cada caso; si ninguno coincide, va al Default.'],
+      foreach: ['Apply to each', 'Control', 'Repite las acciones de adentro por cada elemento de una lista.'],
+      terminate: ['Terminate', 'Control', 'Termina el flujo con estado Succeeded, Failed o Cancelled.'],
+      varInit: ['Initialize variable', 'Variables', 'Crea una variable. Va en el nivel superior, antes de usarla.'],
+      varSet: ['Set variable', 'Variables', 'Reemplaza el valor de una variable.'],
+      varInc: ['Increment variable', 'Variables', 'Suma un valor a una variable Integer o Float.'],
+      varAppend: ['Append to array variable', 'Variables', 'Agrega un elemento a una variable Array.'],
+      set: ['Compose', 'Operaciones de datos', 'Arma un objeto con los campos que definas. Se lee con outputs(\'Compose\').'],
+      parseJson: ['Parse JSON', 'Operaciones de datos', 'Convierte un JSON en un objeto con campos.'],
+      filter: ['Filter array', 'Operaciones de datos', 'Deja los elementos de una lista que cumplen la condición (item()).'],
+      select: ['Select', 'Operaciones de datos', 'Transforma cada elemento de una lista (item()).'],
+      csv: ['Create CSV table', 'Operaciones de datos', 'Convierte una lista de objetos en un texto CSV.'],
+      mail: ['Send an email (V2)', 'Office 365 Outlook', 'Envía un email desde Outlook.'],
+      slack: ['Post message in a chat or channel', 'Microsoft Teams', 'Publica un mensaje en un canal de Teams.'],
+      sheetsRead: ['List rows present in a table', 'Excel Online (Business)', 'Devuelve las filas de una tabla en value.'],
+      sheets: ['Add a row into a table', 'Excel Online (Business)', 'Agrega una fila a una tabla de Excel.'],
+      file: ['Create file', 'OneDrive for Business', 'Crea un archivo en una carpeta.'],
+      task: ['Create a task', 'Planner', 'Crea una tarea en un plan de Planner.'],
+      crm: ['Add a new row', 'Dataverse', 'Agrega una fila a una tabla de Dataverse (premium).'],
+      approval: ['Start and wait for an approval', 'Approvals', 'Envía una aprobación y espera Approve o Reject.'],
+      ai: ['Run a prompt', 'AI Builder', 'Ejecuta un prompt y devuelve la respuesta en text.'],
+      pbi: ['Add rows to a dataset', 'Power BI', 'Agrega filas a un dataset de Power BI.'],
+      desktop: ['Run a flow built with Power Automate for desktop', 'Power Automate Desktop', 'Ejecuta un flujo de RPA y recibe sus salidas.'],
+      respond: ['Respond to a PowerApp or flow', 'Power Apps', 'Devuelve valores a la app que llamó al flujo.'],
+      http: ['HTTP', 'HTTP (premium)', 'Llama a cualquier API.'],
+    },
+    lessons: CLASSES.map(c => [c[0], c[1]]),
+    quizzes: CLASSES.map((c, i) => ({ id: 'c' + (i + 1), title: `Clase ${i + 1}: ${c[0]}`, qs: c[2] })),
   },
-  {
-    id: 'asignar', cat: 'Nodos de programación', level: 'Intermedio', title: 'Asignar vendedor con Code by Zapier',
-    story: 'Cada lead tiene que ir al vendedor de su país, y los de monto alto se marcan con prioridad. Son reglas simples, pero no hay una app que las resuelva: va con código.',
-    objectives: ['Pasar datos al código con Input Data.', 'Recordar que inputData siempre trae texto.', 'Devolver campos nuevos con output.'],
-    reqs: [
-      'Trigger: <b>Catch Hook</b>.',
-      '<b>Code by Zapier</b> con Input Data <code>pais</code> y <code>monto</code>. Tiene que devolver <code>vendedor</code> (AR → <code>ana@' + DEMO + '</code>, MX → <code>luis@' + DEMO + '</code>, el resto → <code>equipo@' + DEMO + '</code>) y <code>prioridad</code> (<code>alta</code> si el monto es ≥ 3000, si no <code>normal</code>).',
-      '<b>Google Sheets</b> en la hoja <code>Asignaciones</code>: columnas <code>Lead</code>, <code>Vendedor</code> y <code>Prioridad</code>.',
-      '<b>Slack</b> a <code>#leads</code>: <code>Lead NOMBRE → VENDEDOR (prioridad PRIORIDAD)</code>.',
-    ],
-    hints: ['inputData.monto es texto: comparalo con Number(inputData.monto) >= 3000.', 'Asigná el resultado así: output = { vendedor, prioridad };', 'El resultado del código es el paso 2: {{2.vendedor}}.'],
-    real: ['Code by Zapier corre JavaScript o Python, con límites de tiempo y memoria: sirve para lógica corta, no para procesos pesados.', 'Antes de escribir código, fijate si Formatter o Lookup Table ya lo resuelven.'],
-    sample: [{ nombre: 'Omar Ruiz', email: 'omar@cliente.example', pais: 'AR', monto: '4500' }],
-    checks: [['Usa Code by Zapier', f => has(f, 'code')]],
-    tests: [['Omar Ruiz', 'AR', '4500', 'ana', 'alta'], ['Lía Campos', 'MX', '500', 'luis', 'normal'], ['Raúl Peña', 'CL', '3000', 'equipo', 'alta']].map(([nombre, pais, monto, v, pr]) => ({ name: `${nombre} (${pais}, $${monto})`, input: [{ nombre, email: 'x@cliente.example', pais, monto }], expect: r => {
-      const vend = `${v}@${DEMO}`, s = callsOf(r, 'sheets')[0]; if (!s) return 'No se agregó la fila en Asignaciones.';
-      if (String(s.params.sheet).trim() !== 'Asignaciones') return `La hoja es «${s.params.sheet}».`;
-      const val = s.params.values;
-      if (val.Lead !== nombre || val.Vendedor !== vend || val.Prioridad !== pr) return `La fila fue ${JSON.stringify(val)}; se esperaba Lead «${nombre}», Vendedor «${vend}», Prioridad «${pr}».`;
-      const k = callsOf(r, 'slack')[0], ex = `Lead ${nombre} → ${vend} (prioridad ${pr})`;
-      if (!k || String(k.params.channel).trim() !== '#leads') return 'Falta el aviso en #leads.';
-      return k.params.text === ex || `El mensaje fue «${k.params.text}»; se esperaba «${ex}».`;
-    } })),
-    solution: () => ({ steps: [
-      N('webhook', 'Nuevo lead', { path: '/leads' }),
-      N('code', 'Asignar vendedor', { inputs: [col('pais', '{{1.pais}}'), col('monto', '{{1.monto}}')], code: `const mapa = { AR: 'ana@${DEMO}', MX: 'luis@${DEMO}' };\noutput = {\n  vendedor: mapa[inputData.pais] || 'equipo@${DEMO}',\n  prioridad: Number(inputData.monto) >= 3000 ? 'alta' : 'normal'\n};` }),
-      N('sheets', 'Registrar', { doc: 'Ventas', sheet: 'Asignaciones', columns: [col('Lead', '{{1.nombre}}'), col('Vendedor', '{{2.vendedor}}'), col('Prioridad', '{{2.prioridad}}')] }),
-      N('slack', 'Avisar', { channel: '#leads', text: 'Lead {{1.nombre}} → {{2.vendedor}} (prioridad {{2.prioridad}})' }),
-    ] }),
-  },
-  {
-    id: 'resenas-ia', cat: 'Flujos con IA', level: 'Intermedio', title: 'Responder reseñas con IA',
-    story: 'Cada reseña merece una respuesta. La IA redacta un borrador; si la reseña es mala, lo revisa una persona antes de contestar, y si es buena, se envía sola.',
-    objectives: ['Generar texto con AI by Zapier usando datos del trigger.', 'Dividir el Zap con Paths.', 'Dejar a una persona en el medio cuando el riesgo es alto.'],
-    reqs: [
-      'Trigger: <b>Catch Hook</b> (recibe <code>cliente</code>, <code>email</code>, <code>estrellas</code> y <code>comentario</code>).',
-      '<b>AI by Zapier</b>: un prompt que pida una respuesta breve e incluya el nombre del cliente y el comentario.',
-      '<b>Paths</b>. Camino A, <code>estrellas</code> menor que <code>3</code>: <b>Slack</b> a <code>#atencion-urgente</code> con el nombre del cliente y el borrador de la IA.',
-      'Camino de respaldo: <b>Gmail</b> al cliente con asunto <code>Gracias por tu reseña, NOMBRE</code> y el texto de la IA como cuerpo.',
-    ],
-    mock: 'El modelo simulado redacta la respuesta solo si el prompt incluye el nombre del cliente y su comentario.',
-    hints: ['El texto que genera la IA está en {{2.text}}.', 'El paso de IA va antes de Paths para que los dos caminos puedan usar su resultado.'],
-    real: ['Para respuestas a clientes enojados, dejá siempre revisión humana: la IA puede prometer algo que no corresponde.', 'En AI by Zapier definís el prompt y los campos de salida; cada ejecución consume tasks.'],
-    sample: [{ cliente: 'Nora Paz', email: 'nora@mail.example', estrellas: 1, comentario: 'El pedido llegó tarde y con la caja rota.' }], ai: reviewAi,
-    checks: [['Usa un paso de IA', f => has(f, 'ai')], ['Divide con Paths', f => has(f, 'router')]],
-    tests: REVIEWS.map(([cliente, email, estrellas, comentario]) => ({ name: `Reseña de ${estrellas} estrella(s)`, input: [{ cliente, email, estrellas, comentario }], ai: reviewAi, expect: r => {
-      const reply = `Hola ${cliente}, gracias por tu reseña. Tomamos nota de lo que nos contás.`, s = callsOf(r, 'slack'), m = sameMail(r);
-      if (estrellas < 3) {
-        if (m.length) return 'Una reseña mala no se responde sola por email.';
-        if (s.length !== 1 || String(s[0].params.channel).trim() !== '#atencion-urgente') return 'Se esperaba un aviso en #atencion-urgente.';
-        if (!s[0].params.text.includes(cliente)) return 'El aviso tiene que incluir el nombre del cliente.';
-        return s[0].params.text.includes(reply) || 'El aviso tiene que incluir el borrador de la IA. ¿El prompt tiene el nombre y el comentario?';
-      }
-      if (s.length) return 'Una reseña buena no va a #atencion-urgente.';
-      if (m.length !== 1 || m[0].params.to !== email) return 'Se esperaba un email al cliente.';
-      if (m[0].params.subject !== `Gracias por tu reseña, ${cliente}`) return `El asunto fue «${m[0].params.subject}».`;
-      return m[0].params.body === reply || 'El cuerpo tiene que ser el texto de la IA. ¿El prompt tiene el nombre y el comentario?';
-    } })),
-    solution: () => ({ steps: [
-      N('webhook', 'Nueva reseña', { path: '/resenas' }),
-      N('ai', 'Redactar respuesta', { prompt: 'Escribí una respuesta breve y amable para {{1.cliente}}, que dejó esta reseña: {{1.comentario}}' }),
-      N('router', 'Según estrellas', {}, [
-        { name: 'Mala experiencia', cond: { left: '{{1.estrellas}}', op: 'lt', right: '3' }, steps: [N('slack', 'Pedir revisión', { channel: '#atencion-urgente', text: 'Reseña de {{1.cliente}} ({{1.estrellas}} estrellas). Borrador: {{2.text}}' })] },
-        { name: 'Resto', fallback: true, cond: { left: '', op: 'eq', right: '' }, steps: [N('mail', 'Responder', { to: '{{1.email}}', subject: 'Gracias por tu reseña, {{1.cliente}}', body: '{{2.text}}' })] },
-      ]),
-    ] }),
-  },
-  {
-    id: 'tarea-ia', cat: 'Flujos con IA', level: 'Avanzado', title: 'De un mensaje a una tarea con IA',
-    story: 'El equipo pide cosas por chat y después se pierden. La IA lee el mensaje, saca el título, la fecha y la prioridad, y el Zap crea la tarjeta en Trello. Si es urgente, también avisa.',
-    objectives: ['Usar la IA para extraer campos estructurados.', 'Mapear esos campos en otra app.', 'Combinar una acción fija con un Filter posterior.'],
-    reqs: [
-      'Trigger: <b>Catch Hook</b> (recibe <code>usuario</code> y <code>texto</code>).',
-      '<b>AI by Zapier</b>: pedí <code>titulo</code>, <code>fecha</code> y <code>prioridad</code>, e incluí <code>{{1.texto}}</code>.',
-      '<b>Trello · Create Card</b> en la lista <code>Pendientes</code>: título y vencimiento de la IA, y el usuario en la descripción.',
-      '<b>Filter</b>: <code>prioridad</code> es igual a <code>alta</code>. Después, <b>Slack</b> a <code>#urgentes</code>: <code>Tarea urgente: TITULO (vence FECHA)</code>.',
-    ],
-    mock: 'El modelo simulado devuelve campos listos, por ejemplo: titulo, fecha y prioridad (alta o normal).',
-    hints: ['Los campos de la IA se leen como {{2.titulo}}, {{2.fecha}} y {{2.prioridad}}.', 'El Filter va después de Trello: la tarjeta se crea siempre y solo el aviso depende de la prioridad.'],
-    real: ['En AI by Zapier definís los campos de salida y su tipo, así el siguiente paso los puede mapear.', 'Revisá las fechas: los modelos se confunden con "el viernes" o "la semana que viene" si no les das la fecha de hoy.'],
-    sample: [{ usuario: TASKS[0][0], texto: TASKS[0][1] }], ai: taskAi,
-    checks: [['Usa un paso de IA', f => has(f, 'ai')], ['Crea la tarjeta en Trello', f => has(f, 'task')]],
-    tests: TASKS.map(([usuario, texto, o]) => ({ name: `Tarea de prioridad ${o.prioridad}`, input: [{ usuario, texto }], ai: taskAi, expect: r => {
-      const t = callsOf(r, 'task')[0]; if (!t) return 'No se creó la tarjeta.';
-      if (String(t.params.list).trim() !== 'Pendientes') return `La lista es «${t.params.list}».`;
-      if (t.params.title !== o.titulo) return `El título fue «${t.params.title}»; se esperaba «${o.titulo}». ¿El prompt incluye el texto?`;
-      if (t.params.due !== o.fecha) return `El vencimiento fue «${t.params.due}»; se esperaba ${o.fecha}.`;
-      if (!t.params.description.includes(usuario)) return 'La descripción tiene que incluir el usuario.';
-      const s = callsOf(r, 'slack');
-      if (o.prioridad !== 'alta') return !s.length || 'Una tarea normal no avisa en #urgentes.';
-      const ex = `Tarea urgente: ${o.titulo} (vence ${o.fecha})`;
-      if (s.length !== 1 || String(s[0].params.channel).trim() !== '#urgentes') return 'Falta el aviso en #urgentes.';
-      return s[0].params.text === ex || `El mensaje fue «${s[0].params.text}»; se esperaba «${ex}».`;
-    } })),
-    solution: () => ({ steps: [
-      N('webhook', 'Mensaje del chat', { path: '/chat' }),
-      N('ai', 'Extraer tarea', { prompt: 'Extraé titulo, fecha (AAAA-MM-DD) y prioridad (alta o normal) de este mensaje: {{1.texto}}' }),
-      N('task', 'Crear tarjeta', { list: 'Pendientes', title: '{{2.titulo}}', due: '{{2.fecha}}', description: 'Pedido por {{1.usuario}}' }),
-      N('filter', 'Solo urgentes', { cond: { left: '{{2.prioridad}}', op: 'eq', right: 'alta' } }),
-      N('slack', 'Avisar', { channel: '#urgentes', text: 'Tarea urgente: {{2.titulo}} (vence {{2.fecha}})' }),
-    ] }),
-  },
-  {
-    id: 'reporte-diario', cat: 'Análisis de datos', level: 'Avanzado', title: 'Reporte diario de ventas con Code',
-    story: 'Al cierre del día, el equipo quiere un mensaje con cuántas ventas hubo, el total y quién vendió más. Los datos están en una hoja.',
-    objectives: ['Traer varias filas en un solo paso.', 'Recorrer y agregar una lista con código.', 'Armar un mensaje con los resultados.'],
-    reqs: [
-      'Trigger: <b>Schedule by Zapier</b>.',
-      '<b>Google Sheets · Get Many Spreadsheet Rows</b> de la hoja <code>Ventas hoy</code>.',
-      '<b>Code by Zapier</b> con Input Data <code>filas</code> ← <code>{{2.rows}}</code>. Devolvé <code>cantidad</code>, <code>total</code> y <code>mejor</code> (el vendedor que más sumó).',
-      '<b>Slack</b> a <code>#reportes</code>: <code>Ventas de hoy: N ventas por $TOTAL. Mejor vendedor: NOMBRE</code>.',
-    ],
-    mock: 'Cada fila tiene vendedor y monto. En el simulador la lista llega al código como texto JSON.',
-    hints: ['Empezá con const filas = JSON.parse(inputData.filas);', 'Sumá por vendedor en un objeto y ordená para encontrar el mayor.', 'El resultado del código es el paso 3.'],
-    real: ['En Zapier real, las listas llegan como "line items" o texto separado por comas, según la app: revisá el formato en la prueba del paso.', 'Para acumular datos durante el día existe Digest by Zapier.'],
-    sample: [{}], rows: () => HOY_A,
-    checks: [['Lee la hoja Ventas hoy', f => all(f).some(n => n.op === 'sheetsRead' && n.p.sheet.trim() === 'Ventas hoy')], ['Usa Code by Zapier', f => has(f, 'code')]],
-    tests: [['Día con 4 ventas', HOY_A, 'Ventas de hoy: 4 ventas por $5200. Mejor vendedor: Ana'], ['Día con 2 ventas', HOY_B, 'Ventas de hoy: 2 ventas por $6500. Mejor vendedor: Rita']].map(([name, data, ex]) => ({ name, input: [{}], rows: () => data, expect: r => {
-      const s = callsOf(r, 'slack'); if (s.length !== 1) return `Se esperaba un mensaje y hubo ${s.length}.`;
-      if (String(s[0].params.channel).trim() !== '#reportes') return 'El canal tiene que ser #reportes.';
-      return s[0].params.text === ex || `El mensaje fue «${s[0].params.text}»; se esperaba «${ex}».`;
-    } })),
-    solution: () => ({ steps: [
-      N('schedule', 'Cada día 18:00', { at: '18:00' }), N('sheetsRead', 'Leer ventas', { doc: 'Ventas', sheet: 'Ventas hoy' }),
-      N('code', 'Calcular resumen', { inputs: [col('filas', '{{2.rows}}')], code: 'const filas = JSON.parse(inputData.filas);\nconst porVendedor = {};\nlet total = 0;\nfilas.forEach(f => {\n  total += Number(f.monto);\n  porVendedor[f.vendedor] = (porVendedor[f.vendedor] || 0) + Number(f.monto);\n});\nconst mejor = Object.entries(porVendedor).sort((a, b) => b[1] - a[1])[0][0];\noutput = { cantidad: filas.length, total, mejor };' }),
-      N('slack', 'Publicar reporte', { channel: '#reportes', text: 'Ventas de hoy: {{3.cantidad}} ventas por ${{3.total}}. Mejor vendedor: {{3.mejor}}' }),
-    ] }),
-  },
-  {
-    id: 'monitoreo', cat: 'Análisis de datos', level: 'Avanzado', title: 'Detectar anomalías en métricas',
-    story: 'Un monitor manda métricas de cada servicio. El Zap calcula la tasa de error, deja todo registrado y reacciona distinto según la gravedad.',
-    objectives: ['Calcular un indicador con código.', 'Clasificar con umbrales.', 'Usar Paths con más de una condición y sin camino de respaldo.'],
-    reqs: [
-      'Trigger: <b>Catch Hook</b> (recibe <code>servicio</code>, <code>latencia_ms</code>, <code>errores</code> y <code>total</code>, como texto).',
-      '<b>Code by Zapier</b>: devolvé <code>tasa</code> (porcentaje de errores con un decimal) y <code>estado</code>: <code>critico</code> si la tasa es mayor que 5 o la latencia mayor que 2000; <code>alerta</code> si la tasa es mayor que 1; si no, <code>ok</code>.',
-      '<b>Google Sheets</b> en la hoja <code>Monitoreo</code>: columnas <code>Servicio</code>, <code>Tasa</code> y <code>Estado</code>. Se registra siempre.',
-      '<b>Paths</b>. <code>critico</code>: <b>Slack</b> a <code>#incidentes</code> y <b>Trello</b> en la lista <code>Incidentes</code> con título <code>Incidente en SERVICIO</code>. <code>alerta</code>: <b>Slack</b> a <code>#monitoreo</code>. Con <code>ok</code> no pasa nada más.',
-    ],
-    hints: ['Tasa con un decimal: Math.round(errores / total * 1000) / 10.', 'Acordate de convertir con Number(): todo llega como texto.', 'Quitá la marca de respaldo de los caminos: si el estado es ok, ninguno tiene que ejecutarse.'],
-    real: ['Para no repetir avisos del mismo incidente se puede guardar el último estado en Storage by Zapier.', 'Los umbrales deberían salir de los datos históricos del servicio.'],
-    sample: [{ servicio: 'api-pagos', latencia_ms: '2400', errores: '12', total: '400' }],
-    checks: [['Usa Code by Zapier', f => has(f, 'code')], ['Divide con Paths', f => has(f, 'router')]],
-    tests: [['api-pagos', '2400', '12', '400', '3', 'critico'], ['api-envios', '300', '8', '400', '2', 'alerta'], ['api-stock', '200', '1', '1000', '0.1', 'ok']].map(([servicio, lat, err, tot, tasa, estado]) => ({ name: `${servicio}: ${estado}`, input: [{ servicio, latencia_ms: lat, errores: err, total: tot }], expect: r => {
-      const s = callsOf(r, 'sheets')[0]; if (!s) return 'No se registró la métrica en la hoja.';
-      const v = s.params.values;
-      if (String(s.params.sheet).trim() !== 'Monitoreo' || v.Servicio !== servicio) return 'La fila tiene que ir a Monitoreo con el servicio.';
-      if (String(v.Tasa) !== tasa) return `Tasa vale «${v.Tasa ?? ''}»; se esperaba ${tasa}.`;
-      if (v.Estado !== estado) return `Estado vale «${v.Estado ?? ''}»; se esperaba «${estado}».`;
-      const k = callsOf(r, 'slack'), t = callsOf(r, 'task');
-      if (estado === 'ok') return (!k.length && !t.length) || 'Con estado ok no hay avisos ni tarjetas.';
-      if (estado === 'alerta') { if (t.length) return 'Una alerta no crea tarjeta.'; return (k.length === 1 && String(k[0].params.channel).trim() === '#monitoreo') || 'Se esperaba un aviso en #monitoreo.'; }
-      if (k.length !== 1 || String(k[0].params.channel).trim() !== '#incidentes') return 'Se esperaba un aviso en #incidentes.';
-      if (!t.length || String(t[0].params.list).trim() !== 'Incidentes') return 'Falta la tarjeta en la lista Incidentes.';
-      return t[0].params.title === `Incidente en ${servicio}` || `El título fue «${t[0].params.title}».`;
-    } })),
-    solution: () => ({ steps: [
-      N('webhook', 'Métrica', { path: '/metricas' }),
-      N('code', 'Calcular estado', { inputs: [col('latencia', '{{1.latencia_ms}}'), col('errores', '{{1.errores}}'), col('total', '{{1.total}}')], code: "const tasa = Math.round(Number(inputData.errores) / Number(inputData.total) * 1000) / 10;\nconst estado = (tasa > 5 || Number(inputData.latencia) > 2000) ? 'critico' : tasa > 1 ? 'alerta' : 'ok';\noutput = { tasa, estado };" }),
-      N('sheets', 'Registrar', { doc: 'Operaciones', sheet: 'Monitoreo', columns: [col('Servicio', '{{1.servicio}}'), col('Tasa', '{{2.tasa}}'), col('Estado', '{{2.estado}}')] }),
-      N('router', 'Según gravedad', {}, [
-        { name: 'Crítico', cond: { left: '{{2.estado}}', op: 'eq', right: 'critico' }, steps: [N('slack', 'Avisar incidente', { channel: '#incidentes', text: 'CRÍTICO en {{1.servicio}}: {{2.tasa}}% de errores, {{1.latencia_ms}} ms' }), N('task', 'Abrir incidente', { list: 'Incidentes', title: 'Incidente en {{1.servicio}}', description: 'Tasa {{2.tasa}}%' })] },
-        { name: 'Alerta', cond: { left: '{{2.estado}}', op: 'eq', right: 'alerta' }, steps: [N('slack', 'Avisar alerta', { channel: '#monitoreo', text: 'Alerta en {{1.servicio}}: {{2.tasa}}% de errores' })] },
-      ]),
-    ] }),
-  }
-);
-
-
-/* ---------------- Power Automate (Power Platform) ---------------- */
-P.pa = {
-  name: 'Power Automate', tone: 'sky', layout: 'v', flow: 'flujo', node: 'acción', run: 'Probar', routerMode: 'first', enterprise: true,
-  tag: 'Cloud flows de Microsoft Power Platform',
-  intro: 'Power Automate es la herramienta de flujos de Microsoft Power Platform. Conecta Outlook, Teams, Excel, SharePoint, Dataverse y cientos de servicios. Los conectores premium, las aprobaciones avanzadas, AI Builder y la automatización de escritorio requieren licencia paga.',
-  cheat: ['Las expresiones van entre <code>@{ }</code>: <code>@{triggerBody()?[\'email\']}</code>.', 'Leé la salida de una acción por su nombre, con guiones bajos: <code>@{body(\'Run_a_prompt\')?[\'text\']}</code> u <code>outputs(\'Compose\')</code>.', 'Dentro de Apply to each, el elemento actual es <code>@{items(\'Apply_to_each\')?[\'campo\']}</code>.', 'Funciones: <code>toLower</code>, <code>toUpper</code>, <code>concat</code>, <code>json</code>, <code>int</code>, <code>add</code>, <code>if</code>, <code>equals</code>, <code>length</code>.'],
-  cat: {
-    webhook: ['When a HTTP request is received', 'Triggers', 'Arranca cuando llega una petición HTTP. Conector premium (Request).'],
-    schedule: ['Recurrence', 'Triggers', 'Arranca cada cierto tiempo (flujo programado).'],
-    set: ['Compose', 'Operaciones de datos', 'Arma un objeto con los campos que definas. Se lee con outputs(\'Compose\').'],
-    split: ['Apply to each', 'Control', 'Repite las acciones siguientes por cada elemento de una lista.'],
-    if: ['Condition', 'Control', 'Divide el flujo en Sí y No según una condición.'],
-    router: ['Switch', 'Control', 'Elige un caso según un valor; si ninguno coincide, va al Default.'],
-    filter: ['Filter array', 'Operaciones de datos', 'Deja pasar solo los elementos que cumplen la condición.'],
-    http: ['HTTP', 'Conectores premium', 'Llama a cualquier API.'],
-    approval: ['Start and wait for an approval', 'Aprobaciones', 'Envía una aprobación y espera la respuesta (Approve o Reject).'],
-    ai: ['Run a prompt', 'AI Builder', 'Ejecuta un prompt de AI Builder y devuelve la respuesta en text.'],
-    mail: ['Send an email (V2)', 'Office 365 Outlook', 'Envía un email desde Outlook.'],
-    slack: ['Post message in a chat or channel', 'Microsoft Teams', 'Publica un mensaje en un canal de Teams.'],
-    sheets: ['Add a row into a table', 'Excel Online (Business)', 'Agrega una fila a una tabla de Excel.'],
-    sheetsRead: ['List rows present in a table', 'Excel Online (Business)', 'Devuelve las filas de una tabla en value.'],
-    task: ['Create a task', 'Planner', 'Crea una tarea en un plan de Planner.'],
-    crm: ['Add a new row', 'Dataverse', 'Agrega una fila a una tabla de Dataverse (conector premium).'],
-  },
-  lessons: [
-    ['Power Platform y los tipos de flujo', [
-      '<p><b>Power Platform</b> es el conjunto de herramientas low-code de Microsoft: Power Apps (aplicaciones), Power Automate (flujos), Power BI (reportes), Copilot Studio (agentes) y Dataverse (la base de datos).</p>',
-      '<p>En Power Automate hay varios tipos de flujo:</p><ul><li><b>Automatizado</b>: arranca con un evento (llega un email, se crea una fila).</li><li><b>Instantáneo</b>: lo dispara una persona con un botón o desde otra app.</li><li><b>Programado</b>: corre cada cierto tiempo (Recurrence).</li><li><b>De escritorio</b> (Power Automate Desktop): RPA que maneja aplicaciones en una PC.</li></ul>',
-      '<p>Los conectores son <b>standard</b> (incluidos en Microsoft 365) o <b>premium</b> (HTTP, Dataverse, SQL, SAP y otros), que requieren licencia de Power Automate. Por eso en una empresa casi siempre se trabaja con licencias pagas.</p>'
-    ]],
-    ['Triggers, acciones y conexiones', [
-      '<p>Todo flujo empieza con un <b>trigger</b> y sigue con <b>acciones</b>, de arriba hacia abajo. Cada acción pertenece a un <b>conector</b> (Outlook, Teams, Excel) y usa una <b>conexión</b>: la cuenta con la que se autentica.</p>',
-      '<ul><li>Los flujos viven en un <b>entorno</b> (environment): desarrollo, pruebas o producción.</li><li>En proyectos serios se agrupan en <b>soluciones</b>, con <b>referencias de conexión</b> y <b>variables de entorno</b>, para pasarlos de un entorno a otro sin rearmarlos.</li><li>Las <b>políticas de datos (DLP)</b> de la empresa definen qué conectores se pueden combinar.</li></ul>',
-      '<p>Error típico: armar un flujo de la empresa con tu conexión personal. Si te vas, el flujo deja de funcionar.</p>'
-    ]],
-    ['Contenido dinámico y expresiones', [
-      '<p>Cada acción puede usar datos de las anteriores. En el diseñador aparecen como <b>contenido dinámico</b>; por debajo son <b>expresiones</b> del lenguaje de Workflow Definition:</p>',
-      '<pre>@{triggerBody()?[\'email\']}\n@{toLower(triggerBody()?[\'email\'])}\n@{body(\'Run_a_prompt\')?[\'text\']}\n@{outputs(\'Compose\')?[\'total\']}\n@{items(\'Apply_to_each\')?[\'nombre\']}</pre>',
-      '<ul><li>Las acciones se nombran con <b>guiones bajos</b> en lugar de espacios.</li><li><code>?[\'campo\']</code> devuelve vacío si el campo no existe, en lugar de fallar.</li><li><code>json()</code> convierte texto en objeto, <code>int()</code> texto en número.</li></ul>',
-      '<p>Si comparás <code>"1500"</code> con <code>1000</code> en una Condition, convertí antes con <code>int()</code>.</p>'
-    ]],
-    ['Control: Condition, Switch y Apply to each', [
-      '<ul><li><b>Condition</b>: dos ramas, Sí y No.</li><li><b>Switch</b>: un caso por valor y un <b>Default</b> para lo demás.</li><li><b>Apply to each</b>: repite las acciones por cada elemento de una lista, por ejemplo las filas de una tabla.</li><li><b>Filter array</b> y <b>Select</b>: filtran o transforman listas sin repetir acciones.</li></ul>',
-      '<p>Para manejar errores se usa <b>Configure run after</b>: una acción puede correr solo si la anterior falló o se agotó el tiempo. Con <b>Scope</b> se arma un patrón try/catch: un scope "Try", otro "Catch" que corre si el primero falla.</p>',
-      '<p>En el historial de ejecuciones (<b>run history</b>) ves las entradas y salidas de cada acción, y podés volver a enviar una ejecución.</p>'
-    ]],
-    ['Aprobaciones, AI Builder y buenas prácticas', [
-      '<p><b>Start and wait for an approval</b> envía una solicitud por Teams, Outlook y la app de aprobaciones, y el flujo se queda esperando. La respuesta queda en <code>outcome</code>: <code>Approve</code> o <code>Reject</code>.</p>',
-      '<p><b>AI Builder</b> agrega IA sin programar: prompts (Run a prompt), procesamiento de facturas y documentos, clasificación de texto. Consume créditos de AI Builder, que también se pagan.</p>',
-      '<ul><li>Nombrá cada acción por lo que hace.</li><li>Usá soluciones y variables de entorno, nunca valores fijos de producción.</li><li>Guardá secretos en Azure Key Vault o en las conexiones, no en el flujo.</li><li>Revisá los límites de llamadas de cada licencia.</li></ul>'
-    ]],
-  ],
-  quiz: [
-    ['¿Qué tipo de flujo arranca solo cuando llega un email o se crea una fila?', ['Automatizado', 'Instantáneo', 'Programado', 'De escritorio'], 'El instantáneo lo dispara una persona; el programado corre por horario.'],
-    ['¿Qué conector requiere licencia premium?', ['HTTP', 'Office 365 Outlook', 'Microsoft Teams', 'Excel Online (Business)'], 'HTTP, Dataverse, SQL y SAP son premium.'],
-    ['¿Para qué sirven las soluciones?', ['Para agrupar flujos y moverlos entre entornos', 'Para pagar menos licencias', 'Para crear conexiones personales', 'Para borrar ejecuciones'], 'Junto con referencias de conexión y variables de entorno, permiten el ALM.'],
-    ['¿Qué controla una política de DLP?', ['Qué conectores se pueden usar juntos en un entorno', 'El horario de los flujos', 'El idioma del diseñador', 'El tamaño de los adjuntos'], 'Evita, por ejemplo, mandar datos de la empresa a un servicio no autorizado.'],
-    ['¿Cuál es el riesgo de armar un flujo de la empresa con tu cuenta personal?', ['Que deje de funcionar si te vas o cambia tu contraseña', 'Que sea más lento', 'Que no aparezca en Teams', 'Ninguno'], 'Para eso se usan cuentas de servicio y referencias de conexión.'],
-  ],
-  quizExtra: [
-    ['expresiones', 'Expresiones', [
-      ['¿Cómo leés el campo email del trigger?', ["@{triggerBody()?['email']}", '{{ $json.email }}', '{{1.email}}', '${header.email}'], 'Las otras opciones son de n8n, Make/Zapier y SAP CPI.'],
-      ['La acción se llama "Run a prompt". ¿Cómo la referenciás?', ["body('Run_a_prompt')", "body('Run a prompt')", "body(Run_a_prompt)", "step('Run a prompt')"], 'Los espacios se reemplazan por guiones bajos y el nombre va entre comillas simples.'],
-      ['¿Qué hace el ? en triggerBody()?[\'telefono\']?', ['Devuelve vacío si el campo no existe en lugar de fallar', 'Hace el campo obligatorio', 'Convierte a texto', 'Pregunta al usuario'], 'Es el operador de acceso seguro.'],
-      ['El total llega como texto "1500". ¿Qué usás para compararlo con 1000?', ["int(triggerBody()?['total'])", "toLower(triggerBody()?['total'])", "concat(triggerBody()?['total'])", 'Nada, se compara igual'], 'Sin convertir, la comparación puede dar un resultado inesperado.'],
-    ]],
-    ['control', 'Control y errores', [
-      ['¿Qué acción repite pasos por cada fila de una tabla?', ['Apply to each', 'Condition', 'Compose', 'Terminate'], 'Recorre la lista que le indiques, por ejemplo value.'],
-      ['Llega un valor que no coincide con ningún caso del Switch. ¿Qué pasa?', ['Se ejecuta el Default', 'El flujo falla', 'Se ejecuta el primer caso', 'No pasa nada nunca'], 'Por eso conviene definir siempre el Default.'],
-      ['¿Cómo se arma un try/catch en Power Automate?', ['Con Scopes y Configure run after', 'Con un Switch', 'Con Apply to each', 'No se puede'], 'El scope "Catch" corre cuando el "Try" falla.'],
-      ['¿Dónde revisás las entradas y salidas de cada acción de una ejecución?', ['En el historial de ejecuciones (run history)', 'En el entorno', 'En la política DLP', 'En Planner'], 'También podés reenviar la ejecución.'],
-    ]],
-    ['ia', 'Aprobaciones y AI Builder', [
-      ['¿Qué valores devuelve outcome en una aprobación básica?', ['Approve o Reject', 'Sí o No', 'true o false', '1 o 0'], 'Con eso se arma la Condition siguiente.'],
-      ['¿Qué consume AI Builder?', ['Créditos de AI Builder, incluidos en algunas licencias o comprados aparte', 'Nada, es gratis', 'Tasks de Zapier', 'Horas de Power BI'], 'Es otra razón por la que se trabaja con licencias pagas.'],
-      ['Usás un prompt para extraer datos de una factura. ¿Qué hacés con la respuesta antes de usar sus campos?', ['Convertirla con json()', 'Pasarla a mayúsculas', 'Enviarla por Teams', 'Nada'], 'La respuesta llega como texto.'],
-      ['¿Qué pasa con el flujo mientras espera una aprobación?', ['Queda en pausa hasta que alguien responda o venza el tiempo', 'Sigue con las acciones siguientes', 'Falla', 'Se reinicia'], 'Las aprobaciones pueden esperar días; hay un límite de 30 días por ejecución.'],
-    ]],
-  ],
 };
 
-const pa = (s) => `@{${s}}`;
-const tb = f => pa(`triggerBody()?['${f}']`);
+/* ---------------- Ejercicios: 11 escenarios guiados y 9 de práctica extra ---------------- */
+const G = (n, j) => ({ ...j, cat: 'Escenarios guiados', level: `Clase ${n}` });
+const X = j => ({ ...j, cat: 'Práctica extra', level: 'Extra' });
+const okText = (call, ex) => call.params.text === ex || `El mensaje fue «${call.params.text}»; se esperaba «${ex}».`;
+const inChannel = (r, ch) => { const t = callsOf(r, 'slack'); return t.find(x => String(x.params.channel).trim() === ch); };
 const GASTO = (empleado, email, monto, concepto) => ({ empleado, email, monto, concepto });
 const FACT = [['Distribuidora Andina', 'FA-0001-00012345', '185000'], ['Café del Puerto', 'FB-0002-00000731', '42000']];
 const factAi = p => { const f = FACT.find(x => p.includes(x[1])); return f ? JSON.stringify({ proveedor: f[0], numero: f[1], total: f[2] }) : JSON.stringify({ proveedor: '', numero: '', total: '0' }); };
-const COBROS = [['Ana Gil', 'ana@' + 'clientes.example', 'F-101', 25000, 'vencida'], ['Iván Sosa', 'ivan@clientes.example', 'F-102', 12000, 'pagada'], ['Mora Paz', 'mora@clientes.example', 'F-103', 54000, 'vencida']].map(([cliente, email, factura, monto, estado]) => ({ cliente, email, factura, monto, estado }));
-const COBROS_B = [['Luis Ortiz', 'luis@clientes.example', 'F-201', 9000, 'pagada']].map(([cliente, email, factura, monto, estado]) => ({ cliente, email, factura, monto, estado }));
+const COBROS = [['Ana Gil', 'ana@clientes.example', 'F-101', 25000, 'vencida'], ['Iván Sosa', 'ivan@clientes.example', 'F-102', 12000, 'pagada'], ['Mora Paz', 'mora@clientes.example', 'F-103', 54000, 'vencida']].map(([cliente, email, factura, monto, estado]) => ({ cliente, email, factura, monto, estado }));
+const COBROS_B = [{ cliente: 'Luis Ortiz', email: 'luis@clientes.example', factura: 'F-201', monto: 9000, estado: 'pagada' }];
 const dolar = v => () => ({ moneda: 'USD', compra: v - 20, venta: v, fecha: '2026-11-18' });
+const PED = (...l) => () => ({ pedidos: l.map(([id, cliente, estado]) => ({ id, cliente, estado })) });
+const PEND = [{ pedido: '7001', cliente: 'ACME', monto: 120000 }, { pedido: '7002', cliente: 'Verde SA', monto: 45000 }];
+const erp = ({ flowName, inputs }) => (flowName === 'CargarPedidoERP' ? { estado: 'ok', numeroERP: '45' + inputs.pedido } : { estado: 'error', numeroERP: '' });
+const VENTAS = [['Norte', 1200, 'pagado'], ['Sur', 3000, 'pagado'], ['Centro', 2500, 'pagado'], ['Sur', 900, 'pendiente'], ['Norte', 5000, 'pendiente']].map(([region, monto, estado], i) => ({ fecha: `2026-11-1${i}`, region, monto, estado }));
+const VENTAS_B = [['Norte', 800, 'pagado'], ['Sur', 2600, 'pagado'], ['Centro', 4000, 'pendiente']].map(([region, monto, estado], i) => ({ fecha: `2026-11-2${i}`, region, monto, estado }));
+const SERV = [['Web', 'https://web.empresa-demo.example/health'], ['Pagos', 'https://pagos.empresa-demo.example/health'], ['Stock', 'https://stock.empresa-demo.example/health']].map(([nombre, url]) => ({ nombre, url }));
+const health = (...down) => ({ url }) => ({ statusCode: down.some(d => url.includes(d)) ? 503 : 200, body: {} });
+const RECL = [['ACME', 'El pedido llegó con dos días de demora.'], ['Verde SA', 'La factura vino con el CUIT equivocado.'], ['Kiosco Sur', 'El repartidor no esperó y se llevó el pedido.']].map(([cliente, detalle]) => ({ cliente, detalle }));
+const resumenAi = list => p => (list.every(r => p.includes(r.detalle)) ? `Resumen: ${list.length} reclamos esta semana, principalmente por entregas y facturación.` : 'No recibí los reclamos para resumir.');
+const SENT = [['Nora Paz', 'nora@mail.example', 'Pésima atención, nadie responde los mensajes.', 'negativo'], ['Hugo Lima', 'hugo@mail.example', 'Excelente servicio, llegó antes de lo esperado.', 'positivo'], ['Eva Ruiz', 'eva@mail.example', 'Recibí el pedido.', 'neutro']];
+const sentAi = p => (SENT.find(s => p.includes(s[2])) || [])[3] || 'neutro';
+const CLIENTES = [{ nombre: 'Pérez, Ana', email: 'ana@mail.example', ciudad: 'Rosario' }, { nombre: 'Luis Ortiz', email: 'luis@mail.example', ciudad: 'Córdoba' }];
 
-PROJ.pa = [
-  {
-    id: 'lead-dataverse', cat: 'Leads', level: 'Inicial', title: 'Lead de un formulario a Dataverse y Teams',
-    story: 'El formulario de la web manda cada consulta al flujo. El lead tiene que quedar en la tabla de contactos de Dataverse con el email en minúsculas, y el equipo de ventas tiene que enterarse en Teams.',
-    objectives: ['Leer datos del trigger con triggerBody().', 'Transformar con una expresión (toLower).', 'Referenciar la salida de Compose con outputs().'],
+const PROJ = { pa: [
+  G(4, {
+    id: 'bienvenida', title: 'Bienvenida a un curso desde Forms',
+    story: 'Cuando alguien completa el formulario de inscripción, tiene que recibir un email de bienvenida y el equipo tiene que enterarse en Teams.',
+    objectives: ['Usar un trigger de Microsoft Forms.', 'Leer las respuestas con triggerBody().', 'Combinar texto fijo y contenido dinámico.'],
     reqs: [
-      'Trigger: <b>When a HTTP request is received</b>.',
-      '<b>Compose</b> con los campos <code>nombre</code> y <code>email</code>; el email en minúsculas: <code>@{toLower(triggerBody()?[\'email\'])}</code>.',
-      '<b>Dataverse · Add a new row</b>: email y nombre desde el Compose, y la columna <code>origen</code> con el valor del trigger.',
-      '<b>Teams · Post message</b> en el canal <code>Ventas</code>: <code>Nuevo lead: NOMBRE (EMAIL)</code>.',
+      'Trigger: <b>When a new response is submitted</b> (formulario <code>Inscripción a cursos</code>).',
+      '<b>Send an email (V2)</b> al <code>email</code> de la respuesta, con asunto <code>Bienvenida al curso CURSO</code> y el nombre en el cuerpo.',
+      '<b>Post message in a chat or channel</b> en el canal <code>Inscripciones</code>: <code>Nueva inscripción: NOMBRE en CURSO</code>.',
     ],
-    hints: ['La salida del Compose se lee con @{outputs(\'Compose\')?[\'email\']}.', 'En Dataverse, las columnas extra van en Propiedades.'],
-    real: ['El trigger HTTP y Dataverse son conectores premium.', 'Con Microsoft Forms se usa el trigger "When a new response is submitted" y después "Get response details".'],
-    sample: [{ nombre: 'Carla Soto', email: 'CARLA@Industrias-Sur.example', origen: 'web' }],
-    checks: [['Empieza con un trigger HTTP', f => f.steps[0]?.op === 'webhook'], ['Usa Compose', f => has(f, 'set')]],
-    tests: [['Carla Soto', 'CARLA@Industrias-Sur.example', 'web'], ['Bruno Díaz', 'Bruno.Diaz@Empresa.COM', 'evento']].map(([nombre, email, origen]) => ({ name: `Lead de ${nombre}`, input: [{ nombre, email, origen }], expect: r => {
-      const em = email.toLowerCase(), c = callsOf(r, 'crm')[0]; if (!c) return 'No se agregó la fila en Dataverse.';
-      if (c.params.email !== em) return `El email quedó «${c.params.email}»; se esperaba «${em}».`;
-      if (c.params.name !== nombre) return `El nombre quedó «${c.params.name}».`;
-      if (c.params.props.origen !== origen) return `La columna origen vale «${c.params.props.origen ?? ''}».`;
-      const t = callsOf(r, 'slack')[0]; if (!t || String(t.params.channel).trim() !== 'Ventas') return 'Falta el mensaje en el canal Ventas.';
-      return t.params.text === `Nuevo lead: ${nombre} (${em})` || `El mensaje fue «${t.params.text}».`;
+    hints: ['Las respuestas se leen así: @{triggerBody()?[\'curso\']}.', 'En el asunto podés escribir texto fijo y al lado la expresión.'],
+    real: ['En Power Automate real, el trigger de Forms solo trae el ID de la respuesta: hay que agregar "Get response details" para leer las respuestas.', 'El formulario tiene que pertenecer a la cuenta de la conexión o a un grupo de la que sea parte.'],
+    sample: [{ nombre: 'Ana Pérez', email: 'ana@mail.example', curso: 'Power Automate desde cero' }],
+    checks: [['Empieza con el trigger de Forms', f => f.steps[0]?.op === 'formsIn']],
+    tests: [['Ana Pérez', 'ana@mail.example', 'Power Automate desde cero'], ['Luis Ortiz', 'luis@mail.example', 'Excel avanzado']].map(([nombre, email, curso]) => ({ name: `Inscripción de ${nombre}`, input: [{ nombre, email, curso }], expect: r => {
+      const m = callsOf(r, 'mail')[0]; if (!m) return 'No se envió el email de bienvenida.';
+      if (m.params.to !== email) return `El email fue a «${m.params.to}».`;
+      if (m.params.subject !== `Bienvenida al curso ${curso}`) return `El asunto fue «${m.params.subject}».`;
+      if (!m.params.body.includes(nombre)) return 'El cuerpo del email tiene que incluir el nombre.';
+      const t = inChannel(r, 'Inscripciones'); if (!t) return 'Falta el mensaje en el canal Inscripciones.';
+      return okText(t, `Nueva inscripción: ${nombre} en ${curso}`);
     } })),
     solution: () => ({ steps: [
-      N('webhook', 'When a HTTP request is received', { path: '/leads' }),
-      N('set', 'Compose', { keep: false, fields: [col('nombre', tb('nombre')), col('email', pa("toLower(triggerBody()?['email'])"))] }),
-      N('crm', 'Add a new row', { email: pa("outputs('Compose')?['email']"), name: pa("outputs('Compose')?['nombre']"), props: [col('origen', tb('origen'))] }),
-      N('slack', 'Post message in a chat or channel', { channel: 'Ventas', text: `Nuevo lead: ${pa("outputs('Compose')?['nombre']")} (${pa("outputs('Compose')?['email']")})` }),
+      N('formsIn', 'When a new response is submitted', { form: 'Inscripción a cursos' }),
+      N('mail', 'Send an email (V2)', { to: tb('email'), subject: `Bienvenida al curso ${tb('curso')}`, body: `Hola ${tb('nombre')}, ya estás inscripto. Te esperamos.` }),
+      N('slack', 'Post message in a chat or channel', { channel: 'Inscripciones', text: `Nueva inscripción: ${tb('nombre')} en ${tb('curso')}` }),
     ] }),
-  },
-  {
-    id: 'gastos', cat: 'Aprobaciones', level: 'Intermedio', title: 'Aprobación de gastos',
-    story: 'Cada rendición de gastos tiene que aprobarla finanzas. Si se aprueba, se registra en Excel y se avisa al empleado; si se rechaza, solo se le avisa.',
+  }),
+  G(5, {
+    id: 'normalizar', title: 'Normalizar datos con expresiones',
+    story: 'Un sistema viejo manda los clientes con espacios de más, el email en mayúsculas, el DNI con puntos y el monto sin IVA. Antes de guardarlos en Excel hay que dejarlos prolijos.',
+    objectives: ['Usar funciones de texto: trim, toLower, concat, replace.', 'Hacer cálculos con int, mul y div.', 'Reutilizar resultados con Compose.'],
+    reqs: [
+      'Trigger: <b>When a HTTP request is received</b>.',
+      '<b>Compose</b> con cuatro campos: <code>nombreCompleto</code> (nombre y apellido sin espacios de más, separados por un espacio), <code>email</code> en minúsculas, <code>dni</code> sin puntos y <code>total</code> con 21% de IVA: <code>@{div(mul(int(triggerBody()?[\'monto\']), 121), 100)}</code>.',
+      '<b>Add a row into a table</b> en la tabla <code>Clientes</code>, con las columnas <code>NombreCompleto</code>, <code>Email</code>, <code>DNI</code> y <code>Total</code> tomadas del Compose.',
+    ],
+    hints: ['concat(trim(triggerBody()?[\'nombre\']), \' \', trim(triggerBody()?[\'apellido\'])).', 'replace(triggerBody()?[\'dni\'], \'.\', \'\') quita todos los puntos.', 'Los campos del Compose se leen con @{outputs(\'Compose\')?[\'dni\']}.'],
+    real: ['En el diseñador, las expresiones se escriben en la pestaña Expression del panel de contenido dinámico.', 'Para formatos de moneda existe formatNumber(valor, \'C2\', \'es-AR\').'],
+    sample: [{ nombre: '  Ana ', apellido: 'Pérez ', email: 'ANA.PEREZ@MAIL.COM', dni: '30.123.456', monto: '1500' }],
+    checks: [['Usa Compose', f => has(f, 'set')], ['Agrega la fila en Excel', f => has(f, 'sheets')]],
+    tests: [[{ nombre: '  Ana ', apellido: 'Pérez ', email: 'ANA.PEREZ@MAIL.COM', dni: '30.123.456', monto: '1500' }, 'Ana Pérez', 'ana.perez@mail.com', '30123456', 1815], [{ nombre: 'Luis', apellido: ' Ortiz', email: 'Luis@Correo.COM', dni: '28.555.010', monto: '2000' }, 'Luis Ortiz', 'luis@correo.com', '28555010', 2420]].map(([inp, nc, em, dni, total]) => ({ name: `Cliente ${nc}`, input: [inp], expect: r => {
+      const x = callsOf(r, 'sheets')[0]; if (!x) return 'No se agregó la fila.';
+      if (String(x.params.sheet).trim() !== 'Clientes') return `La tabla es «${x.params.sheet}».`;
+      const v = x.params.values;
+      for (const [k, val] of [['NombreCompleto', nc], ['Email', em], ['DNI', dni], ['Total', total]]) if (String(v[k]) !== String(val)) return `La columna ${k} vale «${v[k] ?? ''}»; se esperaba «${val}».`;
+      return true;
+    } })),
+    solution: () => ({ steps: [
+      N('webhook', 'When a HTTP request is received', { path: '/clientes' }),
+      N('set', 'Compose', { fields: [col('nombreCompleto', pa("concat(trim(triggerBody()?['nombre']), ' ', trim(triggerBody()?['apellido']))")), col('email', pa("toLower(triggerBody()?['email'])")), col('dni', pa("replace(triggerBody()?['dni'], '.', '')")), col('total', pa("div(mul(int(triggerBody()?['monto']), 121), 100)"))] }),
+      N('sheets', 'Add a row into a table', { doc: 'Clientes.xlsx', sheet: 'Clientes', columns: [col('NombreCompleto', pa("outputs('Compose')?['nombreCompleto']")), col('Email', pa("outputs('Compose')?['email']")), col('DNI', pa("outputs('Compose')?['dni']")), col('Total', pa("outputs('Compose')?['total']"))] }),
+    ] }),
+  }),
+  G(6, {
+    id: 'pendientes', title: 'Pedidos pendientes con Filter array y Select',
+    story: 'Logística quiere un aviso cada mañana con los pedidos que siguen pendientes. Los datos vienen de una API.',
+    objectives: ['Leer una API y convertir la respuesta con Parse JSON.', 'Filtrar una lista sin bucles con Filter array.', 'Transformar con Select en modo texto y unir con join().'],
+    reqs: [
+      'Trigger: <b>Recurrence</b>.',
+      '<b>HTTP</b>: GET a <code>https://api.logistica-demo.example/pedidos</code>.',
+      '<b>Parse JSON</b> con Content <code>@{body(\'HTTP\')}</code>.',
+      '<b>Filter array</b> sobre <code>@{body(\'Parse_JSON\')?[\'pedidos\']}</code>: <code>@{item()?[\'estado\']}</code> es igual a <code>pendiente</code>.',
+      '<b>Select</b> en modo texto sobre <code>@{body(\'Filter_array\')}</code>, con el valor <code>@{item()?[\'id\']}</code>.',
+      '<b>Teams</b> al canal <code>Logística</code>: <code>Pedidos pendientes (N): ID1, ID2</code>, con <code>length()</code> y <code>join()</code>.',
+    ],
+    mock: 'La API responde, por ejemplo: {"pedidos":[{"id":"P-101","cliente":"ACME","estado":"pendiente"}, …]}',
+    hints: ['El texto del mensaje: Pedidos pendientes (@{length(body(\'Filter_array\'))}): @{join(body(\'Select\'), \', \')}.', 'Filter array y Select usan item(); Apply to each usa items().'],
+    real: ['En Parse JSON real hay que pegar un esquema; el botón "Use sample payload" lo genera a partir de un ejemplo.', 'Filter array tiene un modo avanzado para condiciones compuestas.'],
+    sample: [{}], http: PED(['P-101', 'ACME', 'pendiente'], ['P-102', 'Verde SA', 'entregado'], ['P-103', 'Kiosco Sur', 'pendiente']),
+    checks: [['Usa Filter array', f => has(f, 'filter')], ['Usa Select', f => has(f, 'select')]],
+    tests: [['Dos pendientes', PED(['P-101', 'ACME', 'pendiente'], ['P-102', 'Verde SA', 'entregado'], ['P-103', 'Kiosco Sur', 'pendiente']), 'Pedidos pendientes (2): P-101, P-103'], ['Uno pendiente', PED(['P-201', 'ACME', 'entregado'], ['P-202', 'Mate SA', 'pendiente']), 'Pedidos pendientes (1): P-202']].map(([name, http, ex]) => ({ name, input: [{}], http, expect: r => {
+      const h = callsOf(r, 'http')[0]; if (!h || !h.params.url.includes('api.logistica-demo.example/pedidos')) return 'No se llamó a la API de pedidos.';
+      const t = inChannel(r, 'Logística'); if (!t) return 'Falta el mensaje en el canal Logística.';
+      return okText(t, ex);
+    } })),
+    solution: () => ({ steps: [
+      N('schedule', 'Recurrence', { every: 'Cada día', at: '08:00' }), N('http', 'HTTP', { method: 'GET', url: 'https://api.logistica-demo.example/pedidos' }),
+      N('parseJson', 'Parse JSON', { content: pa("body('HTTP')") }),
+      N('filter', 'Filter array', { from: pa("body('Parse_JSON')?['pedidos']"), cond: { left: pa("item()?['estado']"), op: 'eq', right: 'pendiente' } }),
+      N('select', 'Select', { from: pa("body('Filter_array')"), textMode: true, value: pa("item()?['id']") }),
+      N('slack', 'Post message in a chat or channel', { channel: 'Logística', text: `Pedidos pendientes (${pa("length(body('Filter_array'))")}): ${pa("join(body('Select'), ', ')")}` }),
+    ] }),
+  }),
+  G(7, {
+    id: 'tickets-switch', title: 'Derivar pedidos de soporte con Switch',
+    story: 'Los pedidos de soporte interno llegan con una prioridad. Los urgentes van a Teams y a Planner; los de prioridad media solo a Planner; el resto recibe una respuesta automática.',
+    objectives: ['Elegir caminos con Switch.', 'Encadenar varias acciones en un mismo caso.', 'Usar el Default para lo no previsto.'],
+    reqs: [
+      'Trigger: <b>When a HTTP request is received</b> (recibe <code>id</code>, <code>usuario</code>, <code>email</code>, <code>prioridad</code> y <code>detalle</code>).',
+      '<b>Switch</b> con On <code>@{triggerBody()?[\'prioridad\']}</code>.',
+      'Caso <code>alta</code>: <b>Teams</b> al canal <code>Soporte urgente</code> y <b>Create a task</b> en el plan <code>Soporte</code>, con el id en el título.',
+      'Caso <code>media</code>: solo la tarea en Planner.',
+      'Default: <b>Send an email (V2)</b> al usuario con asunto <code>Recibimos tu pedido ID</code>.',
+    ],
+    hints: ['Cada caso tiene un valor: alta o media. El Default no lleva valor.', 'Título de la tarea: Pedido @{triggerBody()?[\'id\']}: @{triggerBody()?[\'detalle\']}.'],
+    real: ['En Planner se elige el grupo, el plan y opcionalmente el bucket.', 'Los casos del Switch distinguen mayúsculas: normalizá con toLower si no confiás en el origen.'],
+    sample: [{ id: 'S-77', usuario: 'Rita Gómez', email: 'rita@' + DEMO, prioridad: 'alta', detalle: 'No funciona la VPN' }],
+    checks: [['Usa Switch', f => has(f, 'router')], ['Crea tareas en Planner', f => has(f, 'task')]],
+    tests: [['alta', true, true, false], ['media', false, true, false], ['baja', false, false, true]].map(([prio, teams, task, mail]) => ({ name: `Prioridad ${prio}`, input: [{ id: 'S-' + prio.length, usuario: 'Rita Gómez', email: 'rita@' + DEMO, prioridad: prio, detalle: 'No funciona la VPN' }], expect: r => {
+      const id = 'S-' + prio.length, s = callsOf(r, 'slack'), t = callsOf(r, 'task'), m = callsOf(r, 'mail');
+      if (!!s.length !== teams) return teams ? 'Falta el aviso en Soporte urgente.' : `Con prioridad ${prio} no se avisa en Teams.`;
+      if (teams && String(s[0].params.channel).trim() !== 'Soporte urgente') return 'El canal tiene que ser Soporte urgente.';
+      if (!!t.length !== task) return task ? 'Falta la tarea en Planner.' : `Con prioridad ${prio} no se crea tarea.`;
+      if (task && (String(t[0].params.list).trim() !== 'Soporte' || !t[0].params.title.includes(id))) return 'La tarea tiene que ir al plan Soporte con el id en el título.';
+      if (!!m.length !== mail) return mail ? 'Falta la respuesta automática por email.' : 'No corresponde la respuesta automática.';
+      return !mail || m[0].params.subject === `Recibimos tu pedido ${id}` || `El asunto fue «${m[0].params.subject}».`;
+    } })),
+    solution: () => { const task = n => N('task', n, { list: 'Soporte', title: `Pedido ${tb('id')}: ${tb('detalle')}`, description: `Pedido de ${tb('usuario')}` }); return { steps: [
+      N('webhook', 'When a HTTP request is received', { path: '/soporte' }),
+      N('router', 'Switch', { on: tb('prioridad') }, [
+        { name: 'alta', value: 'alta', steps: [N('slack', 'Post message in a chat or channel', { channel: 'Soporte urgente', text: `Pedido urgente ${tb('id')} de ${tb('usuario')}: ${tb('detalle')}` }), task('Create a task')] },
+        { name: 'media', value: 'media', steps: [task('Create a task 2')] },
+        { name: 'Default', fallback: true, value: '', steps: [N('mail', 'Send an email (V2)', { to: tb('email'), subject: `Recibimos tu pedido ${tb('id')}`, body: 'Lo vamos a revisar a la brevedad.' })] },
+      ]),
+    ] }; },
+  }),
+  G(8, {
+    id: 'validar', title: 'Validar datos y terminar con un error claro',
+    story: 'Un sistema externo manda pedidos que a veces llegan incompletos. El flujo tiene que validar los datos y, si están mal, terminar como fallido con un mensaje que explique por qué.',
+    objectives: ['Combinar condiciones con and, not y empty.', 'Usar Terminate con estado Failed.', 'Entender por qué conviene validar al principio.'],
+    reqs: [
+      'Trigger: <b>When a HTTP request is received</b> (recibe <code>email</code> y <code>monto</code>).',
+      '<b>Condition</b>: <code>@{and(not(empty(triggerBody()?[\'email\'])), greater(int(triggerBody()?[\'monto\']), 0))}</code> es igual a <code>true</code>.',
+      'Sí: <b>Add a row into a table</b> en <code>Pedidos</code>, con <code>Email</code> y <code>Monto</code>.',
+      'No: <b>Terminate</b> con estado <code>Failed</code> y el mensaje <code>Datos inválidos: falta el email o el monto</code>.',
+    ],
+    hints: ['La expresión completa va del lado izquierdo de la Condition; del derecho, la palabra true.', 'Terminate con Failed hace que la ejecución quede marcada como fallida en el historial.'],
+    real: ['Además de Terminate, se suele usar un Scope "Catch" con Configure run after para avisar por Teams cuando algo falla.', 'Con el trigger HTTP también se puede devolver un error 400 con la acción Response.'],
+    sample: [{ email: 'compras@acme.example', monto: '2500' }],
+    checks: [['Usa Terminate', f => has(f, 'terminate')], ['Valida con Condition', f => has(f, 'if')]],
+    tests: [
+      { name: 'Pedido válido', input: [{ email: 'compras@acme.example', monto: '2500' }], expect: r => { const x = callsOf(r, 'sheets')[0]; if (!x || String(x.params.sheet).trim() !== 'Pedidos') return 'Falta la fila en la tabla Pedidos.'; return (x.params.values.Email === 'compras@acme.example' && String(x.params.values.Monto) === '2500') || `La fila fue ${JSON.stringify(x.params.values)}.`; } },
+      ...[['Sin email', { email: '', monto: '2500' }], ['Monto cero', { email: 'compras@acme.example', monto: '0' }]].map(([name, inp]) => ({ name, allowFail: true, input: [inp], expect: r => {
+        if (callsOf(r, 'sheets').length) return 'Con datos inválidos no se tiene que agregar la fila.';
+        if (!r.error) return 'La ejecución tendría que terminar como fallida con Terminate.';
+        return r.error.includes('Datos inválidos: falta el email o el monto') || `El error fue «${r.error}»; tiene que incluir el mensaje pedido.`;
+      } })),
+    ],
+    solution: () => ({ steps: [
+      N('webhook', 'When a HTTP request is received', { path: '/pedidos' }),
+      N('if', 'Condition', { cond: { left: pa("and(not(empty(triggerBody()?['email'])), greater(int(triggerBody()?['monto']), 0))"), op: 'eq', right: 'true' } }, [
+        { name: 'Sí', steps: [N('sheets', 'Add a row into a table', { doc: 'Pedidos.xlsx', sheet: 'Pedidos', columns: [col('Email', tb('email')), col('Monto', tb('monto'))] })] },
+        { name: 'No', steps: [N('terminate', 'Terminate', { status: 'Failed', code: 'DatosInvalidos', message: 'Datos inválidos: falta el email o el monto' })] },
+      ]),
+    ] }),
+  }),
+  G(9, {
+    id: 'cobranzas', title: 'Recordatorios de cobranza desde Excel',
+    story: 'Todos los lunes, el flujo revisa la tabla de facturas y le manda un recordatorio a cada cliente con una factura vencida.',
+    objectives: ['Leer una tabla con List rows present in a table.', 'Recorrer las filas con Apply to each e items().', 'Decidir dentro del recorrido con una Condition.'],
+    reqs: [
+      'Trigger: <b>Recurrence</b>.',
+      '<b>List rows present in a table</b> de la tabla <code>Facturas</code>.',
+      '<b>Apply to each</b> sobre <code>@{body(\'List_rows_present_in_a_table\')?[\'value\']}</code>.',
+      'Adentro, <b>Condition</b>: <code>@{items(\'Apply_to_each\')?[\'estado\']}</code> es igual a <code>vencida</code>. Sí: <b>Send an email (V2)</b> al cliente con asunto <code>Recordatorio: factura NUMERO vencida</code> y el monto en el cuerpo.',
+    ],
+    mock: 'La tabla Facturas tiene las columnas cliente, email, factura, monto y estado (pagada o vencida).',
+    hints: ['Las acciones se agregan adentro del Apply to each con su botón +.', 'Dentro del recorrido, cada fila es items(\'Apply_to_each\').'],
+    real: ['List rows trae 256 filas por defecto: activá la paginación para más, o filtrá en origen con una Filter Query.', 'Con Filter array antes del bucle, el flujo recorre solo las vencidas y consume menos.'],
+    sample: [{}], rows: () => COBROS,
+    checks: [['Lee la tabla Facturas', f => all(f).some(n => n.op === 'sheetsRead' && n.p.sheet.trim() === 'Facturas')], ['Recorre con Apply to each', f => has(f, 'foreach')]],
+    tests: [['Dos facturas vencidas', COBROS, ['F-101', 'F-103']], ['Todo pagado', COBROS_B, []]].map(([name, data, venc]) => ({ name, input: [{}], rows: () => data, expect: r => {
+      const m = callsOf(r, 'mail'); if (m.length !== venc.length) return `Se enviaron ${m.length} recordatorios; se esperaban ${venc.length}.`;
+      for (const f of venc) { const row = data.find(x => x.factura === f), e = m.find(x => x.params.to === row.email); if (!e) return `Falta el recordatorio a ${row.email}.`; if (e.params.subject !== `Recordatorio: factura ${f} vencida`) return `El asunto fue «${e.params.subject}».`; if (!e.params.body.includes(String(row.monto))) return 'El cuerpo tiene que incluir el monto.'; }
+      return true;
+    } })),
+    solution: () => ({ steps: [
+      N('schedule', 'Recurrence', { every: 'Cada lunes', at: '09:00' }),
+      N('sheetsRead', 'List rows present in a table', { doc: 'Cobranzas.xlsx', sheet: 'Facturas' }),
+      N('foreach', 'Apply to each', { from: pa("body('List_rows_present_in_a_table')?['value']") }, [{ name: 'Acciones', steps: [
+        N('if', 'Condition', { cond: { left: it('estado'), op: 'eq', right: 'vencida' } }, [
+          { name: 'Sí', steps: [N('mail', 'Send an email (V2)', { to: it('email'), subject: `Recordatorio: factura ${it('factura')} vencida`, body: `Hola ${it('cliente')}, la factura ${it('factura')} por $${it('monto')} está vencida.` })] },
+          { name: 'No', steps: [] },
+        ]),
+      ] }]),
+    ] }),
+  }),
+  G(10, {
+    id: 'compras-sp', title: 'Solicitudes de compra desde SharePoint',
+    story: 'Las solicitudes de compra se cargan en una lista de SharePoint. Las de más de $200.000 las revisa el equipo de compras en Teams; las demás se aprueban solas y se avisa a quien la pidió.',
+    objectives: ['Usar el trigger de SharePoint.', 'Leer columnas de la lista con triggerBody().', 'Notificar por Teams u Outlook según una condición.'],
+    reqs: [
+      'Trigger: <b>When an item is created</b> en el sitio <code>Compras</code>, lista <code>Solicitudes de compra</code>.',
+      '<b>Condition</b>: <code>@{triggerBody()?[\'Monto\']}</code> es mayor que <code>200000</code>.',
+      'Sí: <b>Teams</b> al canal <code>Compras</code>: <code>Revisar solicitud "TITULO" de SOLICITANTE por $MONTO</code>.',
+      'No: <b>Send an email (V2)</b> al <code>Email</code> del solicitante con asunto <code>Solicitud aprobada: TITULO</code>.',
+    ],
+    hints: ['El título de un elemento de SharePoint está en la columna Title.', 'Las columnas se leen con su nombre interno: Title, Solicitante, Email, Monto.'],
+    real: ['El nombre interno de una columna puede ser distinto del que se ve (por ejemplo, con _x0020_ en lugar de espacios).', 'Para avisar a quien creó el elemento existe Created By Email en el trigger.'],
+    sample: [{ Title: 'Notebooks para soporte', Solicitante: 'Rita Gómez', Email: 'rita@' + DEMO, Monto: 850000 }],
+    checks: [['Empieza con el trigger de SharePoint', f => f.steps[0]?.op === 'spItem']],
+    tests: [[{ Title: 'Notebooks para soporte', Solicitante: 'Rita Gómez', Email: 'rita@' + DEMO, Monto: 850000 }, true], [{ Title: 'Resmas de papel', Solicitante: 'Iván Sosa', Email: 'ivan@' + DEMO, Monto: 45000 }, false]].map(([i, big]) => ({ name: `${i.Title} ($${i.Monto})`, input: [i], expect: r => {
+      const t = inChannel(r, 'Compras'), m = callsOf(r, 'mail');
+      if (big) { if (m.length) return 'Una solicitud grande no se aprueba sola.'; if (!t) return 'Falta el aviso en el canal Compras.'; return okText(t, `Revisar solicitud "${i.Title}" de ${i.Solicitante} por $${i.Monto}`); }
+      if (t) return 'Una solicitud chica no se avisa en Teams.';
+      if (m.length !== 1 || m[0].params.to !== i.Email) return 'Se esperaba un email al solicitante.';
+      return m[0].params.subject === `Solicitud aprobada: ${i.Title}` || `El asunto fue «${m[0].params.subject}».`;
+    } })),
+    solution: () => ({ steps: [
+      N('spItem', 'When an item is created', { site: 'Compras', list: 'Solicitudes de compra' }),
+      N('if', 'Condition', { cond: { left: tb('Monto'), op: 'gt', right: '200000' } }, [
+        { name: 'Sí', steps: [N('slack', 'Post message in a chat or channel', { channel: 'Compras', text: `Revisar solicitud "${tb('Title')}" de ${tb('Solicitante')} por $${tb('Monto')}` })] },
+        { name: 'No', steps: [N('mail', 'Send an email (V2)', { to: tb('Email'), subject: `Solicitud aprobada: ${tb('Title')}`, body: 'Tu solicitud fue aprobada automáticamente.' })] },
+      ]),
+    ] }),
+  }),
+  G(11, {
+    id: 'gastos', title: 'Aprobación de gastos',
+    story: 'Cada rendición de gastos la aprueba finanzas. Si se aprueba, se registra en Excel y se avisa al empleado; si se rechaza, solo se le avisa.',
     objectives: ['Usar Start and wait for an approval.', 'Decidir con Condition según el outcome.', 'Combinar Excel y Outlook en cada rama.'],
     reqs: [
       'Trigger: <b>When a HTTP request is received</b> (recibe <code>empleado</code>, <code>email</code>, <code>monto</code> y <code>concepto</code>).',
       '<b>Start and wait for an approval</b> asignada a <code>finanzas@' + DEMO + '</code>, con un título que incluya el nombre del empleado.',
       '<b>Condition</b>: <code>@{body(\'Start_and_wait_for_an_approval\')?[\'outcome\']}</code> es igual a <code>Approve</code>.',
-      'Sí: <b>Excel · Add a row</b> en la tabla <code>Gastos</code> (Empleado, Monto, Concepto) y <b>Outlook</b> al empleado con asunto <code>Gasto aprobado: CONCEPTO</code>.',
-      'No: <b>Outlook</b> al empleado con asunto <code>Gasto rechazado: CONCEPTO</code>.',
+      'Sí: <b>Add a row into a table</b> en <code>Gastos</code> (Empleado, Monto, Concepto) y <b>Send an email (V2)</b> al empleado con asunto <code>Gasto aprobado: CONCEPTO</code>.',
+      'No: <b>Send an email (V2)</b> al empleado con asunto <code>Gasto rechazado: CONCEPTO</code>.',
     ],
     mock: 'La aprobación es simulada: en las pruebas, finanzas aprueba o rechaza según el caso.',
-    hints: ['Después de la aprobación, el empleado ya no está en el body: leelo con @{triggerBody()?[\'empleado\']}.', 'Dentro de una rama podés agregar varias acciones seguidas.'],
-    real: ['Las aprobaciones llegan por Teams, Outlook y la app de Approvals.', 'Para varios aprobadores en orden se usa "Sequential Approval" o un Apply to each.'],
-    sample: [GASTO('Laura Gil', 'laura@' + DEMO, 85000, 'Viaje a Córdoba')],
-    approval: () => 'Approve',
+    hints: ['Después de la aprobación, el empleado sigue en el trigger: @{triggerBody()?[\'empleado\']}.', 'Dentro de una rama podés agregar varias acciones seguidas.'],
+    real: ['Las aprobaciones llegan por Teams, Outlook y la app de Approvals.', 'Para varios aprobadores en orden se encadenan aprobaciones (ver la práctica extra de aprobación en dos niveles).'],
+    sample: [GASTO('Laura Gil', 'laura@' + DEMO, 85000, 'Viaje a Córdoba')], approval: () => 'Approve',
     checks: [['Usa una aprobación', f => has(f, 'approval')], ['Decide con Condition', f => has(f, 'if')]],
     tests: [[GASTO('Laura Gil', 'laura@' + DEMO, 85000, 'Viaje a Córdoba'), 'Approve'], [GASTO('Iván Sosa', 'ivan@' + DEMO, 400000, 'Notebook nueva'), 'Reject']].map(([g, out]) => ({ name: `${g.concepto}: ${out === 'Approve' ? 'aprobado' : 'rechazado'}`, input: [g], approval: () => out, expect: r => {
       const a = callsOf(r, 'approval')[0]; if (!a) return 'No se pidió la aprobación.';
@@ -922,70 +608,94 @@ PROJ.pa = [
     solution: () => ({ steps: [
       N('webhook', 'When a HTTP request is received', { path: '/gastos' }),
       N('approval', 'Start and wait for an approval', { assignedTo: 'finanzas@' + DEMO, title: `Gasto de ${tb('empleado')}: ${tb('concepto')}`, details: `Monto: $${tb('monto')}` }),
-      N('if', 'Condition', { cond: { left: pa("body('Start_and_wait_for_an_approval')?['outcome']"), op: 'eq', right: 'Approve' } }, [
+      N('if', 'Condition', { cond: { left: bd('Start_and_wait_for_an_approval', 'outcome'), op: 'eq', right: 'Approve' } }, [
         { name: 'Sí', steps: [N('sheets', 'Add a row into a table', { doc: 'Finanzas.xlsx', sheet: 'Gastos', columns: [col('Empleado', tb('empleado')), col('Monto', tb('monto')), col('Concepto', tb('concepto'))] }), N('mail', 'Send an email (V2)', { to: tb('email'), subject: `Gasto aprobado: ${tb('concepto')}`, body: 'Tu gasto fue aprobado.' })] },
         { name: 'No', steps: [N('mail', 'Send an email (V2) 2', { to: tb('email'), subject: `Gasto rechazado: ${tb('concepto')}`, body: 'Tu gasto fue rechazado. Consultá con finanzas.' })] },
       ]),
     ] }),
-  },
-  {
-    id: 'tickets-switch', cat: 'Procesos', level: 'Intermedio', title: 'Derivar pedidos de soporte con Switch',
-    story: 'Los pedidos de soporte interno llegan con una prioridad. Los urgentes van a Teams y a Planner; los normales solo a Planner; el resto recibe una respuesta automática.',
-    objectives: ['Elegir caminos con Switch.', 'Encadenar varias acciones en un mismo caso.', 'Usar el Default para lo no previsto.'],
+  }),
+  G(12, {
+    id: 'lead-dataverse', title: 'Lead de un formulario a Dataverse y Teams',
+    story: 'Cada consulta de la web tiene que quedar en la tabla de contactos de Dataverse con el email en minúsculas, y ventas tiene que enterarse en Teams.',
+    objectives: ['Leer datos del trigger con triggerBody().', 'Transformar con una expresión (toLower).', 'Agregar una fila en Dataverse con columnas extra.'],
     reqs: [
-      'Trigger: <b>When a HTTP request is received</b> (recibe <code>id</code>, <code>usuario</code>, <code>email</code>, <code>prioridad</code> y <code>detalle</code>).',
-      '<b>Switch</b> sobre <code>@{triggerBody()?[\'prioridad\']}</code>.',
-      'Caso <code>alta</code>: <b>Teams</b> al canal <code>Soporte urgente</code> y <b>Planner · Create a task</b> en el plan <code>Soporte</code>, con el id en el título.',
-      'Caso <code>media</code>: solo la tarea en Planner.',
-      'Default: <b>Outlook</b> al usuario con asunto <code>Recibimos tu pedido ID</code>.',
+      'Trigger: <b>When a HTTP request is received</b>.',
+      '<b>Compose</b> con <code>nombre</code> y <code>email</code>; el email en minúsculas: <code>@{toLower(triggerBody()?[\'email\'])}</code>.',
+      '<b>Add a new row</b> en la tabla <code>Contacts</code>: email y nombre desde el Compose, y la columna <code>origen</code> con el valor del trigger.',
+      '<b>Teams</b> en el canal <code>Ventas</code>: <code>Nuevo lead: NOMBRE (EMAIL)</code>.',
     ],
-    hints: ['En el simulador, cada caso del Switch es una condición "es igual a".', 'El título de la tarea podría ser: Pedido @{triggerBody()?[\'id\']}: @{triggerBody()?[\'detalle\']}.'],
-    real: ['En Planner hay que indicar el grupo, el plan y opcionalmente el bucket.', 'Los casos del Switch distinguen mayúsculas: normalizá con toLower si no confiás en el origen.'],
-    sample: [{ id: 'S-77', usuario: 'Rita Gómez', email: 'rita@' + DEMO, prioridad: 'alta', detalle: 'No funciona la VPN' }],
-    checks: [['Usa Switch', f => has(f, 'router')], ['Crea tareas en Planner', f => has(f, 'task')]],
-    tests: [['alta', true, true, false], ['media', false, true, false], ['baja', false, false, true]].map(([prio, teams, task, mail]) => ({ name: `Prioridad ${prio}`, input: [{ id: 'S-' + prio.length, usuario: 'Rita Gómez', email: 'rita@' + DEMO, prioridad: prio, detalle: 'No funciona la VPN' }], expect: r => {
-      const id = 'S-' + prio.length, s = callsOf(r, 'slack'), t = callsOf(r, 'task'), m = callsOf(r, 'mail');
-      if (!!s.length !== teams) return teams ? 'Falta el aviso en Soporte urgente.' : `Con prioridad ${prio} no se avisa en Teams.`;
-      if (teams && String(s[0].params.channel).trim() !== 'Soporte urgente') return 'El canal tiene que ser Soporte urgente.';
-      if (!!t.length !== task) return task ? 'Falta la tarea en Planner.' : `Con prioridad ${prio} no se crea tarea.`;
-      if (task && (String(t[0].params.list).trim() !== 'Soporte' || !t[0].params.title.includes(id))) return 'La tarea tiene que ir al plan Soporte con el id en el título.';
-      if (!!m.length !== mail) return mail ? 'Falta la respuesta automática por email.' : 'No corresponde la respuesta automática.';
-      return !mail || m[0].params.subject === `Recibimos tu pedido ${id}` || `El asunto fue «${m[0].params.subject}».`;
+    hints: ['La salida del Compose se lee con @{outputs(\'Compose\')?[\'email\']}.', 'En Dataverse, las columnas extra van en Propiedades.'],
+    real: ['El trigger HTTP y Dataverse son conectores premium.', 'En Dataverse real las columnas tienen nombres lógicos, como emailaddress1 o firstname.'],
+    sample: [{ nombre: 'Carla Soto', email: 'CARLA@Industrias-Sur.example', origen: 'web' }],
+    checks: [['Usa Compose', f => has(f, 'set')], ['Agrega la fila en Dataverse', f => has(f, 'crm')]],
+    tests: [['Carla Soto', 'CARLA@Industrias-Sur.example', 'web'], ['Bruno Díaz', 'Bruno.Diaz@Empresa.COM', 'evento']].map(([nombre, email, origen]) => ({ name: `Lead de ${nombre}`, input: [{ nombre, email, origen }], expect: r => {
+      const em = email.toLowerCase(), c = callsOf(r, 'crm')[0]; if (!c) return 'No se agregó la fila en Dataverse.';
+      if (String(c.params.table).trim() !== 'Contacts') return `La tabla es «${c.params.table}».`;
+      if (c.params.email !== em) return `El email quedó «${c.params.email}»; se esperaba «${em}».`;
+      if (c.params.name !== nombre) return `El nombre quedó «${c.params.name}».`;
+      if (c.params.props.origen !== origen) return `La columna origen vale «${c.params.props.origen ?? ''}».`;
+      const t = inChannel(r, 'Ventas'); if (!t) return 'Falta el mensaje en el canal Ventas.';
+      return okText(t, `Nuevo lead: ${nombre} (${em})`);
     } })),
-    solution: () => { const c = v => ({ left: tb('prioridad'), op: 'eq', right: v }), task = n => N('task', n, { list: 'Soporte', title: `Pedido ${tb('id')}: ${tb('detalle')}`, description: `Pedido de ${tb('usuario')}` }); return { steps: [
-      N('webhook', 'When a HTTP request is received', { path: '/soporte' }),
-      N('router', 'Switch', {}, [
-        { name: 'alta', cond: c('alta'), steps: [N('slack', 'Post message in a chat or channel', { channel: 'Soporte urgente', text: `Pedido urgente ${tb('id')} de ${tb('usuario')}: ${tb('detalle')}` }), task('Create a task')] },
-        { name: 'media', cond: c('media'), steps: [task('Create a task 2')] },
-        { name: 'Default', fallback: true, cond: c(''), steps: [N('mail', 'Send an email (V2)', { to: tb('email'), subject: `Recibimos tu pedido ${tb('id')}`, body: 'Lo vamos a revisar a la brevedad.' })] },
+    solution: () => ({ steps: [
+      N('webhook', 'When a HTTP request is received', { path: '/leads' }),
+      N('set', 'Compose', { fields: [col('nombre', tb('nombre')), col('email', pa("toLower(triggerBody()?['email'])"))] }),
+      N('crm', 'Add a new row', { table: 'Contacts', email: pa("outputs('Compose')?['email']"), name: pa("outputs('Compose')?['nombre']"), props: [col('origen', tb('origen'))] }),
+      N('slack', 'Post message in a chat or channel', { channel: 'Ventas', text: `Nuevo lead: ${pa("outputs('Compose')?['nombre']")} (${pa("outputs('Compose')?['email']")})` }),
+    ] }),
+  }),
+  G(13, {
+    id: 'dolar', title: 'Alerta de cotización del dólar',
+    story: 'Compras necesita saber cuándo el dólar supera un valor. Cada hora, el flujo consulta una API de cotizaciones y, si la venta supera el umbral, avisa en Teams y registra el valor.',
+    objectives: ['Llamar a una API con el conector HTTP.', 'Leer la respuesta con body(\'HTTP\').', 'Comparar números en una Condition.'],
+    reqs: [
+      'Trigger: <b>Recurrence</b>.',
+      '<b>HTTP</b>: GET a <code>https://api.cotizaciones-demo.example/dolar</code>.',
+      '<b>Condition</b>: <code>@{body(\'HTTP\')?[\'venta\']}</code> es mayor que <code>1500</code>.',
+      'Sí: <b>Teams</b> al canal <code>Compras</code>: <code>Dólar venta: $VALOR</code> y <b>Add a row into a table</b> en <code>Cotizaciones</code> (Fecha y Venta). No: nada.',
+    ],
+    mock: 'La API responde, por ejemplo: {"moneda":"USD","compra":1480,"venta":1500,"fecha":"2026-11-18"}',
+    hints: ['Dejá la rama No vacía: es válido.', 'Fecha y venta salen de la respuesta del HTTP.'],
+    real: ['HTTP es premium. Si la API requiere clave, va en la autenticación de la acción o en Azure Key Vault, nunca en la URL.', 'Para no avisar cada hora lo mismo, se puede guardar el último valor en una lista de SharePoint.'],
+    sample: [{}], http: dolar(1620),
+    checks: [['Empieza con Recurrence', f => f.steps[0]?.op === 'schedule'], ['Llama a la API de cotizaciones', f => all(f).some(n => n.op === 'http' && n.p.url.includes('api.cotizaciones-demo.example/dolar'))]],
+    tests: [['Venta en $1620', 1620, true], ['Venta en $1500', 1500, false]].map(([name, v, alert]) => ({ name, input: [{}], http: dolar(v), expect: r => {
+      const s = callsOf(r, 'slack'), x = callsOf(r, 'sheets');
+      if (!alert) return (!s.length && !x.length) || 'Con la venta en el umbral o por debajo no hay que avisar.';
+      const t = inChannel(r, 'Compras'); if (!t) return 'Falta el aviso en el canal Compras.';
+      if (t.params.text !== `Dólar venta: $${v}`) return `El mensaje fue «${t.params.text}».`;
+      if (!x.length || String(x[0].params.sheet).trim() !== 'Cotizaciones') return 'Falta la fila en Cotizaciones.';
+      return (String(x[0].params.values.Venta) === String(v) && x[0].params.values.Fecha === '2026-11-18') || `La fila fue ${JSON.stringify(x[0].params.values)}.`;
+    } })),
+    solution: () => ({ steps: [
+      N('schedule', 'Recurrence', { every: 'Cada hora', at: '' }), N('http', 'HTTP', { method: 'GET', url: 'https://api.cotizaciones-demo.example/dolar' }),
+      N('if', 'Condition', { cond: { left: bd('HTTP', 'venta'), op: 'gt', right: '1500' } }, [
+        { name: 'Sí', steps: [N('slack', 'Post message in a chat or channel', { channel: 'Compras', text: `Dólar venta: $${bd('HTTP', 'venta')}` }), N('sheets', 'Add a row into a table', { doc: 'Compras.xlsx', sheet: 'Cotizaciones', columns: [col('Fecha', bd('HTTP', 'fecha')), col('Venta', bd('HTTP', 'venta'))] })] },
+        { name: 'No', steps: [] },
       ]),
-    ] }; },
-  },
-  {
-    id: 'facturas-ia', cat: 'Flujos con IA', level: 'Avanzado', title: 'Leer facturas de proveedores con AI Builder',
-    story: 'Los proveedores mandan sus facturas por email. Un prompt de AI Builder extrae el proveedor, el número y el total; las facturas grandes las revisa finanzas en Teams y las demás se cargan directo en Excel.',
+    ] }),
+  }),
+  G(14, {
+    id: 'facturas-ia', title: 'Leer facturas de proveedores con AI Builder',
+    story: 'Los proveedores mandan sus facturas por email. Un prompt de AI Builder extrae el proveedor, el número y el total; las facturas grandes las revisa finanzas en Teams y las demás se cargan en Excel.',
     objectives: ['Escribir un prompt que devuelva JSON.', 'Convertir la respuesta con json() e int().', 'Decidir con Condition sobre un dato que extrajo la IA.'],
     reqs: [
       'Trigger: <b>When a HTTP request is received</b> (recibe <code>de</code>, <code>asunto</code> y <code>cuerpo</code>).',
       '<b>Run a prompt</b>: pedí un JSON con <code>proveedor</code>, <code>numero</code> y <code>total</code>, e incluí <code>@{triggerBody()?[\'cuerpo\']}</code>.',
-      '<b>Compose</b> que convierta la respuesta: <code>@{json(body(\'Run_a_prompt\')?[\'text\'])}</code>, con los campos <code>proveedor</code>, <code>numero</code> y <code>total</code> (este último como número, con <code>int()</code>).',
-      '<b>Condition</b>: total mayor que <code>100000</code>. Sí: <b>Teams</b> al canal <code>Finanzas</code> con proveedor, número y total. No: <b>Excel · Add a row</b> en <code>Facturas</code> (Proveedor, Numero, Total).',
+      '<b>Compose</b> con <code>proveedor</code>, <code>numero</code> y <code>total</code> (este como número, con <code>int()</code>), leídos de <code>@{json(body(\'Run_a_prompt\')?[\'text\'])}</code>.',
+      '<b>Condition</b>: total mayor que <code>100000</code>. Sí: <b>Teams</b> al canal <code>Finanzas</code> con proveedor, número y total. No: <b>Add a row into a table</b> en <code>Facturas</code> (Proveedor, Numero, Total).',
     ],
     mock: 'El modelo simulado extrae los datos solo si el prompt incluye el cuerpo del email.',
     hints: ['Un campo del JSON: @{json(body(\'Run_a_prompt\')?[\'text\'])?[\'proveedor\']}.', 'Para el total: @{int(json(body(\'Run_a_prompt\')?[\'text\'])?[\'total\'])}.'],
     real: ['AI Builder también tiene un modelo prearmado de procesamiento de facturas que lee PDF directamente.', 'Validá siempre lo que extrae la IA antes de pagar algo.'],
-    sample: [{ de: 'cobranzas@andina.example', asunto: 'Factura', cuerpo: 'Adjuntamos la factura FA-0001-00012345 de Distribuidora Andina por un total de $185.000.' }], ai: factAi,
+    sample: [{ de: 'cobranzas@andina.example', asunto: 'Factura', cuerpo: 'Adjuntamos la factura FA-0001-00012345 de Distribuidora Andina por un total de $185000.' }], ai: factAi,
     checks: [['Usa AI Builder', f => has(f, 'ai')], ['Decide con Condition', f => has(f, 'if')]],
     tests: FACT.map(([prov, num, total]) => ({ name: `Factura ${num}`, input: [{ de: 'cobranzas@prov.example', asunto: 'Factura', cuerpo: `Adjuntamos la factura ${num} de ${prov} por un total de $${total}.` }], ai: factAi, expect: r => {
       const a = callsOf(r, 'ai')[0]; if (!a) return 'No se ejecutó el prompt.';
       if (!a.params.prompt.includes(num)) return 'El prompt no incluye el cuerpo del email.';
-      const s = callsOf(r, 'slack'), x = callsOf(r, 'sheets');
-      if (Number(total) > 100000) {
-        if (x.length) return 'Una factura grande no va directo a Excel.';
-        if (!s.length || String(s[0].params.channel).trim() !== 'Finanzas') return 'Falta el aviso en el canal Finanzas.';
-        return [prov, num, total].every(v => s[0].params.text.includes(v)) || `El mensaje «${s[0].params.text}» tiene que incluir proveedor, número y total.`;
-      }
-      if (s.length) return 'Una factura chica no se avisa en Teams.';
+      const t = inChannel(r, 'Finanzas'), x = callsOf(r, 'sheets');
+      if (Number(total) > 100000) { if (x.length) return 'Una factura grande no va directo a Excel.'; if (!t) return 'Falta el aviso en el canal Finanzas.'; return [prov, num, total].every(v => t.params.text.includes(v)) || `El mensaje «${t.params.text}» tiene que incluir proveedor, número y total.`; }
+      if (t) return 'Una factura chica no se avisa en Teams.';
       if (!x.length || String(x[0].params.sheet).trim() !== 'Facturas') return 'Falta la fila en la tabla Facturas.';
       const v = x[0].params.values;
       if (v.Proveedor !== prov || v.Numero !== num) return `La fila fue ${JSON.stringify(v)}.`;
@@ -994,222 +704,359 @@ PROJ.pa = [
     solution: () => { const j = f => pa(`json(body('Run_a_prompt')?['text'])?['${f}']`), o = f => pa(`outputs('Compose')?['${f}']`); return { steps: [
       N('webhook', 'When a HTTP request is received', { path: '/facturas' }),
       N('ai', 'Run a prompt', { prompt: `Extraé de este email el proveedor, el número de factura y el total (solo dígitos). Respondé solo con JSON: {"proveedor": "", "numero": "", "total": ""}\n\nEmail: ${tb('cuerpo')}` }),
-      N('set', 'Compose', { keep: false, fields: [col('proveedor', j('proveedor')), col('numero', j('numero')), col('total', pa("int(json(body('Run_a_prompt')?['text'])?['total'])"))] }),
+      N('set', 'Compose', { fields: [col('proveedor', j('proveedor')), col('numero', j('numero')), col('total', pa("int(json(body('Run_a_prompt')?['text'])?['total'])"))] }),
       N('if', 'Condition', { cond: { left: o('total'), op: 'gt', right: '100000' } }, [
         { name: 'Sí', steps: [N('slack', 'Post message in a chat or channel', { channel: 'Finanzas', text: `Revisar factura ${o('numero')} de ${o('proveedor')} por $${o('total')}` })] },
         { name: 'No', steps: [N('sheets', 'Add a row into a table', { doc: 'Finanzas.xlsx', sheet: 'Facturas', columns: [col('Proveedor', o('proveedor')), col('Numero', o('numero')), col('Total', o('total'))] })] },
       ]),
     ] }; },
-  },
-  {
-    id: 'cobranzas', cat: 'Análisis de datos', level: 'Avanzado', title: 'Recordatorios de cobranza desde Excel',
-    story: 'Todos los lunes, el flujo revisa la tabla de facturas en Excel y le manda un recordatorio a cada cliente con una factura vencida. Las pagadas no reciben nada.',
-    objectives: ['Leer una tabla con List rows present in a table.', 'Recorrer las filas con Apply to each e items().', 'Filtrar dentro del recorrido.'],
+  }),
+
+  X({
+    id: 'rpa-erp', title: 'Cargar pedidos en un ERP sin API con RPA',
+    story: 'El ERP de la empresa es una aplicación de escritorio sin API. Un flujo de Power Automate Desktop carga cada pedido a mano; el flujo de nube lo ejecuta por cada pedido pendiente y guarda el número que devuelve el ERP.',
+    objectives: ['Ejecutar un flujo de escritorio desde la nube.', 'Pasarle entradas y leer sus salidas.', 'Hacerlo por cada fila de una tabla.'],
     reqs: [
       'Trigger: <b>Recurrence</b>.',
-      '<b>List rows present in a table</b> de la tabla <code>Facturas</code>.',
-      '<b>Apply to each</b> sobre <code>@{body(\'List_rows_present_in_a_table\')?[\'value\']}</code>.',
-      '<b>Filter array</b>: <code>@{items(\'Apply_to_each\')?[\'estado\']}</code> es igual a <code>vencida</code>.',
-      '<b>Outlook</b> al email del cliente con asunto <code>Recordatorio: factura NUMERO vencida</code> y el monto en el cuerpo.',
+      '<b>List rows present in a table</b> de <code>Pedidos pendientes</code>.',
+      '<b>Apply to each</b> sobre las filas (<code>value</code>).',
+      'Adentro: <b>Run a flow built with Power Automate for desktop</b> con el flujo <code>CargarPedidoERP</code> y las entradas <code>pedido</code>, <code>cliente</code> y <code>monto</code> de cada fila.',
+      'Después, en el mismo recorrido: <b>Add a row into a table</b> en <code>Pedidos cargados</code> con <code>Pedido</code> y <code>NumeroERP</code> (salida <code>numeroERP</code> del flujo de escritorio).',
     ],
-    mock: 'La tabla Facturas tiene las columnas cliente, email, factura, monto y estado (pagada o vencida).',
-    hints: ['Excel devuelve las filas dentro de value: eso es lo que recorre Apply to each.', 'Dentro del recorrido, cada fila se lee con items(\'Apply_to_each\').'],
-    real: ['List rows trae hasta 256 filas por defecto: para más, activá la paginación o usá un filtro OData en la acción.', 'Con Filter array antes del Apply to each se ahorran ejecuciones de acciones.'],
-    sample: [{}], rows: () => COBROS,
-    checks: [['Lee la tabla Facturas', f => all(f).some(n => n.op === 'sheetsRead' && n.p.sheet.trim() === 'Facturas')], ['Recorre con Apply to each', f => has(f, 'split')]],
-    tests: [['Dos facturas vencidas', COBROS, ['F-101', 'F-103']], ['Todo pagado', COBROS_B, []]].map(([name, data, venc]) => ({ name, input: [{}], rows: () => data, expect: r => {
-      const m = callsOf(r, 'mail'); if (m.length !== venc.length) return `Se enviaron ${m.length} recordatorios; se esperaban ${venc.length}.`;
-      for (const f of venc) { const row = data.find(x => x.factura === f), e = m.find(x => x.params.to === row.email); if (!e) return `Falta el recordatorio a ${row.email}.`; if (e.params.subject !== `Recordatorio: factura ${f} vencida`) return `El asunto fue «${e.params.subject}».`; if (!e.params.body.includes(String(row.monto))) return 'El cuerpo tiene que incluir el monto.'; }
-      return true;
+    mock: 'El flujo de escritorio CargarPedidoERP devuelve {"estado":"ok","numeroERP":"…"}.',
+    hints: ['La salida se lee con @{body(\'Run_a_flow_built_with_Power_Automate_for_desktop\')?[\'numeroERP\']}.', 'Las dos acciones van adentro del Apply to each, una debajo de la otra.'],
+    real: ['El flujo de escritorio se arma en Power Automate Desktop y define sus variables de entrada y salida.', 'Para correr sin una persona conectada (desatendido) hace falta una máquina registrada y licencia Process.'],
+    sample: [{}], rows: () => PEND, desktop: erp,
+    checks: [['Ejecuta el flujo de escritorio', f => has(f, 'desktop')], ['Recorre con Apply to each', f => has(f, 'foreach')]],
+    tests: [['Dos pedidos', PEND], ['Un pedido', [{ pedido: '7101', cliente: 'Mate SA', monto: 9000 }]]].map(([name, rows]) => ({ name, input: [{}], rows: () => rows, desktop: erp, expect: r => {
+      const d = callsOf(r, 'desktop'); if (d.length !== rows.length) return `El flujo de escritorio se ejecutó ${d.length} veces; se esperaban ${rows.length}.`;
+      for (const row of rows) { const c = d.find(x => String(x.params.inputs.pedido) === row.pedido); if (!c) return `No se cargó el pedido ${row.pedido}.`; if (c.params.flowName !== 'CargarPedidoERP') return `Se ejecutó «${c.params.flowName}».`; if (c.params.inputs.cliente !== row.cliente) return 'Falta la entrada cliente.'; }
+      const x = callsOf(r, 'sheets'); if (x.length !== rows.length) return `Se agregaron ${x.length} filas en Pedidos cargados.`;
+      return rows.every(row => x.some(c => String(c.params.sheet).trim() === 'Pedidos cargados' && String(c.params.values.Pedido) === row.pedido && c.params.values.NumeroERP === '45' + row.pedido)) || 'Cada fila tiene que tener el Pedido y el NumeroERP que devolvió el flujo de escritorio.';
     } })),
-    solution: () => { const it = f => pa(`items('Apply_to_each')?['${f}']`); return { steps: [
-      N('schedule', 'Recurrence', { every: 'Todos los lunes', at: '09:00' }),
-      N('sheetsRead', 'List rows present in a table', { doc: 'Cobranzas.xlsx', sheet: 'Facturas' }),
-      N('split', 'Apply to each', { field: pa("body('List_rows_present_in_a_table')?['value']") }),
-      N('filter', 'Filter array', { cond: { left: it('estado'), op: 'eq', right: 'vencida' } }),
-      N('mail', 'Send an email (V2)', { to: it('email'), subject: `Recordatorio: factura ${it('factura')} vencida`, body: `Hola ${it('cliente')}, la factura ${it('factura')} por $${it('monto')} está vencida.` }),
-    ] }; },
-  },
-  {
-    id: 'dolar', cat: 'Conexión con servicios', level: 'Intermedio', title: 'Alerta de cotización del dólar',
-    story: 'Compras necesita saber cuándo el dólar supera un valor para frenar importaciones. Cada hora, el flujo consulta una API de cotizaciones y, si la venta supera el umbral, avisa en Teams y registra el valor.',
-    objectives: ['Llamar a una API con el conector HTTP.', 'Leer la respuesta con body(\'HTTP\').', 'Comparar números en una Condition.'],
+    solution: () => ({ steps: [
+      N('schedule', 'Recurrence', { every: 'Cada hora', at: '' }), N('sheetsRead', 'List rows present in a table', { doc: 'Pedidos.xlsx', sheet: 'Pedidos pendientes' }),
+      N('foreach', 'Apply to each', { from: bd('List_rows_present_in_a_table', 'value') }, [{ name: 'Acciones', steps: [
+        N('desktop', 'Run a flow built with Power Automate for desktop', { flowName: 'CargarPedidoERP', inputs: [col('pedido', it('pedido')), col('cliente', it('cliente')), col('monto', it('monto'))] }),
+        N('sheets', 'Add a row into a table', { doc: 'Pedidos.xlsx', sheet: 'Pedidos cargados', columns: [col('Pedido', it('pedido')), col('NumeroERP', bd('Run_a_flow_built_with_Power_Automate_for_desktop', 'numeroERP'))] }),
+      ] }]),
+    ] }),
+  }),
+  X({
+    id: 'powerapps', title: 'Alta de empleados desde una app de Power Apps',
+    story: 'Recursos Humanos carga los ingresos en una app de Power Apps. La app ejecuta un flujo que registra al empleado en Dataverse y le devuelve a la app el ID y un mensaje de confirmación.',
+    objectives: ['Usar el trigger PowerApps (V2).', 'Devolver valores a la app con Respond to a PowerApp or flow.', 'Leer la salida de Dataverse.'],
+    reqs: [
+      'Trigger: <b>PowerApps (V2)</b> con las entradas <code>nombre</code>, <code>email</code> y <code>area</code>.',
+      '<b>Add a new row</b> en la tabla <code>Empleados</code> con email, nombre y la columna <code>area</code>.',
+      '<b>Respond to a PowerApp or flow</b> con dos salidas: <code>id</code> (el id de la fila creada) y <code>mensaje</code>: <code>Alta registrada para NOMBRE</code>.',
+    ],
+    hints: ['El id de la fila: @{body(\'Add_a_new_row\')?[\'id\']}.', 'En la app se leería así: Set(res, AltaEmpleado.Run(...)); res.mensaje.'],
+    real: ['En el trigger PowerApps (V2) real, las entradas se leen como triggerBody()?[\'text\'], text_1, etc., según el orden en que se crearon.', 'El flujo tiene que estar en la misma solución o entorno que la app.'],
+    sample: [{ nombre: 'Sofía Ríos', email: 'sofia@' + DEMO, area: 'Ventas' }],
+    checks: [['Empieza con PowerApps (V2)', f => f.steps[0]?.op === 'instant'], ['Responde a la app', f => has(f, 'respond')]],
+    tests: [['Sofía Ríos', 'sofia@' + DEMO, 'Ventas'], ['Tomás Vera', 'tomas@' + DEMO, 'Logística']].map(([nombre, email, area]) => ({ name: `Alta de ${nombre}`, input: [{ nombre, email, area }], expect: r => {
+      const c = callsOf(r, 'crm')[0]; if (!c) return 'No se agregó la fila en Dataverse.';
+      if (String(c.params.table).trim() !== 'Empleados' || c.params.email !== email || c.params.props.area !== area) return `La fila fue ${JSON.stringify(c.params)}.`;
+      if (!r.response) return 'El flujo no le respondió a la app.';
+      if (!String(r.response.id || '').startsWith('row-')) return `La salida id vale «${r.response.id ?? ''}»; tiene que ser el id de la fila creada.`;
+      return r.response.mensaje === `Alta registrada para ${nombre}` || `La salida mensaje vale «${r.response.mensaje ?? ''}».`;
+    } })),
+    solution: () => ({ steps: [
+      N('instant', 'PowerApps (V2)', { inputs: [col('nombre', 'Text'), col('email', 'Email'), col('area', 'Text')] }),
+      N('crm', 'Add a new row', { table: 'Empleados', email: tb('email'), name: tb('nombre'), props: [col('area', tb('area'))] }),
+      N('respond', 'Respond to a PowerApp or flow', { outputs: [col('id', bd('Add_a_new_row', 'id')), col('mensaje', `Alta registrada para ${tb('nombre')}`)] }),
+    ] }),
+  }),
+  X({
+    id: 'kpi-ventas', title: 'KPIs de ventas a Power BI con variables',
+    story: 'Dirección sigue en Power BI cuánto se cobró y cuánto está pendiente. Cada noche, el flujo recorre las ventas del día, suma con variables y manda los totales a un dataset de Power BI.',
+    objectives: ['Inicializar variables en el nivel superior.', 'Sumar con Increment variable dentro de Apply to each.', 'Usar los totales después del bucle.'],
     reqs: [
       'Trigger: <b>Recurrence</b>.',
-      '<b>HTTP</b>: GET a <code>https://api.cotizaciones-demo.example/dolar</code>.',
-      '<b>Condition</b>: <code>@{body(\'HTTP\')?[\'venta\']}</code> es mayor que <code>1500</code>.',
-      'Sí: <b>Teams</b> al canal <code>Compras</code>: <code>Dólar venta: $VALOR</code> y <b>Excel · Add a row</b> en <code>Cotizaciones</code> (Fecha y Venta).',
-      'No: no hace nada.',
+      '<b>List rows present in a table</b> de <code>Ventas</code>.',
+      'Dos <b>Initialize variable</b> de tipo Integer en 0: <code>cobrado</code> y <code>pendiente</code>.',
+      '<b>Apply to each</b> sobre las filas, con una <b>Condition</b> adentro: si <code>estado</code> es <code>pagado</code>, <b>Increment variable</b> cobrado en el monto; si no, pendiente.',
+      'Después del bucle: <b>Add rows to a dataset</b> (dataset <code>KPIs ventas</code>, tabla <code>Diario</code>) con <code>Cobrado</code> y <code>Pendiente</code>, y <b>Teams</b> al canal <code>Dirección</code>: <code>Cobrado: $X · Pendiente: $Y</code>.',
     ],
-    mock: 'La API responde, por ejemplo: {"moneda":"USD","compra":1480,"venta":1500,"fecha":"2026-11-18"}',
-    hints: ['Dejá la rama No vacía: es válido.', 'Fecha y venta salen de la respuesta del HTTP.'],
-    real: ['HTTP es premium. Si la API requiere clave, va en un header o en la autenticación de la acción, nunca en la URL.', 'Para no avisar todas las horas lo mismo, se puede guardar el último valor en una lista de SharePoint.'],
-    sample: [{}], http: dolar(1620),
-    checks: [['Empieza con Recurrence', f => f.steps[0]?.op === 'schedule'], ['Llama a la API de cotizaciones', f => all(f).some(n => n.op === 'http' && n.p.url.includes('api.cotizaciones-demo.example/dolar'))]],
-    tests: [['Venta en $1620', 1620, true], ['Venta en $1500', 1500, false]].map(([name, v, alert]) => ({ name, input: [{}], http: dolar(v), expect: r => {
-      const s = callsOf(r, 'slack'), x = callsOf(r, 'sheets');
-      if (!alert) return (!s.length && !x.length) || 'Con la venta en el umbral o por debajo no hay que avisar.';
-      if (!s.length || String(s[0].params.channel).trim() !== 'Compras') return 'Falta el aviso en el canal Compras.';
-      if (s[0].params.text !== `Dólar venta: $${v}`) return `El mensaje fue «${s[0].params.text}».`;
-      if (!x.length || String(x[0].params.sheet).trim() !== 'Cotizaciones') return 'Falta la fila en Cotizaciones.';
-      return (String(x[0].params.values.Venta) === String(v) && x[0].params.values.Fecha === '2026-11-18') || `La fila fue ${JSON.stringify(x[0].params.values)}.`;
+    mock: 'La tabla Ventas tiene las columnas fecha, region, monto y estado (pagado o pendiente).',
+    hints: ['Las variables se inicializan antes del Apply to each, nunca adentro.', 'Increment variable suma el valor que le pases: @{items(\'Apply_to_each\')?[\'monto\']}.', 'Las acciones que van después del bucle se agregan con el + de abajo del Apply to each.'],
+    real: ['El dataset de Power BI tiene que ser de tipo push o streaming para recibir filas.', 'Con muchos datos, conviene calcular en Power BI con DAX y usar el flujo solo para refrescar el modelo.'],
+    sample: [{}], rows: () => VENTAS,
+    checks: [['Inicializa variables', f => has(f, 'varInit')], ['Suma con Increment variable', f => has(f, 'varInc')], ['Envía a Power BI', f => has(f, 'pbi')]],
+    tests: [['Ventas del día 1', VENTAS, 6700, 5900], ['Ventas del día 2', VENTAS_B, 3400, 4000]].map(([name, rows, cob, pen]) => ({ name, input: [{}], rows: () => rows, expect: r => {
+      const b = callsOf(r, 'pbi'); if (b.length !== 1) return `Se enviaron ${b.length} filas a Power BI; se esperaba una sola, después del bucle.`;
+      if (b[0].params.dataset !== 'KPIs ventas' || b[0].params.table !== 'Diario') return 'El dataset tiene que ser KPIs ventas, tabla Diario.';
+      if (Number(b[0].params.values.Cobrado) !== cob || Number(b[0].params.values.Pendiente) !== pen) return `Power BI recibió ${JSON.stringify(b[0].params.values)}; se esperaba Cobrado ${cob} y Pendiente ${pen}.`;
+      const t = inChannel(r, 'Dirección'); if (!t) return 'Falta el mensaje en el canal Dirección.';
+      return okText(t, `Cobrado: $${cob} · Pendiente: $${pen}`);
     } })),
-    solution: () => { const h = f => pa(`body('HTTP')?['${f}']`); return { steps: [
-      N('schedule', 'Recurrence', { every: 'Cada hora', at: '' }),
-      N('http', 'HTTP', { method: 'GET', url: 'https://api.cotizaciones-demo.example/dolar' }),
-      N('if', 'Condition', { cond: { left: h('venta'), op: 'gt', right: '1500' } }, [
-        { name: 'Sí', steps: [N('slack', 'Post message in a chat or channel', { channel: 'Compras', text: `Dólar venta: $${h('venta')}` }), N('sheets', 'Add a row into a table', { doc: 'Compras.xlsx', sheet: 'Cotizaciones', columns: [col('Fecha', h('fecha')), col('Venta', h('venta'))] })] },
+    solution: () => ({ steps: [
+      N('schedule', 'Recurrence', { every: 'Cada día', at: '23:00' }), N('sheetsRead', 'List rows present in a table', { doc: 'Ventas.xlsx', sheet: 'Ventas' }),
+      N('varInit', 'Initialize variable', { name: 'cobrado', type: 'Integer', value: '0' }), N('varInit', 'Initialize variable 2', { name: 'pendiente', type: 'Integer', value: '0' }),
+      N('foreach', 'Apply to each', { from: bd('List_rows_present_in_a_table', 'value') }, [{ name: 'Acciones', steps: [
+        N('if', 'Condition', { cond: { left: it('estado'), op: 'eq', right: 'pagado' } }, [
+          { name: 'Sí', steps: [N('varInc', 'Increment variable', { name: 'cobrado', value: it('monto') })] },
+          { name: 'No', steps: [N('varInc', 'Increment variable 2', { name: 'pendiente', value: it('monto') })] },
+        ]),
+      ] }]),
+      N('pbi', 'Add rows to a dataset', { dataset: 'KPIs ventas', table: 'Diario', columns: [col('Cobrado', vr('cobrado')), col('Pendiente', vr('pendiente'))] }),
+      N('slack', 'Post message in a chat or channel', { channel: 'Dirección', text: `Cobrado: $${vr('cobrado')} · Pendiente: $${vr('pendiente')}` }),
+    ] }),
+  }),
+  X({
+    id: 'monitoreo', title: 'Monitorear servicios con HTTP y variables',
+    story: 'Infraestructura quiere un aviso cuando algún servicio no responde. El flujo recibe la lista de servicios, consulta cada uno y, al final, avisa una sola vez con todos los que fallaron.',
+    objectives: ['Llamar a una API por cada elemento de una lista.', 'Leer el código de estado con outputs().', 'Acumular en una variable Array y usarla después del bucle.'],
+    reqs: [
+      'Trigger: <b>When a HTTP request is received</b> (recibe <code>servicios</code>, una lista con <code>nombre</code> y <code>url</code>).',
+      '<b>Initialize variable</b> <code>caidos</code> de tipo Array con valor <code>[]</code>.',
+      '<b>Apply to each</b> sobre <code>@{triggerBody()?[\'servicios\']}</code>: <b>HTTP</b> GET a la url de cada servicio y una <b>Condition</b>: si <code>@{outputs(\'HTTP\')?[\'statusCode\']}</code> no es igual a <code>200</code>, <b>Append to array variable</b> caidos con el nombre.',
+      'Después del bucle, <b>Condition</b>: <code>@{length(variables(\'caidos\'))}</code> es mayor que <code>0</code>. Sí: <b>Teams</b> al canal <code>Infraestructura</code>: <code>Servicios caídos: NOMBRE1, NOMBRE2</code>.',
+    ],
+    mock: 'Cada servicio responde con statusCode 200 si funciona o 503 si está caído.',
+    hints: ['El texto: Servicios caídos: @{join(variables(\'caidos\'), \', \')}.', 'Un solo aviso al final, no uno por servicio: por eso se acumula en una variable.'],
+    real: ['Por defecto, una acción HTTP que recibe un 503 falla. Para seguir y evaluar el código hay que configurar "run after" en la acción siguiente.', 'Para monitoreo serio existen herramientas dedicadas, como Azure Monitor.'],
+    sample: [{ servicios: SERV }], http: health('pagos'),
+    checks: [['Usa una variable Array', f => all(f).some(n => n.op === 'varInit' && n.p.type === 'Array')], ['Acumula con Append to array variable', f => has(f, 'varAppend')]],
+    tests: [['Pagos caído', health('pagos'), 'Servicios caídos: Pagos'], ['Todo funciona', health(), null], ['Pagos y Stock caídos', health('pagos', 'stock'), 'Servicios caídos: Pagos, Stock']].map(([name, http, ex]) => ({ name, input: [{ servicios: SERV }], http, expect: r => {
+      if (callsOf(r, 'http').length !== SERV.length) return `Se consultaron ${callsOf(r, 'http').length} servicios; se esperaban ${SERV.length}.`;
+      const t = callsOf(r, 'slack');
+      if (!ex) return !t.length || 'Si todo funciona no hay que avisar.';
+      if (t.length !== 1) return `Se enviaron ${t.length} avisos; se esperaba uno solo al final.`;
+      if (String(t[0].params.channel).trim() !== 'Infraestructura') return 'El canal tiene que ser Infraestructura.';
+      return okText(t[0], ex);
+    } })),
+    solution: () => ({ steps: [
+      N('webhook', 'When a HTTP request is received', { path: '/monitoreo' }),
+      N('varInit', 'Initialize variable', { name: 'caidos', type: 'Array', value: '[]' }),
+      N('foreach', 'Apply to each', { from: tb('servicios') }, [{ name: 'Acciones', steps: [
+        N('http', 'HTTP', { method: 'GET', url: it('url') }),
+        N('if', 'Condition', { cond: { left: pa("outputs('HTTP')?['statusCode']"), op: 'neq', right: '200' } }, [
+          { name: 'Sí', steps: [N('varAppend', 'Append to array variable', { name: 'caidos', value: it('nombre') })] },
+          { name: 'No', steps: [] },
+        ]),
+      ] }]),
+      N('if', 'Condition 2', { cond: { left: pa("length(variables('caidos'))"), op: 'gt', right: '0' } }, [
+        { name: 'Sí', steps: [N('slack', 'Post message in a chat or channel', { channel: 'Infraestructura', text: `Servicios caídos: ${pa("join(variables('caidos'), ', ')")}` })] },
         { name: 'No', steps: [] },
       ]),
+    ] }),
+  }),
+  X({
+    id: 'resumen-ia', title: 'Resumen semanal de reclamos con IA',
+    story: 'La gerencia no tiene tiempo de leer todos los reclamos. Cada viernes, el flujo toma los de la semana, le pide a AI Builder un resumen y lo manda por email.',
+    objectives: ['Pasarle una lista completa a un prompt.', 'Usar la respuesta del modelo en un email.', 'Combinar Excel, AI Builder y Outlook.'],
+    reqs: [
+      'Trigger: <b>Recurrence</b>.',
+      '<b>List rows present in a table</b> de <code>Reclamos</code>.',
+      '<b>Run a prompt</b> que pida un resumen e incluya las filas: <code>@{body(\'List_rows_present_in_a_table\')?[\'value\']}</code>.',
+      '<b>Send an email (V2)</b> a <code>gerencia@' + DEMO + '</code>, asunto <code>Resumen semanal de reclamos</code> y el texto del modelo como cuerpo.',
+    ],
+    mock: 'El modelo simulado solo resume si el prompt incluye el detalle de todos los reclamos.',
+    hints: ['El cuerpo del email: @{body(\'Run_a_prompt\')?[\'text\']}.', 'Si pasás solo una fila, el modelo no tiene toda la información.'],
+    real: ['Los prompts tienen un límite de tamaño: con muchos reclamos, conviene mandar solo la columna detalle con Select.', 'Revisá el resumen antes de usarlo para decisiones.'],
+    sample: [{}], rows: () => RECL, ai: resumenAi(RECL),
+    checks: [['Usa AI Builder', f => has(f, 'ai')], ['Lee la tabla Reclamos', f => all(f).some(n => n.op === 'sheetsRead' && n.p.sheet.trim() === 'Reclamos')]],
+    tests: [['Tres reclamos', RECL], ['Dos reclamos', RECL.slice(1)]].map(([name, list]) => ({ name, input: [{}], rows: () => list, ai: resumenAi(list), expect: r => {
+      const m = callsOf(r, 'mail')[0]; if (!m) return 'No se envió el email.';
+      if (m.params.to !== 'gerencia@' + DEMO) return `El email fue a «${m.params.to}».`;
+      if (m.params.subject !== 'Resumen semanal de reclamos') return `El asunto fue «${m.params.subject}».`;
+      const ex = `Resumen: ${list.length} reclamos esta semana, principalmente por entregas y facturación.`;
+      return m.params.body === ex || `El cuerpo fue «${short(m.params.body)}». ¿El prompt incluye todas las filas?`;
+    } })),
+    solution: () => ({ steps: [
+      N('schedule', 'Recurrence', { every: 'Cada viernes', at: '17:00' }), N('sheetsRead', 'List rows present in a table', { doc: 'Atencion.xlsx', sheet: 'Reclamos' }),
+      N('ai', 'Run a prompt', { prompt: `Resumí en dos líneas los reclamos de esta semana, indicando cuántos son y los temas principales: ${bd('List_rows_present_in_a_table', 'value')}` }),
+      N('mail', 'Send an email (V2)', { to: 'gerencia@' + DEMO, subject: 'Resumen semanal de reclamos', body: bd('Run_a_prompt', 'text') }),
+    ] }),
+  }),
+  X({
+    id: 'aprobacion-2-niveles', title: 'Aprobación en dos niveles',
+    story: 'Todo gasto lo aprueba primero el jefe. Si supera $100.000, después lo aprueba finanzas. Si alguno rechaza, se avisa y el flujo termina ahí.',
+    objectives: ['Encadenar aprobaciones.', 'Cortar el flujo con Terminate Succeeded.', 'Usar el flujo que sigue después de una Condition.'],
+    reqs: [
+      'Trigger: <b>When a HTTP request is received</b> (recibe <code>empleado</code>, <code>email</code>, <code>monto</code> y <code>concepto</code>).',
+      'Aprobación a <code>jefe@' + DEMO + '</code>. <b>Condition</b>: si el outcome es <code>Reject</code>, email al empleado con asunto <code>Gasto rechazado: CONCEPTO</code> y <b>Terminate</b> con estado <code>Succeeded</code>.',
+      'Debajo, <b>Condition</b>: si el monto es mayor que <code>100000</code>, aprobación a <code>finanzas@' + DEMO + '</code>; si finanzas rechaza, el mismo email de rechazo y <b>Terminate</b> Succeeded.',
+      'Al final del flujo: email al empleado con asunto <code>Gasto aprobado: CONCEPTO</code>.',
+    ],
+    mock: 'En las pruebas, el jefe y finanzas responden según el caso.',
+    hints: ['La segunda aprobación se llama "Start and wait for an approval 2": su outcome es @{body(\'Start_and_wait_for_an_approval_2\')?[\'outcome\']}.', 'Terminate Succeeded corta el flujo sin marcarlo como error.', 'El email de aprobado va debajo de las Conditions, no adentro.'],
+    real: ['Con "Everyone must approve" se pide la aprobación de varias personas a la vez.', 'Se puede guardar cada decisión en una lista de SharePoint para auditoría.'],
+    sample: [GASTO('Laura Gil', 'laura@' + DEMO, 250000, 'Notebook')], approval: () => 'Approve',
+    checks: [['Usa dos aprobaciones', f => all(f).filter(n => n.op === 'approval').length >= 2], ['Usa Terminate', f => has(f, 'terminate')]],
+    tests: [['Jefe aprueba, monto chico', 50000, 'Approve', null, ['jefe'], 'aprobado'], ['Los dos aprueban', 250000, 'Approve', 'Approve', ['jefe', 'finanzas'], 'aprobado'], ['Finanzas rechaza', 250000, 'Approve', 'Reject', ['jefe', 'finanzas'], 'rechazado'], ['Jefe rechaza', 250000, 'Reject', null, ['jefe'], 'rechazado']].map(([name, monto, j, f, who, res]) => ({ name, input: [GASTO('Laura Gil', 'laura@' + DEMO, monto, 'Notebook')], approval: ({ assignedTo }) => (assignedTo.startsWith('jefe') ? j : f), expect: r => {
+      if (r.error) return `El flujo terminó con error: ${r.error}. El rechazo tiene que terminar con Terminate Succeeded.`;
+      const a = callsOf(r, 'approval').map(x => x.params.assignedTo.split('@')[0]);
+      if (a.join(',') !== who.join(',')) return `Se pidieron aprobaciones a: ${a.join(', ') || 'nadie'}; se esperaba ${who.join(', ')}.`;
+      const m = callsOf(r, 'mail'); if (m.length !== 1) return `Se enviaron ${m.length} emails; se esperaba uno.`;
+      return m[0].params.subject === `Gasto ${res}: Notebook` || `El asunto fue «${m[0].params.subject}».`;
+    } })),
+    solution: () => { const rej = n => N('mail', n, { to: tb('email'), subject: `Gasto rechazado: ${tb('concepto')}`, body: 'Tu gasto fue rechazado.' }); return { steps: [
+      N('webhook', 'When a HTTP request is received', { path: '/gastos' }),
+      N('approval', 'Start and wait for an approval', { assignedTo: 'jefe@' + DEMO, title: `Gasto de ${tb('empleado')}: ${tb('concepto')}`, details: `Monto: $${tb('monto')}` }),
+      N('if', 'Condition', { cond: { left: bd('Start_and_wait_for_an_approval', 'outcome'), op: 'eq', right: 'Reject' } }, [
+        { name: 'Sí', steps: [rej('Send an email (V2)'), N('terminate', 'Terminate', { status: 'Succeeded' })] }, { name: 'No', steps: [] },
+      ]),
+      N('if', 'Condition 2', { cond: { left: tb('monto'), op: 'gt', right: '100000' } }, [
+        { name: 'Sí', steps: [
+          N('approval', 'Start and wait for an approval 2', { assignedTo: 'finanzas@' + DEMO, title: `Gasto de ${tb('empleado')}: ${tb('concepto')}`, details: `Monto: $${tb('monto')}` }),
+          N('if', 'Condition 3', { cond: { left: bd('Start_and_wait_for_an_approval_2', 'outcome'), op: 'eq', right: 'Reject' } }, [
+            { name: 'Sí', steps: [rej('Send an email (V2) 2'), N('terminate', 'Terminate 2', { status: 'Succeeded' })] }, { name: 'No', steps: [] },
+          ]),
+        ] }, { name: 'No', steps: [] },
+      ]),
+      N('mail', 'Send an email (V2) 3', { to: tb('email'), subject: `Gasto aprobado: ${tb('concepto')}`, body: 'Tu gasto fue aprobado.' }),
     ] }; },
-  },
-];
+  }),
+  X({
+    id: 'onboarding', title: 'Onboarding de un empleado nuevo',
+    story: 'Cuando entra alguien a la empresa, se registra en Dataverse, se le da la bienvenida en Teams, se crea una tarea en Planner por cada paso del onboarding y, al final, se le manda un resumen.',
+    objectives: ['Recorrer una lista que viene en el trigger.', 'Leer un elemento simple con items().', 'Continuar el flujo después de un Apply to each.'],
+    reqs: [
+      'Trigger: <b>When a HTTP request is received</b> (recibe <code>nombre</code>, <code>email</code>, <code>area</code> y <code>tareas</code>, una lista de textos).',
+      '<b>Add a new row</b> en <code>Empleados</code> (email, nombre y area) y <b>Teams</b> al canal <code>RRHH</code>: <code>Damos la bienvenida a NOMBRE (AREA)</code>.',
+      '<b>Apply to each</b> sobre <code>@{triggerBody()?[\'tareas\']}</code>: <b>Create a task</b> en el plan <code>Onboarding</code> con el título <code>TAREA - NOMBRE</code>.',
+      'Después del bucle: <b>Send an email (V2)</b> al empleado con asunto <code>Tu plan de bienvenida</code> y el texto <code>Tenés N tareas asignadas en Planner.</code>',
+    ],
+    hints: ['Cada tarea es un texto, así que se lee directo con @{items(\'Apply_to_each\')}.', 'La cantidad: @{length(triggerBody()?[\'tareas\'])}.'],
+    real: ['En Planner se puede asignar la tarea a la persona con su email.', 'Para el alta en Azure AD o Entra ID hay acciones del conector de Office 365 Users y de Entra ID.'],
+    sample: [{ nombre: 'Sofía Ríos', email: 'sofia@' + DEMO, area: 'Ventas', tareas: ['Firmar contrato', 'Configurar notebook', 'Curso de seguridad'] }],
+    checks: [['Recorre con Apply to each', f => has(f, 'foreach')], ['Crea tareas en Planner', f => has(f, 'task')]],
+    tests: [['Tres tareas', ['Firmar contrato', 'Configurar notebook', 'Curso de seguridad']], ['Una tarea', ['Firmar contrato']]].map(([name, tareas]) => ({ name, input: [{ nombre: 'Sofía Ríos', email: 'sofia@' + DEMO, area: 'Ventas', tareas }], expect: r => {
+      const c = callsOf(r, 'crm')[0]; if (!c || String(c.params.table).trim() !== 'Empleados') return 'Falta la fila en la tabla Empleados.';
+      const t = inChannel(r, 'RRHH'); if (!t) return 'Falta la bienvenida en el canal RRHH.';
+      const ok = okText(t, 'Damos la bienvenida a Sofía Ríos (Ventas)'); if (ok !== true) return ok;
+      const k = callsOf(r, 'task'); if (k.length !== tareas.length) return `Se crearon ${k.length} tareas; se esperaban ${tareas.length}.`;
+      if (!tareas.every(x => k.some(y => String(y.params.list).trim() === 'Onboarding' && y.params.title === `${x} - Sofía Ríos`))) return `Los títulos fueron: ${k.map(y => y.params.title).join(' | ')}.`;
+      const m = callsOf(r, 'mail'); if (m.length !== 1) return `Se enviaron ${m.length} emails; se esperaba uno, después del bucle.`;
+      if (m[0].params.subject !== 'Tu plan de bienvenida') return `El asunto fue «${m[0].params.subject}».`;
+      return m[0].params.body.includes(`Tenés ${tareas.length} tareas asignadas en Planner.`) || `El cuerpo fue «${m[0].params.body}».`;
+    } })),
+    solution: () => ({ steps: [
+      N('webhook', 'When a HTTP request is received', { path: '/ingresos' }),
+      N('crm', 'Add a new row', { table: 'Empleados', email: tb('email'), name: tb('nombre'), props: [col('area', tb('area'))] }),
+      N('slack', 'Post message in a chat or channel', { channel: 'RRHH', text: `Damos la bienvenida a ${tb('nombre')} (${tb('area')})` }),
+      N('foreach', 'Apply to each', { from: tb('tareas') }, [{ name: 'Acciones', steps: [N('task', 'Create a task', { list: 'Onboarding', title: `${pa("items('Apply_to_each')")} - ${tb('nombre')}` })] }]),
+      N('mail', 'Send an email (V2)', { to: tb('email'), subject: 'Tu plan de bienvenida', body: `Hola ${tb('nombre')}. Tenés ${pa("length(triggerBody()?['tareas'])")} tareas asignadas en Planner.` }),
+    ] }),
+  }),
+  X({
+    id: 'encuesta-ia', title: 'Clasificar encuestas de satisfacción con IA',
+    story: 'Cada respuesta de la encuesta de satisfacción se clasifica con IA. Las negativas van a atención al cliente para contactar a la persona; las positivas se guardan como testimonios.',
+    objectives: ['Clasificar texto con un prompt de una sola palabra.', 'Enrutar con Switch según la respuesta de la IA.', 'Dejar un Default sin acciones.'],
+    reqs: [
+      'Trigger: <b>When a new response is submitted</b> (recibe <code>nombre</code>, <code>email</code> y <code>comentario</code>).',
+      '<b>Run a prompt</b> que clasifique el comentario en una sola palabra (<code>positivo</code>, <code>negativo</code> o <code>neutro</code>) e incluya el comentario.',
+      '<b>Switch</b> con On <code>@{body(\'Run_a_prompt\')?[\'text\']}</code>. Caso <code>negativo</code>: <b>Teams</b> al canal <code>Atención al cliente</code>: <code>Contactar a NOMBRE (EMAIL): COMENTARIO</code>. Caso <code>positivo</code>: <b>Add a row into a table</b> en <code>Testimonios</code> (Nombre, Comentario). Default: nada.',
+    ],
+    mock: 'El modelo simulado clasifica bien solo si el prompt incluye el comentario.',
+    hints: ['Pedí una sola palabra en minúsculas para que coincida con los casos del Switch.', 'Dejá el Default vacío.'],
+    real: ['AI Builder tiene un modelo prearmado de análisis de sentimiento que devuelve positive, negative o neutral con un puntaje.', 'Convertí la respuesta con toLower y trim si no confiás en el formato.'],
+    sample: [{ nombre: SENT[0][0], email: SENT[0][1], comentario: SENT[0][2] }], ai: sentAi,
+    checks: [['Usa AI Builder', f => has(f, 'ai')], ['Enruta con Switch', f => has(f, 'router')]],
+    tests: SENT.map(([nombre, email, comentario, s]) => ({ name: `Comentario ${s}`, input: [{ nombre, email, comentario }], ai: sentAi, expect: r => {
+      const a = callsOf(r, 'ai')[0]; if (!a || !a.params.prompt.includes(comentario)) return 'El prompt no incluye el comentario.';
+      const t = callsOf(r, 'slack'), x = callsOf(r, 'sheets');
+      if (s === 'negativo') { if (x.length) return 'Un comentario negativo no es un testimonio.'; const c = inChannel(r, 'Atención al cliente'); if (!c) return 'Falta el aviso en Atención al cliente.'; return okText(c, `Contactar a ${nombre} (${email}): ${comentario}`); }
+      if (s === 'positivo') { if (t.length) return 'Un comentario positivo no va a Teams.'; if (!x.length || String(x[0].params.sheet).trim() !== 'Testimonios') return 'Falta la fila en Testimonios.'; return (x[0].params.values.Nombre === nombre && x[0].params.values.Comentario === comentario) || `La fila fue ${JSON.stringify(x[0].params.values)}.`; }
+      return (!t.length && !x.length) || 'Un comentario neutro no tiene que generar acciones.';
+    } })),
+    solution: () => ({ steps: [
+      N('formsIn', 'When a new response is submitted', { form: 'Encuesta de satisfacción' }),
+      N('ai', 'Run a prompt', { prompt: `Clasificá el sentimiento de este comentario. Respondé solo con una palabra en minúsculas: positivo, negativo o neutro.\n\nComentario: ${tb('comentario')}` }),
+      N('router', 'Switch', { on: bd('Run_a_prompt', 'text') }, [
+        { name: 'negativo', value: 'negativo', steps: [N('slack', 'Post message in a chat or channel', { channel: 'Atención al cliente', text: `Contactar a ${tb('nombre')} (${tb('email')}): ${tb('comentario')}` })] },
+        { name: 'positivo', value: 'positivo', steps: [N('sheets', 'Add a row into a table', { doc: 'Marketing.xlsx', sheet: 'Testimonios', columns: [col('Nombre', tb('nombre')), col('Comentario', tb('comentario'))] })] },
+        { name: 'Default', fallback: true, value: '', steps: [] },
+      ]),
+    ] }),
+  }),
+  X({
+    id: 'backup-csv', title: 'Respaldo semanal de clientes en CSV',
+    story: 'Cada domingo, el flujo exporta la tabla de clientes a un archivo CSV en OneDrive, solo con el nombre y el email.',
+    objectives: ['Elegir columnas con Select.', 'Generar un CSV con Create CSV table.', 'Crear un archivo en OneDrive.'],
+    reqs: [
+      'Trigger: <b>Recurrence</b>.',
+      '<b>List rows present in a table</b> de <code>Clientes</code>.',
+      '<b>Select</b> sobre las filas, con los campos <code>Nombre</code> y <code>Email</code> (en ese orden).',
+      '<b>Create CSV table</b> a partir de <code>@{body(\'Select\')}</code>.',
+      '<b>Create file</b> en la carpeta <code>/Backups</code> con el nombre <code>clientes.csv</code> y el CSV como contenido.',
+    ],
+    hints: ['En Select, cada campo se lee con item(): Nombre = @{item()?[\'nombre\']}.', 'Create CSV table pone comillas cuando un valor tiene comas.'],
+    real: ['Para no pisar el archivo de la semana anterior, se agrega la fecha al nombre con formatDateTime(utcNow(), \'yyyy-MM-dd\').', 'Create CSV table tiene un modo Custom para definir columnas sin usar Select.'],
+    sample: [{}], rows: () => CLIENTES,
+    checks: [['Usa Select', f => has(f, 'select')], ['Usa Create CSV table', f => has(f, 'csv')], ['Crea el archivo', f => has(f, 'file')]],
+    tests: [['Dos clientes', CLIENTES, 'Nombre,Email\n"Pérez, Ana",ana@mail.example\nLuis Ortiz,luis@mail.example'], ['Un cliente', [{ nombre: 'Mora Paz', email: 'mora@mail.example', ciudad: 'Salta' }], 'Nombre,Email\nMora Paz,mora@mail.example']].map(([name, rows, csv]) => ({ name, input: [{}], rows: () => rows, expect: r => {
+      const f = callsOf(r, 'file')[0]; if (!f) return 'No se creó el archivo.';
+      if (f.params.folder.replace(/\/$/, '') !== '/Backups' || f.params.name !== 'clientes.csv') return `El archivo fue ${f.params.folder}/${f.params.name}.`;
+      return f.params.content === csv || `El contenido fue:\n${f.params.content}\n\nSe esperaba:\n${csv}`;
+    } })),
+    solution: () => ({ steps: [
+      N('schedule', 'Recurrence', { every: 'Cada domingo', at: '22:00' }), N('sheetsRead', 'List rows present in a table', { doc: 'CRM.xlsx', sheet: 'Clientes' }),
+      N('select', 'Select', { from: bd('List_rows_present_in_a_table', 'value'), fields: [col('Nombre', pa("item()?['nombre']")), col('Email', pa("item()?['email']"))] }),
+      N('csv', 'Create CSV table', { from: pa("body('Select')") }),
+      N('file', 'Create file', { folder: '/Backups', name: 'clientes.csv', content: pa("body('Create_CSV_table')") }),
+    ] }),
+  }),
+] };
 
 /* Modo libre: sin verificación, con respuestas simuladas que define la persona */
 Object.keys(PROJ).forEach(pf => PROJ[pf].push({
   id: 'libre', free: true, cat: 'Modo libre', level: 'Libre', title: 'Modo libre',
-  story: `Armá cualquier ${P[pf].flow} con todos los ${P[pf].node}s disponibles y probalo con tus propios datos. Vos definís qué responden la API, la IA y la hoja.`,
+  story: `Armá cualquier ${P[pf].flow} con todas las acciones disponibles y probalo con tus propios datos. Vos definís qué responden la API, la IA, Excel, las aprobaciones y el flujo de escritorio.`,
   reqs: [], checks: [], tests: [], hints: ['Cambiá los datos de prueba y las respuestas simuladas, y ejecutá de nuevo para ver cómo cambia el resultado.', 'Abrí cada paso del resultado para ver qué datos entrega.'],
-  sample: [{ nombre: 'Ana', email: 'ana@mail.example', total: 1500 }],
+  sample: [{ nombre: 'Ana', email: 'ana@mail.example', total: 1500, items: [{ producto: 'Mate', monto: 1200 }, { producto: 'Termo', monto: 800 }] }],
 }));
-const FREE_DEF = { approval: 'Approve', http: '{\n  "ok": true,\n  "items": [\n    { "nombre": "Mate", "stock": 3 },\n    { "nombre": "Termo", "stock": 12 }\n  ]\n}', ai: 'Respuesta simulada de la IA.', rows: '[\n  { "producto": "Mate", "monto": 1200 },\n  { "producto": "Termo", "monto": 800 }\n]' };
-const freeMocks = pf => ((data().free ||= {})[pf] ||= { ...FREE_DEF });
+const FREE_DEF = { approval: 'Approve', http: '{\n  "statusCode": 200,\n  "items": [\n    { "nombre": "Mate", "stock": 3 },\n    { "nombre": "Termo", "stock": 12 }\n  ]\n}', ai: 'Respuesta simulada de la IA.', rows: '[\n  { "producto": "Mate", "monto": 1200 },\n  { "producto": "Termo", "monto": 800 }\n]', desktop: '{ "estado": "ok" }' };
+const freeMocks = pf => { const m = ((data().free ||= {})[pf] ||= { ...FREE_DEF }); Object.keys(FREE_DEF).forEach(k => { if (m[k] == null) m[k] = FREE_DEF[k]; }); return m; };
 function mocksFor(j, t = {}) {
-  if (!j.free) return { http: t.http || j.http, ai: t.ai || j.ai, rows: t.rows || j.rows, approval: t.approval || j.approval };
+  if (!j.free) return { http: t.http || j.http, ai: t.ai || j.ai, rows: t.rows || j.rows, approval: t.approval || j.approval, desktop: t.desktop || j.desktop };
   const m = freeMocks(state.pf), parse = (txt, what) => { try { return JSON.parse(txt); } catch (_) { throw new Error(`la respuesta simulada de ${what} no es JSON válido`); } };
-  return { approval: () => String(m.approval ?? 'Approve').trim(), http: () => parse(m.http, 'la API'), rows: () => { const r = parse(m.rows, 'la hoja'); if (!Array.isArray(r)) throw new Error('las filas simuladas tienen que ser una lista'); return r; }, ai: () => { const s = m.ai.trim(); if (s.startsWith('{')) { try { return JSON.parse(s); } catch (_) {} } return m.ai; } };
+  return {
+    approval: () => String(m.approval ?? 'Approve').trim(), http: () => parse(m.http, 'la API'), desktop: () => parse(m.desktop, 'el flujo de escritorio'),
+    rows: () => { const r = parse(m.rows, 'Excel'); if (!Array.isArray(r)) throw new Error('las filas simuladas tienen que ser una lista'); return r; },
+    ai: () => { const s = m.ai.trim(); if (s.startsWith('{')) { try { return JSON.parse(s); } catch (_) {} } return m.ai; },
+  };
 }
-
-/* ---------------- Teoría por tema (n8n y Zapier) ---------------- */
-P.n8n.lessons.push(
-  ['IA en n8n: modelos, prompts y agentes', [
-    '<p>n8n tiene nodos de IA de dos tipos. Los <b>simples</b> hacen una tarea: enviar un mensaje a un modelo, clasificar texto (<b>Text Classifier</b>), extraer datos (<b>Information Extractor</b>) o resumir. El <b>AI Agent</b> decide por sí mismo qué pasos dar.</p>',
-    '<p>Un AI Agent se arma con sub-nodos: un <b>Chat Model</b> (el modelo), <b>Memory</b> (para recordar la conversación) y <b>Tools</b> (lo que puede usar: una API, una hoja, otro workflow).</p>',
-    '<ul><li>Incluí en el prompt los datos del item con expresiones.</li><li>Pedí un formato cerrado: una palabra de una lista o un JSON con campos fijos.</li><li>Para garantizar JSON válido usá <b>Structured Output Parser</b>.</li><li>Dejá siempre una ruta de respaldo: la respuesta puede no ser la esperada.</li></ul>',
-    '<p>Cada llamada cuesta tokens. Usá el modelo más chico que resuelva la tarea y no mandes al modelo datos que no necesita.</p>'
-  ]],
-  ['El nodo Code y el trabajo con datos', [
-    '<p>El nodo <b>Code</b> tiene dos modos:</p><ul><li><b>Run Once for All Items</b> (por defecto): el código corre una vez y ve todos los items con <code>$input.all()</code>. Devuelve una lista de <code>{ json: {...} }</code>. Sirve para sumar, agrupar o quitar duplicados.</li><li><b>Run Once for Each Item</b>: corre una vez por item, con <code>$json</code>. Devuelve un objeto.</li></ul>',
-    '<pre>// All Items\nconst total = $input.all().reduce((a, i) => a + i.json.monto, 0);\nreturn [{ json: { total } }];</pre>',
-    '<p>Antes de escribir código, mirá los nodos de datos: <b>Summarize</b> (sumar, contar, promediar, agrupar), <b>Sort</b>, <b>Limit</b>, <b>Remove Duplicates</b>, <b>Split Out</b> y <b>Aggregate</b>. Son más fáciles de mantener.</p>'
-  ]],
-  ['Conectar servicios: credenciales, APIs y webhooks', [
-    '<ul><li><b>Credentials</b>: cada servicio guarda su clave una sola vez y se reutiliza. Nunca van escritas en un nodo.</li><li><b>HTTP Request</b>: conecta cualquier API que no tenga nodo propio. Soporta autenticación, paginación y reintentos.</li><li><b>Webhook</b>: es la URL que otros sistemas llaman para disparar tu workflow.</li></ul>',
-    '<p>Después de un HTTP Request, <code>$json</code> es la <b>respuesta</b> de la API. Para volver a un dato anterior usá <code>$(\'Nombre del nodo\')</code>.</p>',
-    '<p>Buenas prácticas: activá <b>Retry On Fail</b> para errores pasajeros, respetá el rate limit del proveedor y revisá el código de respuesta (401 credencial, 404 recurso, 429 demasiadas llamadas).</p>'
-  ]]
-);
-P.zapier.lessons.push(
-  ['IA en Zapier', [
-    '<p><b>AI by Zapier</b> agrega un paso de IA a cualquier Zap: le das un prompt, le pasás datos de pasos anteriores y definís qué <b>campos de salida</b> querés (texto, número, sí/no). También hay apps como ChatGPT o Claude para usar tu propia cuenta.</p>',
-    '<ul><li>Usos típicos: resumir, clasificar, extraer datos y redactar borradores.</li><li>Mapeá en el prompt los campos del trigger.</li><li>Definí campos de salida con nombre, así el paso siguiente los puede usar.</li></ul>',
-    '<p>La IA puede equivocarse o inventar. Cuando la salida llega a un cliente o cambia datos importantes, sumá revisión humana: un aviso con el borrador antes de enviar.</p>'
-  ]],
-  ['Code by Zapier y datos', [
-    '<p><b>Code by Zapier</b> corre JavaScript o Python. Los datos entran por <b>Input Data</b>: definís nombres y los mapeás desde pasos anteriores. En el código están en <code>inputData</code>, y <b>siempre son texto</b>.</p>',
-    '<pre>const monto = Number(inputData.monto);\noutput = { prioridad: monto >= 3000 ? \'alta\' : \'normal\' };</pre>',
-    '<ul><li>Lo que asignás a <code>output</code> queda disponible para los pasos siguientes.</li><li>Tiene límites de tiempo y memoria: es para lógica corta.</li><li>Las listas suelen llegar como <b>line items</b> o texto separado por comas.</li></ul>',
-    '<p>Probá primero con <b>Formatter</b>, <b>Lookup Table</b> o <b>Filter</b>: si alcanzan, son más fáciles de mantener que el código.</p>'
-  ]],
-  ['Apps, conexiones y webhooks', [
-    '<ul><li>Cada app se conecta una vez (<b>connection</b>) y esa conexión se reutiliza en todos los Zaps.</li><li><b>Webhooks by Zapier</b> recibe datos de sistemas sin integración (Catch Hook) o llama a una API (GET, POST). Es una app premium.</li><li>Los triggers por <b>polling</b> evitan duplicados recordando el identificador de cada registro ya procesado.</li></ul>',
-    '<p>Si una app devuelve error, el paso falla y queda en el <b>Zap History</b>, desde donde se puede reintentar. Con <b>Autoreplay</b>, Zapier reintenta solo los pasos fallidos.</p>',
-    '<p>Buenas prácticas: usá una cuenta de servicio y no una personal, y revisá los permisos que pide cada conexión.</p>'
-  ]]
-);
-const QUIZ_EXTRA = {
-  n8n: [
-    ['ia', 'IA y agentes', [
-      ['¿Qué necesita un AI Agent para funcionar?', ['Un Chat Model, y opcionalmente memoria y herramientas', 'Solo un nodo Code', 'Un Webhook de producción', 'Una hoja de cálculo'], 'El Chat Model es obligatorio; Memory y Tools amplían lo que puede hacer.'],
-      ['¿Cómo conseguís que la salida del modelo sea fácil de enrutar?', ['Pidiendo un formato cerrado, como una palabra de una lista o un JSON fijo', 'Pidiendo una respuesta larga y creativa', 'Subiendo la temperatura', 'Sin dar instrucciones'], 'Una salida predecible se puede comparar en un Switch.'],
-      ['¿Por qué dejar una ruta de respaldo después de clasificar con IA?', ['Porque el modelo puede devolver algo inesperado', 'Porque n8n lo exige', 'Porque ahorra tokens', 'No hace falta'], 'Sin respaldo, un item mal clasificado se pierde sin aviso.'],
-      ['¿Qué nodo ayuda a garantizar que el modelo devuelva JSON con una estructura?', ['Structured Output Parser', 'Sort', 'Schedule Trigger', 'Remove Duplicates'], 'Valida la salida contra un esquema.'],
-    ]],
-    ['codigo', 'Código y análisis de datos', [
-      ['¿Qué modo del nodo Code usarías para sumar el total de todos los items?', ['Run Once for All Items', 'Run Once for Each Item', 'Cualquiera, da igual', 'Ninguno: no se puede'], 'Necesitás ver todos los items juntos con $input.all().'],
-      ['En modo All Items, ¿qué tiene que devolver el código?', ['Una lista de objetos { json: {...} }', 'Un texto', 'Un número', 'Nada'], 'Cada elemento de la lista es un item de salida.'],
-      ['Summarize con sum de monto agrupado por region. ¿Cómo se llama el campo de salida?', ['sum_monto', 'monto', 'total', 'region_sum'], 'El nombre es operación_campo.'],
-      ['Los montos llegan como texto ("1200"). ¿Qué hacés antes de sumar?', ['Convertirlos con Number()', 'Sumarlos igual', 'Pasarlos a mayúsculas', 'Borrarlos'], '"1200" + "300" da "1200300", no 1500.'],
-    ]],
-    ['conexiones', 'Conexión con servicios', [
-      ['¿Dónde se guarda la clave de una API?', ['En Credentials', 'En la URL del HTTP Request', 'En un nodo Code', 'En el nombre del workflow'], 'Así se reutiliza y no queda expuesta al exportar el workflow.'],
-      ['Después de un HTTP Request, ¿qué contiene $json?', ['La respuesta de la API', 'Los datos del Webhook', 'Las credenciales', 'Nada'], 'Para leer datos anteriores se usa $(\'Nombre del nodo\').'],
-      ['Una API responde 429. ¿Qué significa?', ['Demasiadas llamadas: superaste el rate limit', 'Credencial incorrecta', 'El recurso no existe', 'Todo bien'], '401 es credencial, 404 recurso inexistente.'],
-      ['¿Para qué sirve Retry On Fail?', ['Para reintentar un nodo ante errores pasajeros', 'Para borrar el workflow', 'Para activar el Webhook', 'Para ordenar items'], 'Útil ante cortes momentáneos de red o del proveedor.'],
-    ]],
-  ],
-  zapier: [
-    ['ia', 'IA en Zapier', [
-      ['¿Para qué sirven los campos de salida en AI by Zapier?', ['Para que los pasos siguientes puedan mapear cada dato', 'Para pagar menos', 'Para elegir el trigger', 'No existen'], 'Un campo con nombre se usa como cualquier otro dato del Zap.'],
-      ['Una reseña negativa se responde con un texto de IA. ¿Qué conviene?', ['Que una persona revise el borrador antes de enviarlo', 'Enviarlo sin mirar', 'Borrar la reseña', 'Desactivar el Zap'], 'La IA puede prometer algo que no corresponde.'],
-      ['¿Qué tenés que incluir en el prompt para que la IA trabaje sobre el caso real?', ['Los campos del trigger mapeados', 'Solo instrucciones generales', 'El nombre del Zap', 'Nada'], 'Sin los datos, el modelo responde en abstracto.'],
-      ['¿Qué riesgo propio de la IA hay que tener presente?', ['Que invente o se equivoque con seguridad aparente', 'Que borre el Zap', 'Que cambie el trigger', 'Ninguno'], 'Por eso se validan las salidas importantes.'],
-    ]],
-    ['codigo', 'Code by Zapier y datos', [
-      ['¿De qué tipo son los valores de inputData?', ['Siempre texto', 'Números', 'Depende del día', 'Objetos'], 'Hay que convertir con Number() o JSON.parse().'],
-      ['¿Cómo devolvés datos al Zap desde JavaScript?', ['Asignándolos a output', 'Con console.log', 'Con alert', 'No se puede'], 'Lo que queda en output lo usan los pasos siguientes.'],
-      ['¿Cuándo conviene usar Code by Zapier?', ['Cuando Formatter, Filter o Lookup Table no alcanzan', 'Siempre, antes que nada', 'Para procesos de varios minutos', 'Nunca'], 'Tiene límites de tiempo y memoria.'],
-      ['¿Qué app acumula datos para enviar un resumen más tarde?', ['Digest by Zapier', 'Filter by Zapier', 'Paths', 'Webhooks by Zapier'], 'Junta entradas y las libera en un resumen.'],
-    ]],
-    ['conexiones', 'Apps y conexiones', [
-      ['¿Qué hace Catch Hook?', ['Recibe datos que otro sistema envía a una URL', 'Llama a una API cada hora', 'Envía emails', 'Crea tarjetas'], 'Es el trigger de Webhooks by Zapier.'],
-      ['¿Cómo evita duplicados un trigger por polling?', ['Recordando el identificador de cada registro ya procesado', 'Borrando la app', 'Con un Filter obligatorio', 'No los evita'], 'Solo dispara con registros nuevos.'],
-      ['Un paso falló por un error de la app. ¿Dónde lo ves y lo reintentás?', ['En Zap History', 'En el trigger', 'En Formatter', 'No se puede'], 'Con Autoreplay se reintenta solo.'],
-      ['¿Qué cuenta conviene usar para conectar una app en un Zap de la empresa?', ['Una cuenta de servicio', 'La personal de quien arma el Zap', 'Cualquiera', 'Una compartida por chat'], 'Si la persona se va, el Zap sigue funcionando.'],
-    ]],
-  ],
-};
-Object.keys(P).forEach(pf => { P[pf].quizzes = [{ id: 'base', title: 'Fundamentos', qs: P[pf].quiz }, ...(QUIZ_EXTRA[pf] || P[pf].quizExtra || []).map(([id, title, qs]) => ({ id, title, qs }))]; });
-const all = (f, out = []) => { const walk = s => s.forEach(n => { out.push(n); (n.branches || []).forEach(b => walk(b.steps)); }); walk(f.steps); return out; };
-const has = (f, op) => all(f).some(n => n.op === op);
 
 /* ---------------- Simulador ---------------- */
+// Una ejecución de Power Automate: un único contexto con la salida de cada acción (por nombre) y las variables
 class SimError extends Error {}
 const fail = m => { throw new SimError(m); };
-const FN = { upper: s => String(s ?? '').toUpperCase(), lower: s => String(s ?? '').toLowerCase(), trim: s => String(s ?? '').trim(), capitalize: s => String(s ?? '').toLowerCase().replace(/(^|\s)\S/g, c => c.toUpperCase()), length: s => (s ?? '').length, round: n => Math.round(Number(n)), now: () => new Date().toISOString(), iff: (c, a, b) => (c ? a : b) };
-function evalCode(code, item, pf) {
-  try {
-    if (pf === 'n8n') {
-      const ref = name => { if (!(name in item.names)) throw new Error(`no hay un nodo anterior llamado «${name}»`); const json = item.names[name]; return { item: { json }, first: () => ({ json }), json }; };
-      return new Function('$json', '$', '$now', 'return (' + code + ')')(item.json, ref, new Date().toISOString());
-    }
-    const js = code.replace(/(?<![\w.$\]"'])(\d+)\.(?=[A-Za-z_])/g, (m, n) => { if (!(n in item.ctx)) throw new Error(`no hay un paso ${n} antes de este`); return `$m[${n}].`; }).replace(/\bif\s*\(/g, 'iff(').replace(/;/g, ',');
-    return new Function('$m', ...Object.keys(FN), 'return (' + js + ')')(item.ctx, ...Object.values(FN));
-  } catch (e) { fail(`Expresión {{${code.trim()}}}: ${e.message}`); }
-}
+const TERMINATE = { terminate: true };
 const PAF = {
   toLower: s => String(s ?? '').toLowerCase(), toUpper: s => String(s ?? '').toUpperCase(), trim: s => String(s ?? '').trim(),
   concat: (...a) => a.map(x => (x == null ? '' : typeof x === 'object' ? JSON.stringify(x) : x)).join(''), length: x => (x ?? '').length,
-  add: (a, b) => Number(a) + Number(b), sub: (a, b) => Number(a) - Number(b), mul: (a, b) => Number(a) * Number(b), div: (a, b) => Number(a) / Number(b),
+  substring: (s, i, n) => String(s ?? '').substr(Number(i), n == null ? undefined : Number(n)), indexOf: (s, t) => String(s ?? '').indexOf(t),
+  add: (a, b) => Number(a) + Number(b), sub: (a, b) => Number(a) - Number(b), mul: (a, b) => Number(a) * Number(b), div: (a, b) => { if (Number(b) === 0) throw new Error('div() no puede dividir por cero'); return Number(a) / Number(b); },
   int: x => { const n = parseInt(x, 10); if (isNaN(n)) throw new Error(`int() no puede convertir «${x}» en número`); return n; }, float: x => parseFloat(x),
   string: x => (x == null ? '' : typeof x === 'object' ? JSON.stringify(x) : String(x)),
   equals: (a, b) => a === b || String(a) === String(b), greater: (a, b) => Number(a) > Number(b), greaterOrEquals: (a, b) => Number(a) >= Number(b), less: (a, b) => Number(a) < Number(b), lessOrEquals: (a, b) => Number(a) <= Number(b),
   and: (...a) => a.every(Boolean), or: (...a) => a.some(Boolean), not: x => !x, iff: (c, a, b) => (c ? a : b),
   contains: (a, b) => (Array.isArray(a) ? a.includes(b) : a && typeof a === 'object' ? b in a : String(a ?? '').includes(b)),
-  split: (x, d) => String(x ?? '').split(d), join: (a, d) => (a || []).join(d), first: x => (Array.isArray(x) ? x[0] : String(x ?? '')[0]), last: x => (Array.isArray(x) ? x[x.length - 1] : String(x ?? '').slice(-1)),
+  split: (x, d) => String(x ?? '').split(d), join: (a, d) => (Array.isArray(a) ? a : []).map(x => (typeof x === 'object' ? JSON.stringify(x) : x)).join(d), first: x => (Array.isArray(x) ? x[0] : String(x ?? '')[0]), last: x => (Array.isArray(x) ? x[x.length - 1] : String(x ?? '').slice(-1)),
   replace: (x, a, b) => String(x ?? '').split(a).join(b), coalesce: (...a) => a.find(x => x != null), empty: x => x == null || x === '' || (Array.isArray(x) && !x.length) || (typeof x === 'object' && !Object.keys(x).length),
   json: x => { if (typeof x !== 'string') return x; try { return JSON.parse(x); } catch (_) { throw new Error('json() recibió un texto que no es JSON válido'); } }, utcNow: () => new Date().toISOString(),
 };
-function evalPA(code, item) {
-  const byName = name => { const k = Object.keys(item.names).find(n => n.replace(/ /g, '_') === String(name)); if (k === undefined) throw new Error(`no hay una acción anterior llamada '${name}' (los espacios van como guiones bajos)`); return item.names[k]; };
+function evalPA(code, S) {
+  const byName = name => { const k = Object.keys(S.names).find(n => n.replace(/ /g, '_') === String(name)); if (k === undefined) throw new Error(`no hay una acción anterior llamada '${name}' (los espacios van como guiones bajos)`); return S.names[k]; };
+  const variables = name => { if (!(name in S.vars)) throw new Error(`la variable '${name}' no está inicializada (usá Initialize variable antes)`); return S.vars[name]; };
+  const item = () => { if (S.cur === undefined) throw new Error('item() solo se puede usar dentro de Filter array o Select'); return S.cur; };
   const js = code.replace(/\?\[/g, '?.[').replace(/\bif\s*\(/g, 'iff(');
   try {
-    return new Function('triggerBody', 'triggerOutputs', 'body', 'outputs', 'items', ...Object.keys(PAF), 'return (' + js + ')')(() => item.ctx[1], () => ({ body: item.ctx[1] }), byName, byName, byName, ...Object.values(PAF));
+    return new Function('triggerBody', 'triggerOutputs', 'body', 'outputs', 'items', 'variables', 'item', ...Object.keys(PAF), 'return (' + js + ')')(() => S.trigger, () => ({ body: S.trigger }), byName, byName, byName, variables, item, ...Object.values(PAF));
   } catch (e) { fail(`Expresión @{${code.trim()}}: ${e.message}`); }
 }
-function ev(src, item, pf) {
-  if (pf === 'pa') {
-    const s0 = String(src ?? ''), one0 = s0.trim().match(/^@\{([\s\S]+)\}$/);
-    if (one0 && !one0[1].includes('@{')) return evalPA(one0[1], item);
-    return s0.replace(/@\{([\s\S]+?)\}(?!['\]])/g, (_, c) => { const v = evalPA(c, item); return v == null ? '' : typeof v === 'object' ? JSON.stringify(v) : String(v); });
-  }
-  const s = String(src ?? ''), one = s.trim().match(/^\{\{([\s\S]+?)\}\}$/);
-  if (one && !one[1].includes('{{')) return evalCode(one[1], item, pf);
-  return s.replace(/\{\{([\s\S]+?)\}\}/g, (_, c) => { const v = evalCode(c, item, pf); return v == null ? '' : typeof v === 'object' ? JSON.stringify(v) : String(v); });
+function ev(src, S) {
+  const s = String(src ?? ''), one = s.trim().match(/^@\{([\s\S]+)\}$/);
+  if (one && !one[1].includes('@{')) return evalPA(one[1], S);
+  return s.replace(/@\{([\s\S]+?)\}(?!['\]])/g, (_, c) => { const v = evalPA(c, S); return v == null ? '' : typeof v === 'object' ? JSON.stringify(v) : String(v); });
 }
-function test(cond, item, pf) {
-  const l = ev(cond.left, item, pf), r = ev(cond.right, item, pf);
-  const num = v => v !== '' && v != null && !isNaN(Number(v)), both = num(l) && num(r);
+function test(cond, S) {
+  const l = ev(cond.left, S), r = ev(cond.right, S);
+  const num = v => v !== '' && v != null && typeof v !== 'boolean' && !isNaN(Number(v)), both = num(l) && num(r);
   switch (cond.op) {
     case 'eq': return both ? Number(l) === Number(r) : String(l ?? '') === String(r ?? '');
     case 'neq': return both ? Number(l) !== Number(r) : String(l ?? '') !== String(r ?? '');
@@ -1217,114 +1064,105 @@ function test(cond, item, pf) {
     case 'ncontains': return !String(l ?? '').includes(String(r ?? ''));
     case 'gt': return both && Number(l) > Number(r); case 'gte': return both && Number(l) >= Number(r);
     case 'lt': return both && Number(l) < Number(r); case 'lte': return both && Number(l) <= Number(r);
-    case 'exists': return l != null && l !== ''; case 'empty': return l == null || l === '';
+    case 'exists': return !PAF.empty(l); case 'empty': return PAF.empty(l);
   }
   return false;
 }
 function number(flow) { let i = 0; all(flow).forEach(n => { n.num = ++i; }); }
+const csvCell = v => { const s = v == null ? '' : typeof v === 'object' ? JSON.stringify(v) : String(v); return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
 function runFlow(flow, pf, input, mocks = {}) {
-  const httpMock = mocks.http;
   number(flow);
-  const trace = [], calls = []; let error = null, failed = null;
-  const child = (json, prev) => ({ json, ctx: { ...(prev ? prev.ctx : {}) }, names: { ...(prev ? prev.names : {}) } });
-  const stamp = (it, n) => { it.ctx[n.num] = it.json; it.names[n.name] = it.json; return it; };
+  const trace = [], calls = []; let error = null, failed = null, response = null, terminated = null;
+  const S = { trigger: null, names: {}, vars: {}, cur: undefined, part: '' };
   const req = (v, what) => { if (String(v ?? '').trim() === '') fail(`Falta completar «${what}».`); return v; };
-  function exec(n, items) {
-    const p = n.p, out = [];
-    const each = fn => items.forEach(it => { const j = fn(it); if (j !== undefined) out.push(stamp(child(j, it), n)); });
+  const e = x => ev(x, S);
+  const rowsOf = list => { const o = {}; (list || []).forEach(c => { if (String(c.name).trim()) o[c.name.trim()] = e(c.value); }); return o; };
+  const arrayOf = (x, what) => { const v = e(req(x, what)); if (!Array.isArray(v)) fail(`«${what}» tiene que ser una lista y recibió ${v == null ? 'un valor vacío' : typeof v === 'object' ? 'un objeto' : `«${short(v, 40)}»`}.`); return v; };
+  const done = (n, out, note) => { S.names[n.name] = out; trace.push({ num: n.num, name: n.name, out, note: (S.part ? `[${S.part}] ` : '') + note }); };
+  const mock = (k, arg, label) => { try { return mocks[k] ? mocks[k](arg) : undefined; } catch (err) { fail(`${label}: ${err.message}`); } };
+  function run(n) {
+    const p = n.p;
     switch (n.op) {
-      case 'webhook': case 'schedule': return (Array.isArray(input) && input.length ? input : [{}]).map(j => stamp(child(clone(j)), n));
-      case 'set': each(it => { const o = p.keep ? { ...it.json } : {}; p.fields.forEach(f => { if (f.name.trim()) o[f.name.trim()] = ev(f.value, it, pf); }); return o; }); break;
-      case 'code': {
-        const norm = r => (r && typeof r === 'object' && r.json && typeof r.json === 'object' ? r.json : r);
-        const push = (r, it) => (Array.isArray(r) ? r : [r]).forEach(x => { x = norm(x); if (!x || typeof x !== 'object') fail('El código tiene que devolver un objeto (o una lista de objetos).'); out.push(stamp(child(x, it), n)); });
-        const runJs = (args, vals) => { try { return new Function(...args, pf === 'zapier' ? `let output;\n${p.code}\n;return output;` : p.code)(...vals); } catch (e) { fail('El código lanzó un error: ' + e.message); } };
-        if (pf !== 'zapier' && p.mode === 'all') {
-          const list = items.map(i => ({ json: clone(i.json) }));
-          const r = runJs(['items', '$input'], [list, { all: () => list, first: () => list[0] }]);
-          if (r === undefined) fail('El código tiene que devolver los items: return [{ json: { ... } }]');
-          push(r, items[0]);
-        } else items.forEach(it => {
-          const j = clone(it.json); let inputData = j;
-          if (pf === 'zapier') { inputData = {}; (p.inputs || []).forEach(c2 => { if (c2.name.trim()) { const v = ev(c2.value, it, pf); inputData[c2.name.trim()] = v == null ? '' : typeof v === 'object' ? JSON.stringify(v) : String(v); } }); }
-          const r = runJs(['$json', 'inputData', '$input'], [j, inputData, { item: { json: j }, all: () => [{ json: j }], first: () => ({ json: j }) }]);
-          if (r === undefined) fail(pf === 'zapier' ? 'El código tiene que asignar output = { ... }' : 'El código tiene que devolver un objeto: return { ... }');
-          push(r, it);
-        });
-        break;
+      case 'formsIn': case 'spItem': case 'instant': case 'webhook': case 'schedule':
+        S.trigger = clone((Array.isArray(input) ? input[0] : input) || {}); return done(n, S.trigger, 'Disparado');
+      case 'if': { const ok = test(p.cond, S); trace.push({ num: n.num, name: n.name, out: { expression: ok }, note: (S.part ? `[${S.part}] ` : '') + (ok ? 'Sí: la condición se cumple' : 'No: la condición no se cumple') }); return seq(n.branches[ok ? 0 : 1].steps); }
+      case 'router': {
+        const v = e(req(p.on, 'On')), hit = n.branches.find(b => !b.fallback && String(e(b.value)) === String(v)) || n.branches.find(b => b.fallback);
+        trace.push({ num: n.num, name: n.name, out: { on: v }, note: (S.part ? `[${S.part}] ` : '') + (hit ? `Caso «${hit.name}»` : 'Ningún caso coincide y no hay Default') });
+        return hit ? seq(hit.steps) : undefined;
       }
-      case 'ai': each(it => { const prompt = String(req(ev(p.prompt, it, pf), 'prompt')); let r; try { r = mocks.ai ? mocks.ai(prompt, n) : 'Respuesta simulada de la IA.'; } catch (e) { fail('IA: ' + e.message); } calls.push({ app: 'ai', node: n.name, params: { prompt } }); return r && typeof r === 'object' ? { ...r, text: r.text ?? JSON.stringify(r) } : { text: String(r) }; }); break;
-      case 'crm': each(it => { const props = {}; (p.props || []).forEach(c2 => { if (c2.name.trim()) props[c2.name.trim()] = ev(c2.value, it, pf); }); const params = { email: req(ev(p.email, it, pf), 'email'), name: String(ev(p.name, it, pf) ?? ''), props }; calls.push({ app: 'crm', node: n.name, params }); return { id: 'contact_' + calls.length, email: params.email, name: params.name, ...props }; }); break;
-      case 'task': each(it => { const params = { list: req(ev(p.list, it, pf), 'lista'), title: String(req(ev(p.title, it, pf), 'título')), description: String(ev(p.description, it, pf) ?? ''), due: String(ev(p.due, it, pf) ?? '') }; calls.push({ app: 'task', node: n.name, params }); return { id: 'card_' + calls.length, ...params }; }); break;
-      case 'approval': each(it => { const params = { assignedTo: req(ev(p.assignedTo, it, pf), 'asignado a'), title: String(req(ev(p.title, it, pf), 'título')), details: String(ev(p.details, it, pf) ?? '') }; let outcome; try { outcome = mocks.approval ? mocks.approval(params) : 'Approve'; } catch (e) { fail('Aprobación: ' + e.message); } calls.push({ app: 'approval', node: n.name, params: { ...params, outcome } }); return { outcome, responses: [{ responder: params.assignedTo, approverResponse: outcome }] }; }); break;
-      case 'sheetsRead': items.forEach(it => { req(p.sheet, 'hoja'); let rows; try { rows = clone((mocks.rows ? mocks.rows(p.sheet.trim()) : []) || []); } catch (e) { fail('Hoja: ' + e.message); } if (pf === 'zapier') out.push(stamp(child({ rows, count: rows.length }, it), n)); else if (pf === 'pa') out.push(stamp(child({ value: rows }, it), n)); else rows.forEach(r => out.push(stamp(child(r, it), n))); }); break;
-      case 'summarize': {
-        const defs = (p.fields || []).filter(f => f.name.trim()); if (!defs.length) fail('Agregá al menos un campo a resumir.');
-        const g = (p.groupBy || '').trim(), groups = new Map();
-        items.forEach(it => { const k = g ? it.json[g] : '_'; if (!groups.has(k)) groups.set(k, []); groups.get(k).push(it); });
-        groups.forEach((list, k) => {
-          const o = g ? { [g]: k } : {};
-          defs.forEach(f => {
-            const agg = f.value.trim().toLowerCase() || 'sum', fld = f.name.trim(), nums = list.map(i => Number(i.json[fld])).filter(v => !isNaN(v)), sum = nums.reduce((a, b) => a + b, 0);
-            if (!['sum', 'count', 'avg', 'min', 'max'].includes(agg)) fail(`Operación «${f.value}» no válida: usá sum, count, avg, min o max.`);
-            o[`${agg}_${fld}`] = agg === 'count' ? list.length : agg === 'sum' ? sum : agg === 'avg' ? (nums.length ? sum / nums.length : 0) : agg === 'min' ? Math.min(...nums) : Math.max(...nums);
-          });
-          out.push(stamp(child(o, list[0]), n));
-        });
-        break;
+      case 'foreach': {
+        const arr = arrayOf(p.from, 'Select an output from previous steps'), part = S.part;
+        trace.push({ num: n.num, name: n.name, out: arr, note: (part ? `[${part}] ` : '') + `${arr.length} elemento(s)` });
+        arr.forEach((el, i) => { S.names[n.name] = el; S.part = `${part ? part + ' · ' : ''}${i + 1}/${arr.length}`; seq(n.branches[0].steps); });
+        S.part = part; S.names[n.name] = arr; return;
       }
-      case 'sort': { const fld = String(req(p.field, 'campo')).trim(); [...items].sort((a, b) => { const x = a.json[fld], y = b.json[fld]; const c = (!isNaN(Number(x)) && !isNaN(Number(y))) ? Number(x) - Number(y) : String(x ?? '').localeCompare(String(y ?? '')); return p.dir === 'desc' ? -c : c; }).forEach(it => out.push(stamp(child(it.json, it), n))); break; }
-      case 'limit': items.slice(0, Math.max(1, parseInt(p.max, 10) || 1)).forEach(it => out.push(stamp(child(it.json, it), n))); break;
-      case 'dedupe': { const fld = String(req(p.field, 'campo')).trim(), seen = new Set(); items.forEach(it => { const k = String(it.json[fld]); if (!seen.has(k)) { seen.add(k); out.push(stamp(child(it.json, it), n)); } }); break; }
-      case 'filter': each(it => (test(p.cond, it, pf) ? it.json : undefined)); break;
-      case 'split': items.forEach(it => {
-        req(p.field, 'lista a separar');
-        const v = (p.field.includes('{{') || p.field.includes('@{')) ? ev(p.field, it, pf) : p.field.trim().split('.').reduce((o, k) => (o == null ? o : o[k]), it.json);
-        if (!Array.isArray(v)) fail(`«${p.field}» no es una lista en los datos de entrada.`);
-        v.forEach(el => out.push(stamp(child(el && typeof el === 'object' ? el : { value: el }, it), n)));
-      }); break;
-      case 'aggregate': if (items.length) out.push(stamp(child({ [p.field.trim() || 'items']: items.map(i => i.json) }, items[0]), n)); break;
-      case 'http': each(it => { const url = req(ev(p.url, it, pf), 'URL'); let r; try { r = httpMock ? httpMock({ url, method: p.method }) : { ok: true }; } catch (e) { fail('HTTP: ' + e.message); } calls.push({ app: 'http', node: n.name, params: { method: p.method, url } }); return clone(r); }); break;
-      case 'sheets': each(it => { req(p.sheet, 'hoja'); const values = {}; p.columns.forEach(c2 => { if (c2.name.trim()) values[c2.name.trim()] = ev(c2.value, it, pf); }); if (!Object.keys(values).length) fail('Agregá al menos una columna.'); calls.push({ app: 'sheets', node: n.name, params: { doc: p.doc, sheet: p.sheet, values } }); return { ...values, row_number: 2 + calls.filter(x => x.app === 'sheets').length }; }); break;
-      case 'mail': each(it => { const params = { to: req(ev(p.to, it, pf), 'destinatario'), subject: String(ev(p.subject, it, pf) ?? ''), body: String(ev(p.body, it, pf) ?? '') }; calls.push({ app: 'mail', node: n.name, params }); return { id: 'msg_' + uid(), ...params }; }); break;
-      case 'slack': each(it => { const params = { channel: req(ev(p.channel, it, pf), 'canal'), text: String(req(ev(p.text, it, pf), 'texto')) }; calls.push({ app: 'slack', node: n.name, params }); return { ok: true, ts: String(Date.now()), ...params }; }); break;
-      case 'telegram': each(it => { const params = { chatId: req(ev(p.chatId, it, pf), 'chat ID'), text: String(req(ev(p.text, it, pf), 'texto')) }; calls.push({ app: 'telegram', node: n.name, params }); return { ok: true, message_id: calls.length, ...params }; }); break;
+      case 'terminate':
+        trace.push({ num: n.num, name: n.name, note: `Terminate con estado ${p.status}${p.message ? ': ' + e(p.message) : ''}` });
+        if (p.status === 'Failed') fail(`Terminate (Failed)${p.code ? ' ' + e(p.code) : ''}: ${e(p.message) || 'sin mensaje'}`);
+        terminated = p.status; throw TERMINATE;
+      case 'varInit': {
+        const name = String(req(p.name, 'Name')).trim(); if (name in S.vars) fail(`La variable '${name}' ya está inicializada.`);
+        const raw = e(p.value); let v;
+        if (p.type === 'Integer') v = raw === '' ? 0 : PAF.int(raw); else if (p.type === 'Float') v = raw === '' ? 0 : Number(raw);
+        else if (p.type === 'Boolean') v = raw === true || raw === 'true'; else if (p.type === 'Array') v = raw === '' ? [] : PAF.json(raw);
+        else v = raw == null ? '' : String(raw);
+        if (p.type === 'Array' && !Array.isArray(v)) fail(`El valor inicial de '${name}' tiene que ser una lista, por ejemplo [].`);
+        S.vars[name] = v; trace.push({ num: n.num, name: n.name, out: { [name]: v }, note: `Variable ${name} (${p.type})` }); return;
+      }
+      case 'varSet': case 'varInc': case 'varAppend': {
+        const name = String(req(p.name, 'Name')).trim(); if (!(name in S.vars)) fail(`La variable '${name}' no está inicializada.`);
+        const v = e(p.value);
+        if (n.op === 'varSet') S.vars[name] = v;
+        else if (n.op === 'varInc') { if (typeof S.vars[name] !== 'number') fail(`Increment variable solo sirve para variables Integer o Float.`); S.vars[name] += Number(v === '' ? 1 : v); }
+        else if (Array.isArray(S.vars[name])) S.vars[name].push(v); else S.vars[name] = String(S.vars[name]) + String(v ?? '');
+        trace.push({ num: n.num, name: n.name, out: { [name]: clone(S.vars[name]) }, note: (S.part ? `[${S.part}] ` : '') + `${name} = ${short(JSON.stringify(S.vars[name]), 60)}` }); return;
+      }
+      case 'set': return done(n, rowsOf(p.fields), 'Compose');
+      case 'parseJson': { const v = e(req(p.content, 'Content')); return done(n, typeof v === 'string' ? PAF.json(v) : v, 'JSON leído'); }
+      case 'filter': {
+        const arr = arrayOf(p.from, 'From'), res = arr.filter(el => { S.cur = el; try { return test(p.cond, S); } finally { S.cur = undefined; } });
+        return done(n, res, `${res.length} de ${arr.length} elemento(s) cumplen`);
+      }
+      case 'select': {
+        const arr = arrayOf(p.from, 'From'), res = arr.map(el => { S.cur = el; try { return p.textMode ? e(p.value) : rowsOf(p.fields); } finally { S.cur = undefined; } });
+        return done(n, res, `${res.length} elemento(s)`);
+      }
+      case 'csv': {
+        const arr = arrayOf(p.from, 'From'), keys = [...new Set(arr.flatMap(o => (o && typeof o === 'object' ? Object.keys(o) : [])))];
+        return done(n, [keys.map(csvCell).join(','), ...arr.map(o => keys.map(k => csvCell(o[k])).join(','))].join('\n'), `CSV de ${arr.length} fila(s)`);
+      }
+      case 'http': { const url = String(req(e(p.url), 'URI')); const r = mock('http', { url, method: p.method, body: e(p.body) }, 'HTTP') ?? { statusCode: 200 }; calls.push({ app: 'http', node: n.name, params: { method: p.method, url } }); return done(n, clone(r), `${p.method} ${short(url, 60)}`); }
+      case 'approval': { const params = { assignedTo: String(req(e(p.assignedTo), 'Assigned to')), title: String(req(e(p.title), 'Title')), details: String(e(p.details) ?? '') }; const outcome = mock('approval', params, 'Aprobación') || 'Approve'; calls.push({ app: 'approval', node: n.name, params: { ...params, outcome } }); return done(n, { outcome, responses: [{ responder: params.assignedTo, approverResponse: outcome }] }, `Respuesta: ${outcome}`); }
+      case 'ai': { const prompt = String(req(e(p.prompt), 'Prompt')); const r = mock('ai', prompt, 'AI Builder') ?? 'Respuesta simulada de la IA.'; calls.push({ app: 'ai', node: n.name, params: { prompt } }); return done(n, r && typeof r === 'object' ? { ...r, text: r.text ?? JSON.stringify(r) } : { text: String(r) }, 'Respuesta del modelo'); }
+      case 'mail': { const params = { to: String(req(e(p.to), 'To')), subject: String(e(p.subject) ?? ''), body: String(e(p.body) ?? '') }; calls.push({ app: 'mail', node: n.name, params }); return done(n, { id: 'msg_' + uid(), ...params }, `Email a ${params.to}`); }
+      case 'slack': { const params = { channel: String(req(e(p.channel), 'Channel')), text: String(req(e(p.text), 'Message')) }; calls.push({ app: 'slack', node: n.name, params }); return done(n, { id: 'teams_' + uid(), ...params }, `Mensaje en ${params.channel}`); }
+      case 'sheets': { req(p.sheet, 'Table'); const values = rowsOf(p.columns); if (!Object.keys(values).length) fail('Agregá al menos una columna.'); calls.push({ app: 'sheets', node: n.name, params: { doc: p.doc, sheet: p.sheet, values } }); return done(n, values, `Fila agregada en ${p.sheet}`); }
+      case 'sheetsRead': { req(p.sheet, 'Table'); const rows = clone(mock('rows', p.sheet.trim(), 'Excel') || []); if (!Array.isArray(rows)) fail('Las filas de la tabla tienen que ser una lista.'); return done(n, { value: rows }, `${rows.length} fila(s) en value`); }
+      case 'file': { const params = { folder: String(req(e(p.folder), 'Folder Path')), name: String(req(e(p.name), 'File Name')), content: String(e(p.content) ?? '') }; calls.push({ app: 'file', node: n.name, params }); return done(n, { Name: params.name, Path: `${params.folder.replace(/\/$/, '')}/${params.name}` }, `Archivo ${params.name}`); }
+      case 'task': { const params = { list: String(req(e(p.list), 'Plan')), title: String(req(e(p.title), 'Title')), description: String(e(p.description) ?? ''), due: String(e(p.due) ?? '') }; calls.push({ app: 'task', node: n.name, params }); return done(n, { id: 'task_' + calls.length, ...params }, `Tarea en ${params.list}`); }
+      case 'crm': { const params = { table: p.table || 'Contacts', email: String(req(e(p.email), 'Email')), name: String(e(p.name) ?? ''), props: rowsOf(p.props) }; calls.push({ app: 'crm', node: n.name, params }); return done(n, { id: 'row-' + (1000 + calls.length), email: params.email, name: params.name, ...params.props }, `Fila en ${params.table}`); }
+      case 'pbi': { const params = { dataset: String(req(e(p.dataset), 'Dataset')), table: String(req(e(p.table), 'Table')), values: rowsOf(p.columns) }; calls.push({ app: 'pbi', node: n.name, params }); return done(n, params.values, `Fila en ${params.dataset}`); }
+      case 'desktop': { const params = { flowName: String(req(e(p.flowName), 'Desktop flow')), inputs: rowsOf(p.inputs) }; const outputs = mock('desktop', params, 'Flujo de escritorio') ?? {}; calls.push({ app: 'desktop', node: n.name, params: { ...params, outputs } }); return done(n, clone(outputs), `Flujo de escritorio ${params.flowName}`); }
+      case 'respond': { const outputs = rowsOf(p.outputs); response = outputs; calls.push({ app: 'respond', node: n.name, params: outputs }); return done(n, outputs, 'Respuesta enviada a Power Apps'); }
     }
-    return out;
+    fail(`La acción «${n.op}» no existe en el simulador.`);
   }
-  function seq(steps, items, first) {
+  function seq(steps) {
     for (const n of steps) {
-      if (!first && !items.length) { trace.push({ num: n.num, name: n.name, skipped: true, note: 'No llegaron datos: no se ejecuta.' }); continue; }
-      first = false;
-      try {
-        if (n.op === 'if') {
-          const t = [], f = []; items.forEach(it => (test(n.p.cond, it, pf) ? t : f).push(stamp(child(it.json, it), n)));
-          trace.push({ num: n.num, name: n.name, out: items.map(i => i.json), note: `true: ${t.length} · false: ${f.length}` });
-          seq(n.branches[0].steps, t); seq(n.branches[1].steps, f); return;
-        }
-        if (n.op === 'router') {
-          const buckets = n.branches.map(() => []);
-          items.forEach(it => {
-            const s = stamp(child(it.json, it), n); let hit = false;
-            n.branches.forEach((b, i) => { if (b.fallback || (hit && P[pf].routerMode === 'first')) return; if (test(b.cond, s, pf)) { buckets[i].push(s); hit = true; } });
-            if (!hit) { const fb = n.branches.findIndex(b => b.fallback); if (fb >= 0) buckets[fb].push(s); }
-          });
-          trace.push({ num: n.num, name: n.name, out: items.map(i => i.json), note: n.branches.map((b, i) => `${b.name}: ${buckets[i].length}`).join(' · ') });
-          n.branches.forEach((b, i) => seq(b.steps, buckets[i])); return;
-        }
-        const out = exec(n, items);
-        trace.push({ num: n.num, name: n.name, out: out.map(i => i.json), note: `${items.length || 1} entrada(s) → ${out.length} salida(s)` });
-        items = out;
-      } catch (e) { e.num = e.num || n.num; e.nodeName = e.nodeName || n.name; throw e; }
+      try { run(n); } catch (err) { if (err === TERMINATE) throw err; err.num = err.num || n.num; err.nodeName = err.nodeName || n.name; throw err; }
     }
   }
   try {
     if (!flow.steps.length) fail('El flujo está vacío: elegí un trigger.');
     if (!TRIGGERS.includes(flow.steps[0].op)) fail('El primer paso tiene que ser un trigger.');
-    seq(flow.steps, [], true);
-  } catch (e) { error = e.message; failed = e.num || null; trace.push({ num: e.num, name: e.nodeName || 'Flujo', error: e.message }); }
-  return { trace, calls, error, failed };
+    seq(flow.steps);
+  } catch (err) {
+    if (err !== TERMINATE) { error = err.message; failed = err.num || null; trace.push({ num: err.num, name: err.nodeName || 'Flujo', error: err.message }); }
+  }
+  return { trace, calls, error, failed, response, terminated, vars: S.vars };
 }
+
 
 /* ---------------- Datos del usuario (solo en este navegador) ---------------- */
 const KEY = 'flowdev-v1';
@@ -1353,7 +1191,7 @@ function toast(m) { const t = $('#toast'); t.textContent = m; t.hidden = false; 
 function go(v, extra = {}) { Object.assign(state, { view: v, sel: null, run: null, results: null, reveal: new Set(), graded: false, quizId: null, ptab: 'ej', ins: null, tquiz: null }, extra); render(); window.scrollTo(0, 0); }
 
 function renderNav() {
-  const links = [['home', 'Inicio'], ['sap', 'SAP CPI'], ['pa', 'Power Automate'], ['n8n', 'n8n'], ['make', 'Make'], ['zapier', 'Zapier'], ['dash', 'Mi avance']];
+  const links = [['home', 'Inicio'], ['sap', 'SAP CPI'], ['pa', 'Power Automate'], ['dash', 'Mi avance']];
   $('#navLinks').innerHTML = links.map(([k, l]) => `<button type="button" data-go="${k}"${(state.view === k || (state.view !== 'home' && state.view !== 'dash' && state.pf === k)) ? ' aria-current="page"' : ''}>${l}</button>`).join('');
   const u = me();
   $('#navUser').innerHTML = u
@@ -1382,9 +1220,9 @@ function home() {
     </div>
     <div class="side dark">
       <div class="tiles">
-        <div class="tile"><span class="big">2</span><p>plataformas empresariales, y ${FREE.length} gratuitas para empezar</p></div>
+        <div class="tile"><span class="big">2</span><p>plataformas empresariales y 2 más en camino</p></div>
         <div class="tile grey">${svg('router')}<p>${c.pro + SAP.scenarios + SAP.practice} proyectos y ejercicios con verificación</p></div>
-        <div class="tile grey">${svg('code')}<p>${c.les} lecciones cortas, sin relleno</p></div>
+        <div class="tile grey">${svg('formsIn')}<p>${c.les + SAP_LESSONS.length} clases cortas, sin relleno</p></div>
         <div class="tile"><span class="big">${c.q + SAP.quizzes}</span><p>cuestionarios para repasar</p></div>
       </div>
     </div>
@@ -1397,14 +1235,6 @@ function home() {
     </div>
     <div class="grid2">${pcard('pa')}<button type="button" class="pcard grey" data-go="sap" style="text-align:left"><div class="row" style="justify-content:space-between"><span class="pill">iFlows</span><span class="arrow">${svg('arrow')}</span></div><div class="name">SAP CPI</div><p class="dim">Integración empresarial con SAP Cloud Integration.</p><div class="foot-row"><span class="pill fill">${SAP.scenarios} escenarios</span><span class="pill fill">${SAP.quizzes} cuestionarios</span></div></button></div>
     <div class="grid2" style="margin-top:14px">${SOON.map(([n, d]) => `<div class="pcard soon"><div><span class="pill">Próximamente</span></div><div class="name">${n}</div><p>${esc(d)}</p></div>`).join('')}</div>
-  </section>
-
-  <section class="card">
-    <div class="grid2" style="align-items:end;margin-bottom:22px">
-      <h2 class="display">Primeros pasos</h2>
-      <p class="lead">Herramientas gratuitas para entender los conceptos de cualquier flujo: un disparador, pasos que transforman datos y lógica para decidir.</p>
-    </div>
-    <div class="grid3">${FREE.map(pcard).join('')}</div>
   </section>
 
   <section class="card dark flush split">
@@ -1445,7 +1275,7 @@ function auth() {
     <div class="side dark">
       <h1 class="display">${reg ? 'Creá tu cuenta' : 'Volvé a tu avance'}</h1>
       <div><span class="pill">gratis</span></div>
-      <p class="lead dim">${reg ? 'Guardá tus flujos, tus respuestas y tu progreso en las tres plataformas.' : 'Ingresá para seguir con tus proyectos donde los dejaste.'}</p>
+      <p class="lead dim">${reg ? 'Guardá tus flujos, tus respuestas y tu progreso en cada plataforma.' : 'Ingresá para seguir con tus proyectos donde los dejaste.'}</p>
       <div class="tiles" style="margin-top:auto">
         <div class="tile"><span class="big">${counts().pro}</span><p>proyectos para resolver</p></div>
         <div class="tile grey">${svg('sheets')}<p>Tu avance queda guardado en este navegador</p></div>
@@ -1458,7 +1288,7 @@ function auth() {
         <label class="fld"><span>Email</span><input id="au_email" type="email" autocomplete="email" required></label>
         <label class="fld"><span>Contraseña</span><input id="au_pass" type="password" autocomplete="${reg ? 'new-password' : 'current-password'}" minlength="6" required></label>
         <p class="err" id="authErr" role="alert"></p>
-        <div class="row"><button class="btn" type="submit">${reg ? 'Crear cuenta' : 'Ingresar'}</button><button class="btn line" type="button" data-go="n8n">Seguir sin cuenta</button></div>
+        <div class="row"><button class="btn" type="submit">${reg ? 'Crear cuenta' : 'Ingresar'}</button><button class="btn line" type="button" data-go="pa">Seguir sin cuenta</button></div>
       </form>
       <p class="note">Las cuentas de flowDev se guardan solo en este navegador: no se envía nada a un servidor y no sirven en otro dispositivo. No uses una contraseña que uses en otros sitios.</p>
     </div>
@@ -1480,7 +1310,7 @@ function dash() {
       <div class="bars" style="height:150px;margin-top:auto">${keys.map(k => `<div class="bar"><b>${pct(k)}%</b><i style="height:${Math.max(6, pct(k))}%"></i><span>${P[k].name}</span></div>`).join('')}</div>
     </div>
   </section>
-  <section class="grid3">${keys.map(pcard).join('')}</section>`;
+  <section class="grid2">${keys.map(pcard).join('')}</section>`;
 }
 
 const order = q => { let s = 7; for (const ch of q[0]) s = (Math.imul(s, 31) + ch.charCodeAt(0)) >>> 0; const idx = q[1].map((_, i) => i); for (let i = idx.length - 1; i > 0; i--) { s = (Math.imul(s, 1103515245) + 12345) >>> 0; const k = (s >>> 16) % (i + 1); [idx[i], idx[k]] = [idx[k], idx[i]]; } return idx; };
@@ -1492,7 +1322,7 @@ function platform() {
       <summary><span class="n">${i + 1}</span><span class="h3" style="flex:1">${esc(t)}</span>${pr[`${pf}:L${i}`] ? '<span class="pill ok">Leída</span>' : ''}</summary>
       <div class="body">${parts.join('')}<button type="button" class="btn sm" data-act="read" data-i="${i}">${pr[`${pf}:L${i}`] ? 'Leída' : 'Marcar como leída'}</button></div></details>`).join('');
   else if (tab === 'proyectos') body = [...new Set(gr.map(j => j.cat))].map(c2 => `<p class="gtitle" style="margin-top:20px">${esc(c2)} · ${gr.filter(j => j.cat === c2).length}</p><div>${gr.filter(j => j.cat === c2).map(item).join('')}</div>`).join('');
-  else if (tab === 'libre') body = `<div class="grid2" style="align-items:center"><div class="stack"><h2 class="h2">Modo libre</h2><p class="lead">Abrí el ${TALLER[pf].toLowerCase().replace('zaps', 'Zaps')} sin requisitos ni verificación, con todos los ${esc(p.node)}s: IA, código, APIs, hojas y lógica.</p><p class="dim">Vos definís los datos de entrada y qué responden la API, la IA y la hoja de cálculo. Tu ${esc(p.flow)} queda guardado.</p><div><button type="button" class="btn" data-proj="libre">Abrir el editor libre</button></div></div><div class="tiles"><div class="tile">${svg('ai')}<p>Respuesta de la IA a tu medida</p></div><div class="tile grey">${svg('http')}<p>Respuesta de la API en JSON</p></div><div class="tile grey">${svg('sheetsRead')}<p>Filas de la hoja de cálculo</p></div><div class="tile">${svg('code')}<p>Código propio en cada paso</p></div></div></div>`;
+  else if (tab === 'libre') body = `<div class="grid2" style="align-items:center"><div class="stack"><h2 class="h2">Modo libre</h2><p class="lead">Abrí el ${TALLER[pf].toLowerCase()} sin requisitos ni verificación, con todas las acciones: IA, APIs, Excel, aprobaciones, variables y RPA.</p><p class="dim">Vos definís los datos de entrada y qué responden la API, la IA, Excel, las aprobaciones y el flujo de escritorio. Tu ${esc(p.flow)} queda guardado.</p><div><button type="button" class="btn" data-proj="libre">Abrir el editor libre</button></div></div><div class="tiles"><div class="tile">${svg('ai')}<p>Respuesta de la IA a tu medida</p></div><div class="tile grey">${svg('http')}<p>Respuesta de la API en JSON</p></div><div class="tile grey">${svg('sheetsRead')}<p>Filas de la hoja de cálculo</p></div><div class="tile">${svg('approval')}<p>Aprobaciones que se aprueban o rechazan</p></div></div></div>`;
   else if (!state.quizId) body = p.quizzes.map(q => `<button type="button" class="list-item" data-quiz="${q.id}"><span class="pill${pr[`${pf}:Q:${q.id}`] ? ' ok' : ''}">${pr[`${pf}:Q:${q.id}`] ? 'Aprobado' : q.qs.length + ' preguntas'}</span><span class="grow"><span class="h3">${esc(q.title)}</span></span><span class="arrow">${svg('arrow')}</span></button>`).join('');
   else {
     const quiz = p.quizzes.find(q => q.id === state.quizId), ans = data().quiz[`${pf}:${quiz.id}`] || {};
@@ -1501,13 +1331,13 @@ function platform() {
       + `<div class="row"><button type="button" class="btn" data-act="grade">Corregir</button>${pr[`${pf}:Q:${quiz.id}`] ? '<span class="pill ok">Aprobado</span>' : ''}</div>`;
   }
   return `<section class="card ${p.tone === 'dark' ? 'dark' : ''} flush split">
-    <div class="side"><h1 class="display">${p.name}</h1><div><span class="pill">${esc(p.tag)}</span></div><p class="lead ${p.tone === 'dark' ? 'dim' : ''}">${esc(p.intro)}</p><div><button type="button" class="btn ${p.tone === 'dark' ? 'sky' : ''}" data-proj="${(gr.find(j => !pr[`${pf}:P:${j.id}`]) || gr[0]).id}">Abrir el ${TALLER[pf].toLowerCase().replace('zaps', 'Zaps')}</button></div></div>
+    <div class="side"><h1 class="display">${p.name}</h1><div><span class="pill">${esc(p.tag)}</span></div><p class="lead ${p.tone === 'dark' ? 'dim' : ''}">${esc(p.intro)}</p><div><button type="button" class="btn ${p.tone === 'dark' ? 'sky' : ''}" data-proj="${(gr.find(j => !pr[`${pf}:P:${j.id}`]) || gr[0]).id}">Abrir el ${TALLER[pf].toLowerCase()}</button></div></div>
     <div class="side ${p.tone === 'dark' ? '' : 'dark'}">
       <div class="tiles">
         <div class="tile"><span class="big">${pct(pf)}%</span><p>de ${p.name} completado</p></div>
-        <div class="tile grey"><span class="big">${gr.length}</span><p>proyectos guiados</p></div>
-        <div class="tile grey"><span class="big">${p.quizzes.length}</span><p>${p.quizzes.length === 1 ? 'cuestionario' : 'cuestionarios por tema'}</p></div>
-        <div class="tile"><span class="big">${p.lessons.length}</span><p>lecciones</p></div>
+        <div class="tile grey"><span class="big">${gr.length}</span><p>ejercicios con verificación</p></div>
+        <div class="tile grey"><span class="big">${p.quizzes.length}</span><p>${p.quizzes.length === 1 ? 'cuestionario' : 'cuestionarios, uno por clase'}</p></div>
+        <div class="tile"><span class="big">${p.lessons.length}</span><p>clases de teoría</p></div>
       </div>
     </div>
   </section>
@@ -1584,7 +1414,7 @@ function sap() {
         <div class="tile"><span class="big">${Math.round(n / total * 100)}%</span><p>del taller completado</p></div>
         <div class="tile grey"><span class="big">${SAP_SCEN.length + SAP_EXTRA.length}</span><p>escenarios y ejercicios</p></div>
         <div class="tile grey"><span class="big">${SAP_QUIZ.length}</span><p>cuestionarios teóricos</p></div>
-        <div class="tile"><span class="big">${SAP_LESSONS.length}</span><p>lecciones</p></div>
+        <div class="tile"><span class="big">${SAP_LESSONS.length}</span><p>clases de teoría</p></div>
       </div>
     </div>
   </section>
@@ -1595,17 +1425,15 @@ function sap() {
 }
 
 /* ---------------- Taller: barra | paleta | lienzo | panel (la misma distribución que el taller de iFlows) ---------------- */
-const TALLER = { n8n: 'Taller de workflows', make: 'Taller de escenarios', zapier: 'Taller de Zaps', pa: 'Taller de cloud flows' };
+const TALLER = { pa: 'Taller de cloud flows' };
 const getSeq = id => { if (id === 'root') return state.flow.steps; const [nid, bi] = id.split(':'); return all(state.flow).find(n => n.id === nid).branches[+bi].steps; };
 const findNode = id => all(state.flow).find(n => n.id === id);
 const condText = c => (c && c.left ? `${c.left} ${OPS.find(o => o[0] === c.op)[1]}${['exists', 'empty'].includes(c.op) ? '' : ' ' + c.right}` : 'sin condición');
-const kind = op => (TRIGGERS.includes(op) ? 'trigger' : [...APPS, 'http', 'crm', 'task', 'sheetsRead', 'ai', 'approval'].includes(op) ? 'app' : 'tool');
+const kind = op => (TRIGGERS.includes(op) ? 'trigger' : APPS.includes(op) ? 'app' : 'tool');
 function nodeHtml(n, pf) {
   const cat = P[pf].cat[n.op] || [n.op], r = state.run;
   const cls = ['fnode', 'k-' + kind(n.op), state.sel === n.id ? 'sel' : '', r && r.failed === n.num ? 'failed' : r && r.trace.some(t => t.num === n.num && !t.skipped && !t.error) ? 'ran' : ''].join(' ');
-  const inner = (pf === 'zapier' || pf === 'pa')
-    ? `<span class="ic">${svg(n.op)}</span><span class="tx"><span class="sb">${esc(cat[0])}</span><span class="nm">${n.num}. ${esc(n.name)}</span></span>`
-    : `<span class="num">${n.num}</span><span class="ic">${svg(n.op)}</span><span class="nm">${esc(n.name)}</span><span class="sb">${esc(cat[0])}</span>`;
+  const inner = `<span class="ic">${svg(n.op)}</span><span class="tx"><span class="sb">${esc(cat[0])}</span><span class="nm">${n.num}. ${esc(n.name)}</span></span>`;
   return `<button type="button" class="${cls}" data-node="${n.id}">${inner}</button>`;
 }
 const insOn = (seqId, idx) => state.ins && state.ins.seqId === seqId && state.ins.idx === idx;
@@ -1617,10 +1445,9 @@ function seqHtml(steps, seqId, pf) {
   steps.forEach((n, i) => {
     if (i > 0 || seqId !== 'root') h += addBtn(seqId, i);
     h += nodeHtml(n, pf);
-    if (n.branches) h += `<span class="link"></span><div class="branches">${n.branches.map((b, bi) => `<div class="branch"><span class="link0"></span><span class="blabel" title="${esc(condText(b.cond))}">${esc(b.name)}${n.op === 'router' ? (b.fallback ? ' · respaldo' : ' · ' + esc(short(condText(b.cond), 26))) : ''}</span>${seqHtml(b.steps, `${n.id}:${bi}`, pf)}</div>`).join('')}</div>`;
+    if (n.branches) h += `<span class="link"></span><div class="branches">${n.branches.map((b, bi) => `<div class="branch"><span class="link0"></span><span class="blabel" title="${esc(condText(b.cond))}">${n.op === 'router' ? (b.fallback ? 'Default' : 'Case · ' + esc(short(b.value || 'sin valor', 22))) : n.op === 'foreach' ? 'Por cada elemento' : esc(b.name)}</span>${seqHtml(b.steps, `${n.id}:${bi}`, pf)}</div>`).join('')}</div>`;
   });
-  const last = steps[steps.length - 1];
-  if (steps.length ? !last.branches : seqId !== 'root') h += addBtn(seqId, steps.length);
+  if (steps.length || seqId !== 'root') h += addBtn(seqId, steps.length);
   return h + '</div>';
 }
 function paletteHtml(pf) {
@@ -1668,7 +1495,8 @@ function project() {
     ${fm ? `<p class="gtitle">Respuestas simuladas</p>
     <label class="fld"><span>API (HTTP): JSON que devuelve</span><textarea class="mono" rows="4" data-mock="http" spellcheck="false">${esc(fm.http)}</textarea></label>
     <label class="fld"><span>IA: texto (o JSON) que devuelve</span><textarea class="mono" rows="2" data-mock="ai" spellcheck="false">${esc(fm.ai)}</textarea></label>
-    <label class="fld"><span>Hoja de cálculo: lista de filas</span><textarea class="mono" rows="4" data-mock="rows" spellcheck="false">${esc(fm.rows)}</textarea></label>
+    <label class="fld"><span>Excel: lista de filas</span><textarea class="mono" rows="4" data-mock="rows" spellcheck="false">${esc(fm.rows)}</textarea></label>
+    <label class="fld"><span>Flujo de escritorio: salidas en JSON</span><textarea class="mono" rows="2" data-mock="desktop" spellcheck="false">${esc(fm.desktop)}</textarea></label>
     ${pf === 'pa' ? `<label class="fld"><span>Respuesta de las aprobaciones</span><select data-mock="approval"><option${fm.approval === 'Approve' ? ' selected' : ''}>Approve</option><option${fm.approval === 'Reject' ? ' selected' : ''}>Reject</option></select></label>` : ''}` : ''}
     <div class="row"><button type="button" class="btn" data-act="run">${esc(p.run)}</button></div>
     ${!r ? `<p class="note" style="margin-top:12px">Ejecutá el ${esc(p.flow)} para ver el resultado, las acciones realizadas y los datos que entrega cada ${esc(p.node)}.</p>` : `<div class="res-dark">
@@ -1723,14 +1551,12 @@ function addOp(op) {
   if (!trig) {
     if (!f.steps.length || !TRIGGERS.includes(f.steps[0].op)) return toast('Primero elegí un trigger en la paleta.');
     if (state.ins) { ({ seqId, idx } = state.ins); try { getSeq(seqId); } catch (_) { state.ins = null; return render(); } }
-    else { idx = f.steps.length; if (f.steps[idx - 1].branches) return toast('La cadena principal termina en una bifurcación: tocá un + dentro de una rama para agregar ahí.'); }
-    if (BRANCHING.includes(op) && idx !== getSeq(seqId).length) return toast('Las bifurcaciones van al final de la cadena.');
+    else idx = f.steps.length;
+    if (op === 'varInit' && seqId !== 'root') return toast('Initialize variable va en el nivel superior del flujo, no dentro de un control.');
     if (seqId === 'root' && idx === 0) idx = 1;
   }
   const used = new Set(all(f).map(x => x.name)), base = cat[0].split(' · ')[0]; let name = base, k = 2; while (used.has(name)) name = `${base} ${k++}`;
-  const empty = { left: '', op: 'eq', right: '' };
-  const n = N(op, name, {}, op === 'if' ? [{ name: pf === 'pa' ? 'Sí' : 'true', steps: [] }, { name: pf === 'pa' ? 'No' : 'false', steps: [] }] : op === 'router' ? [{ name: pf === 'pa' ? 'Case' : 'Camino A', cond: { ...empty }, steps: [] }, { name: pf === 'pa' ? 'Default' : 'Camino B', cond: { ...empty }, fallback: true, steps: [] }] : undefined);
-  if (op === 'code') n.p.code = pf === 'zapier' ? 'output = { resultado: inputData.campo };' : 'return { ...$json };';
+  const n = N(op, name, {}, op === 'if' ? [{ name: 'Sí', steps: [] }, { name: 'No', steps: [] }] : op === 'router' ? [{ name: 'Case', value: '', steps: [] }, { name: 'Default', value: '', fallback: true, steps: [] }] : op === 'foreach' ? [{ name: 'Acciones', steps: [] }] : undefined);
   if (trig && f.steps[0] && TRIGGERS.includes(f.steps[0].op)) f.steps[0] = n; else getSeq(seqId).splice(idx, 0, n);
   state.ins = null; state.run = null; state.results = null; saveFlow(); state.sel = n.id; state.ptab = 'prop'; render(); openProps(n.id);
 }
@@ -1744,32 +1570,35 @@ function openProps(id) {
   const ta = (k, l, rows = 3) => `<label class="fld"><span>${l}</span><textarea class="mono" rows="${rows}" data-k="${k}" spellcheck="false">${esc(p[k])}</textarea></label>`;
   let f = '';
   switch (n.op) {
-    case 'webhook': f = t('path', 'Ruta del webhook', '/mi-webhook') + '<p class="note">El trigger entrega el JSON que llega en la petición (los datos de entrada de la pestaña Probar).</p>'; break;
-    case 'schedule': f = t('every', 'Frecuencia', 'Todos los días', false) + t('at', 'Hora', '09:00'); break;
-    case 'set': f = `<p class="gtitle">Campos</p>${rowsUi(p.fields, 'fields', 'campo', 'valor o expresión')}<label class="row" style="margin-top:10px"><input type="checkbox" data-k="keep"${p.keep ? ' checked' : ''} style="width:auto"> Conservar los demás campos de entrada</label>`; break;
-    case 'filter': case 'if': f = `<p class="gtitle">Condición</p>${condUi(p.cond, 'cond.')}`; break;
-    case 'router': f = `<p class="gtitle">${pf === 'zapier' ? 'Caminos' : 'Rutas'}</p>` + n.branches.map((b, i) => `<div style="border:1.5px solid var(--line);border-radius:14px;padding:10px;margin-bottom:8px"><div class="row" style="margin-bottom:8px"><input data-b="${i}" data-f="name" value="${esc(b.name)}" aria-label="Nombre" style="flex:1"><button type="button" class="x" data-act="brdel" data-i="${i}" aria-label="Quitar">×</button></div>${b.fallback ? '' : condUi(b.cond, `b${i}.`)}<label class="row"><input type="checkbox" data-b="${i}" data-f="fallback"${b.fallback ? ' checked' : ''} style="width:auto"> Es el camino de respaldo</label></div>`).join('') + `<button type="button" class="btn line sm" data-act="bradd">+ Agregar</button>`; break;
-    case 'http': f = `<label class="fld"><span>Método</span><select data-k="method">${['GET', 'POST', 'PUT', 'DELETE'].map(m => `<option${p.method === m ? ' selected' : ''}>${m}</option>`).join('')}</select></label>` + t('url', 'URL', 'https://api…') + ta('body', 'Body (opcional)'); break;
-    case 'code': f = (pf === 'zapier'
-      ? `<p class="gtitle">Input Data</p>${rowsUi(p.inputs || (p.inputs = []), 'inputs', 'nombre', 'dato de un paso anterior')}<p class="note" style="margin:8px 0 12px">Todo lo que entra por Input Data llega como texto en <code>inputData</code>. Convertí con <code>Number()</code> o <code>JSON.parse()</code>.</p>`
-      : `<label class="fld"><span>Modo</span><select data-k="mode"><option value="each"${p.mode !== 'all' ? ' selected' : ''}>Run Once for Each Item</option><option value="all"${p.mode === 'all' ? ' selected' : ''}>Run Once for All Items</option></select></label>`)
-      + ta('code', 'JavaScript', 9)
-      + (pf === 'zapier' ? '<p class="note">Asigná el resultado a <code>output</code>: <code>output = { campo: valor };</code></p>' : '<p class="note">Each Item: usá <code>$json</code> y devolvé un objeto. All Items: usá <code>$input.all()</code> y devolvé una lista de <code>{ json: {...} }</code>.</p>'); break;
-    case 'ai': f = ta('prompt', 'Prompt', 6) + '<p class="note">La respuesta queda en el campo <code>text</code>. Incluí en el prompt los datos que la IA tiene que leer.</p>'; break;
-    case 'crm': f = (pf === 'pa' ? '<label class="fld"><span>Table name</span><select disabled><option>Contacts</option></select></label>' : '') + t('email', 'Email') + t('name', 'Nombre') + `<p class="gtitle">Propiedades</p>${rowsUi(p.props || (p.props = []), 'props', 'propiedad', 'valor o expresión')}`; break;
-    case 'task': f = t('list', pf === 'pa' ? 'Plan' : 'Lista', 'Pendientes', false) + t('title', 'Título') + ta('description', 'Descripción') + t('due', 'Vencimiento', '2026-12-01'); break;
-    case 'sheetsRead': f = t('doc', 'Documento', 'Ventas', false) + t('sheet', 'Hoja', 'Ventas', false) + `<p class="note">${pf === 'zapier' ? 'Devuelve un solo resultado con la lista <code>rows</code>.' : 'Devuelve un ' + (pf === 'make' ? 'bundle' : 'item') + ' por cada fila.'}</p>`; break;
-    case 'summarize': f = `<p class="gtitle">Campos a resumir</p>${rowsUi(p.fields, 'fields', 'campo', 'sum, count, avg, min o max')}<div style="height:10px"></div>` + t('groupBy', 'Agrupar por (opcional)', 'region') + '<p class="note">La salida se llama <code>operación_campo</code>, por ejemplo <code>sum_monto</code>.</p>'; break;
-    case 'sort': f = t('field', 'Campo') + `<label class="fld"><span>Orden</span><select data-k="dir"><option value="asc"${p.dir !== 'desc' ? ' selected' : ''}>Ascendente</option><option value="desc"${p.dir === 'desc' ? ' selected' : ''}>Descendente</option></select></label>`; break;
-    case 'limit': f = t('max', 'Cantidad máxima de items', '1'); break;
-    case 'dedupe': f = t('field', 'Campo que identifica los duplicados', 'id'); break;
-    case 'split': f = t('field', 'Lista a separar', pf === 'n8n' ? 'productos' : '{{2.productos}}'); break;
-    case 'aggregate': f = t('field', 'Nombre del campo de salida', 'items'); break;
-    case 'sheets': f = t('doc', pf === 'pa' ? 'File' : 'Documento', pf === 'pa' ? 'Finanzas.xlsx' : 'CRM', false) + t('sheet', pf === 'pa' ? 'Table' : 'Hoja', 'Leads', false) + `<p class="gtitle">Columnas</p>${rowsUi(p.columns, 'columns', 'columna', 'valor o expresión')}`; break;
-    case 'mail': f = t('to', 'Para') + t('subject', 'Asunto') + ta('body', 'Mensaje'); break;
-    case 'slack': f = t('channel', pf === 'pa' ? 'Canal de Teams' : 'Canal', pf === 'pa' ? 'Ventas' : '#canal') + ta('text', pf === 'pa' ? 'Mensaje' : 'Texto'); break;
-    case 'telegram': f = t('chatId', 'Chat ID') + ta('text', 'Texto'); break;
-    case 'approval': f = `<label class="fld"><span>Tipo</span><select disabled><option>Approve/Reject - First to respond</option></select></label>` + t('assignedTo', 'Assigned to', 'persona@empresa.com') + t('title', 'Title') + ta('details', 'Details') + '<p class="note">El flujo espera la respuesta. El resultado queda en <code>@{body(\'Start_and_wait_for_an_approval\')?[\'outcome\']}</code>: Approve o Reject.</p>'; break;
+    case 'webhook': f = t('path', 'Ruta', '/mi-flujo') + '<p class="note">El trigger entrega el JSON que llega en la petición (los datos de entrada de la pestaña Probar). Se lee con <code>@{triggerBody()?[\'campo\']}</code>.</p>'; break;
+    case 'formsIn': f = t('form', 'Form Id', 'Inscripción a cursos', false) + '<p class="note">Cada respuesta llega como datos de entrada: <code>@{triggerBody()?[\'campo\']}</code>.</p>'; break;
+    case 'spItem': f = t('site', 'Site Address', 'Compras', false) + t('list', 'List Name', 'Solicitudes', false) + '<p class="note">Las columnas del elemento se leen con <code>@{triggerBody()?[\'Title\']}</code>.</p>'; break;
+    case 'instant': f = `<p class="gtitle">Entradas de la app</p>${rowsUi(p.inputs, 'inputs', 'nombre', 'tipo (Text, Number, Email)')}<p class="note">Se leen con <code>@{triggerBody()?['nombre']}</code>.</p>`; break;
+    case 'schedule': f = t('every', 'Frecuencia', 'Cada día', false) + t('at', 'Hora', '09:00'); break;
+    case 'set': f = `<p class="gtitle">Inputs</p>${rowsUi(p.fields, 'fields', 'campo', 'valor o expresión')}<p class="note">Se lee con <code>@{outputs('${esc(n.name.replace(/ /g, '_'))}')?['campo']}</code>.</p>`; break;
+    case 'parseJson': f = t('content', 'Content', "@{body('HTTP')}") + '<p class="note">El resultado se lee con <code>@{body(\'Parse_JSON\')?[\'campo\']}</code>.</p>'; break;
+    case 'filter': f = t('from', 'From', "@{body('Parse_JSON')?['lista']}") + `<p class="gtitle">Condición (cada elemento es item())</p>${condUi(p.cond, 'cond.')}`; break;
+    case 'select': f = t('from', 'From', "@{body('Filter_array')}") + `<label class="row" style="margin:6px 0 10px"><input type="checkbox" data-k="textMode"${p.textMode ? ' checked' : ''} style="width:auto"> Modo texto (un valor por elemento)</label>` + (p.textMode ? t('value', 'Valor', "@{item()?['id']}") : `<p class="gtitle">Map</p>${rowsUi(p.fields, 'fields', 'clave', "@{item()?['campo']}")}`); break;
+    case 'csv': f = t('from', 'From', "@{body('Select')}") + '<p class="note">Las columnas salen de las claves de los objetos.</p>'; break;
+    case 'if': f = `<p class="gtitle">Condición</p>${condUi(p.cond, 'cond.')}<p class="note">Después de la Condition, el flujo sigue con lo que esté debajo.</p>`; break;
+    case 'router': f = t('on', 'On', "@{triggerBody()?['prioridad']}") + '<p class="gtitle">Casos</p>' + n.branches.map((b, i) => b.fallback ? '' : `<div class="rowcard"><input data-b="${i}" data-f="name" value="${esc(b.name)}" aria-label="Nombre del caso" placeholder="nombre"><input class="mono" data-b="${i}" data-f="value" value="${esc(b.value || '')}" aria-label="Equals" placeholder="es igual a"><button type="button" class="x" data-act="brdel" data-i="${i}" aria-label="Quitar">×</button></div>`).join('') + `<button type="button" class="btn line sm" data-act="bradd">+ Agregar caso</button><p class="note" style="margin-top:8px">Si ningún caso coincide, se ejecuta el Default.</p>`; break;
+    case 'foreach': f = t('from', 'Select an output from previous steps', "@{body('List_rows_present_in_a_table')?['value']}") + '<p class="note">Adentro, el elemento actual es <code>@{items(\'Apply_to_each\')}</code>. Lo que agregues debajo corre una vez, al terminar.</p>'; break;
+    case 'terminate': f = `<label class="fld"><span>Status</span><select data-k="status">${['Succeeded', 'Failed', 'Cancelled'].map(m => `<option${p.status === m ? ' selected' : ''}>${m}</option>`).join('')}</select></label>` + (p.status === 'Failed' ? t('code', 'Code', 'DatosInvalidos') + ta('message', 'Message') : ''); break;
+    case 'varInit': f = t('name', 'Name', 'total') + `<label class="fld"><span>Type</span><select data-k="type">${['Integer', 'Float', 'String', 'Boolean', 'Array', 'Object'].map(m => `<option${p.type === m ? ' selected' : ''}>${m}</option>`).join('')}</select></label>` + t('value', 'Value', '0'); break;
+    case 'varSet': case 'varInc': case 'varAppend': f = t('name', 'Name', 'total') + t('value', 'Value', n.op === 'varInc' ? '1' : ''); break;
+    case 'http': f = `<label class="fld"><span>Method</span><select data-k="method">${['GET', 'POST', 'PUT', 'PATCH', 'DELETE'].map(m => `<option${p.method === m ? ' selected' : ''}>${m}</option>`).join('')}</select></label>` + t('url', 'URI', 'https://api…') + ta('body', 'Body (opcional)') + '<p class="note">Respuesta: <code>@{body(\'HTTP\')}</code>. Código: <code>@{outputs(\'HTTP\')?[\'statusCode\']}</code>.</p>'; break;
+    case 'ai': f = ta('prompt', 'Prompt', 6) + '<p class="note">La respuesta queda en <code>@{body(\'Run_a_prompt\')?[\'text\']}</code>. Incluí en el prompt los datos que la IA tiene que leer.</p>'; break;
+    case 'crm': f = t('table', 'Table name', 'Contacts', false) + t('email', 'Email') + t('name', 'Nombre') + `<p class="gtitle">Otras columnas</p>${rowsUi(p.props || (p.props = []), 'props', 'columna', 'valor o expresión')}`; break;
+    case 'task': f = t('list', 'Plan', 'Soporte', false) + t('title', 'Title') + ta('description', 'Description') + t('due', 'Due Date', '2026-12-01'); break;
+    case 'sheetsRead': f = t('doc', 'File', 'Ventas.xlsx', false) + t('sheet', 'Table', 'Ventas', false) + '<p class="note">Las filas quedan en <code>@{body(\'List_rows_present_in_a_table\')?[\'value\']}</code>.</p>'; break;
+    case 'sheets': f = t('doc', 'File', 'Finanzas.xlsx', false) + t('sheet', 'Table', 'Gastos', false) + `<p class="gtitle">Columnas</p>${rowsUi(p.columns, 'columns', 'columna', 'valor o expresión')}`; break;
+    case 'file': f = t('folder', 'Folder Path', '/Backups') + t('name', 'File Name', 'archivo.csv') + ta('content', 'File Content'); break;
+    case 'pbi': f = t('dataset', 'Dataset', 'KPIs', false) + t('table', 'Table', 'Diario', false) + `<p class="gtitle">Columnas</p>${rowsUi(p.columns, 'columns', 'columna', 'valor o expresión')}`; break;
+    case 'desktop': f = t('flowName', 'Desktop flow', 'CargarPedidoERP', false) + `<p class="gtitle">Entradas</p>${rowsUi(p.inputs, 'inputs', 'variable', 'valor o expresión')}<p class="note">Las salidas se leen con <code>@{body('${esc(n.name.replace(/ /g, '_'))}')?['salida']}</code>.</p>`; break;
+    case 'respond': f = `<p class="gtitle">Salidas</p>${rowsUi(p.outputs, 'outputs', 'nombre', 'valor o expresión')}`; break;
+    case 'mail': f = t('to', 'To') + t('subject', 'Subject') + ta('body', 'Body'); break;
+    case 'slack': f = t('channel', 'Canal de Teams', 'Ventas', false) + ta('text', 'Message'); break;
+    case 'approval': f = `<label class="fld"><span>Approval type</span><select disabled><option>Approve/Reject - First to respond</option></select></label>` + t('assignedTo', 'Assigned to', 'persona@empresa.com') + t('title', 'Title') + ta('details', 'Details') + `<p class="note">El flujo espera la respuesta. El resultado queda en <code>@{body('${esc(n.name.replace(/ /g, '_'))}')?['outcome']}</code>: Approve o Reject.</p>`; break;
   }
   const lastOut = state.run?.trace.find(x => x.num === n.num && x.out);
   dBody.innerHTML = `<div class="ph"><span class="ph-ic">${svg(n.op)}</span><div><p class="eyebrow dim">${esc(cat[0])} · ${esc(P[pf].node)} ${n.num}</p><h2 class="h2" id="drawerTitle">${esc(n.name)}</h2></div></div>
@@ -1787,19 +1616,19 @@ dBody.addEventListener('click', e => {
   if (act === 'close') closeDrawer();
   else if (!n) return;
   else if (act === 'delnode') { const drop = s => { const i = s.findIndex(x => x.id === n.id); if (i >= 0) s.splice(i, 1); else s.forEach(x => (x.branches || []).forEach(br => drop(br.steps))); }; drop(state.flow.steps); state.run = null; state.results = null; state.ins = null; saveFlow(); closeDrawer(); }
-  else if (act === 'rowadd') { (n.p[b.dataset.r] ||= []).push({ name: '', value: b.dataset.r === 'fields' && n.op === 'summarize' ? 'sum' : '' }); saveFlow(); openProps(n.id); }
+  else if (act === 'rowadd') { (n.p[b.dataset.r] ||= []).push({ name: '', value: '' }); saveFlow(); openProps(n.id); }
   else if (act === 'rowdel') { n.p[b.dataset.r].splice(+b.dataset.i, 1); saveFlow(); openProps(n.id); }
-  else if (act === 'bradd') { n.branches.push({ name: 'Camino ' + String.fromCharCode(65 + n.branches.length), cond: { left: '', op: 'eq', right: '' }, steps: [] }); saveFlow(); render(); openProps(n.id); }
-  else if (act === 'brdel') { if (n.branches.length <= 2) return toast('Tiene que haber al menos dos caminos.'); n.branches.splice(+b.dataset.i, 1); state.ins = null; saveFlow(); render(); openProps(n.id); }
+  else if (act === 'bradd') { n.branches.splice(n.branches.length - 1, 0, { name: 'Case ' + n.branches.length, value: '', steps: [] }); saveFlow(); render(); openProps(n.id); }
+  else if (act === 'brdel') { if (n.branches.length <= 2) return toast('El Switch necesita al menos un caso además del Default.'); n.branches.splice(+b.dataset.i, 1); state.ins = null; saveFlow(); render(); openProps(n.id); }
 });
 function onDrawerInput(e) {
   const el = e.target, n = state.sel && findNode(state.sel); if (!n) return;
   const val = el.type === 'checkbox' ? el.checked : el.value;
   if (el.dataset.name !== undefined) { n.name = val || P[state.pf].cat[n.op][0]; $('#drawerTitle').textContent = n.name; }
-  else if (el.dataset.k) n.p[el.dataset.k] = val;
+  else if (el.dataset.k) { n.p[el.dataset.k] = val; if (['textMode', 'status'].includes(el.dataset.k)) { state.run = null; saveFlow(); openProps(n.id); return; } }
   else if (el.dataset.r) n.p[el.dataset.r][+el.dataset.i][el.dataset.f] = val;
   else if (el.dataset.c) { const [where, key] = el.dataset.c.split('.'); (where === 'cond' ? n.p.cond : n.branches[+where.slice(1)].cond)[key] = val; }
-  else if (el.dataset.b) { const br = n.branches[+el.dataset.b]; if (el.dataset.f === 'fallback') { n.branches.forEach(x => { x.fallback = false; }); br.fallback = val; saveFlow(); render(); openProps(n.id); return; } br[el.dataset.f] = val; }
+  else if (el.dataset.b) n.branches[+el.dataset.b][el.dataset.f] = val;
   else return;
   state.run = null; saveFlow();
 }
