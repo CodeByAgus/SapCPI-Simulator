@@ -4,13 +4,15 @@ Plataforma educativa para aprender automatización e integración con flujos: **
 
 ## Qué incluye
 
-- **Inicio, registro e ingreso**, y un panel con el avance por plataforma.
-- **n8n y Zapier:** 7 lecciones, 9 proyectos guiados y 4 cuestionarios por plataforma. Los proyectos están agrupados por tema: primeros pasos, leads, flujos con IA, nodos de programación, conexión con servicios y análisis de datos.
-- **Make:** 4 lecciones, 3 proyectos guiados y un cuestionario.
-- **Modo libre** en las tres: editor sin requisitos, con datos de entrada y respuestas simuladas (API, IA y hoja de cálculo) que define cada persona.
-- Los proyectos se resuelven en un editor de flujos con el vocabulario de cada herramienta, se ejecutan con datos de prueba y se verifican con casos automáticos.
-- **SAP CPI** (`sap-cpi/`): taller de iFlows con editor BPMN, 11 escenarios guiados, 20 cuestionarios teóricos, 9 ejercicios extra y modo libre.
-- **Próximamente:** Power Automate y Activepieces.
+**Plataformas empresariales**, las que piden las empresas y no se pueden practicar libremente sin licencia:
+
+- **SAP CPI** (`sap-cpi/`): introducción con teoría y el taller de iFlows con editor BPMN, 11 escenarios guiados, 20 cuestionarios teóricos, 9 ejercicios extra y modo libre.
+- **Power Automate**: taller de cloud flows con 5 lecciones, 6 proyectos (leads, aprobaciones, Switch, AI Builder, Excel y HTTP), 4 cuestionarios y modo libre. Usa las expresiones reales de Power Automate (`@{triggerBody()?['campo']}`, `body('Accion')`, `items('Apply_to_each')`).
+- **Próximamente:** MuleSoft y KNIME.
+
+**Primeros pasos**, con herramientas gratuitas para aprender los conceptos: n8n, Make y Zapier, cada una con su taller (workflows, escenarios y Zaps), teoría, proyectos, cuestionarios y modo libre.
+
+Todos los talleres comparten la misma distribución: barra con selector de ejercicios, paleta, lienzo con el estilo de cada herramienta y panel con las pestañas Ejercicio, Propiedades y Probar.
 
 ## Estructura
 
