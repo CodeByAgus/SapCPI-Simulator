@@ -1164,13 +1164,35 @@ function runFlow(flow, pf, input, mocks = {}) {
 }
 
 
-/* ---------------- Datos del usuario (solo en este navegador) ---------------- */
+/* ---------------- Datos del usuario (en Supabase si está configurado; si no, en este navegador) ---------------- */
 const KEY = 'flowdev-v1';
 const blank = () => ({ progress: {}, flows: {}, quiz: {}, free: {} });
 let db = { users: {}, session: null, guest: blank() };
 try { const raw = localStorage.getItem(KEY); if (raw) db = { ...db, ...JSON.parse(raw) }; } catch (_) {}
-const persist = () => { try { localStorage.setItem(KEY, JSON.stringify(db)); } catch (_) {} };
-const me = () => (db.session && db.users[db.session]) || null;
+/* Cuentas en Supabase: si config.js tiene url y anonKey, el avance de cada usuario se guarda en la tabla progress */
+const SBC = window.FLOWDEV_SUPABASE || {}, sb = SBC.url && SBC.anonKey && window.supabase ? window.supabase.createClient(SBC.url, SBC.anonKey) : null;
+let cloud = null, syncT = null;
+const pick = o => ({ progress: o.progress || {}, flows: o.flows || {}, quiz: o.quiz || {}, free: o.free || {} });
+const merge = (a, b) => ({ progress: { ...a.progress, ...b.progress }, flows: { ...a.flows, ...b.flows }, quiz: { ...a.quiz, ...b.quiz }, free: { ...a.free, ...b.free } });
+async function pushCloud() {
+  if (!sb || !cloud) return;
+  const { error } = await sb.from('progress').upsert({ user_id: cloud.id, data: pick(cloud), updated_at: new Date().toISOString() });
+  if (error) toast('No se pudo guardar el avance en la nube: ' + error.message);
+}
+const persist = () => {
+  try { localStorage.setItem(KEY, JSON.stringify(db)); } catch (_) {}
+  if (cloud) { clearTimeout(syncT); syncT = setTimeout(pushCloud, 800); }
+};
+async function loadCloud(user) {
+  const { data: row, error } = await sb.from('progress').select('data').eq('user_id', user.id).maybeSingle();
+  if (error) { toast('No se pudo leer tu avance: ' + error.message); return; }
+  const remote = pick(row?.data || {}), local = pick(db.guest);
+  cloud = { id: user.id, email: user.email, name: user.user_metadata?.name || user.user_metadata?.full_name || user.email.split('@')[0], ...merge(remote, local) };
+  db.guest = blank(); db.session = null;
+  try { localStorage.setItem(KEY, JSON.stringify(db)); } catch (_) {}
+  if (Object.keys(local.progress).length || !row) await pushCloud();
+}
+const me = () => cloud || (!sb && db.session && db.users[db.session]) || null;
 const data = () => me() || db.guest;
 async function hash(text) {
   if (window.crypto?.subtle) { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join(''); }
@@ -1278,11 +1300,12 @@ function auth() {
       <p class="lead dim">${reg ? 'Guardá tus flujos, tus respuestas y tu progreso en cada plataforma.' : 'Ingresá para seguir con tus proyectos donde los dejaste.'}</p>
       <div class="tiles" style="margin-top:auto">
         <div class="tile"><span class="big">${counts().pro}</span><p>proyectos para resolver</p></div>
-        <div class="tile grey">${svg('sheets')}<p>Tu avance queda guardado en este navegador</p></div>
+        <div class="tile grey">${svg('sheets')}<p>${sb ? 'Tu avance queda guardado en tu cuenta' : 'Tu avance queda guardado en este navegador'}</p></div>
       </div>
     </div>
     <div class="side">
       <div class="tabs" role="tablist"><button type="button" data-auth="registro" aria-selected="${reg}">Crear cuenta</button><button type="button" data-auth="ingreso" aria-selected="${!reg}">Ingresar</button></div>
+      ${sb ? `<button type="button" class="btn line" data-act="google" style="width:100%;justify-content:center;margin-bottom:14px"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5a5.6 5.6 0 01-2.4 3.6v3h3.9c2.2-2.1 3.5-5.1 3.5-8.8z"/><path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-2.9l-3.9-3c-1.1.7-2.5 1.2-4.1 1.2-3.1 0-5.8-2.1-6.7-5H1.3v3.1A12 12 0 0012 24z"/><path fill="#FBBC05" d="M5.3 14.3a7.2 7.2 0 010-4.6V6.6H1.3a12 12 0 000 10.8z"/><path fill="#EA4335" d="M12 4.8c1.8 0 3.3.6 4.6 1.8l3.4-3.4A12 12 0 001.3 6.6l4 3.1c.9-2.8 3.6-4.9 6.7-4.9z"/></svg> Continuar con Google</button><p class="note" style="text-align:center;margin-bottom:10px">o con tu email</p>` : ''}
       <form id="authForm" novalidate>
         ${reg ? `<label class="fld"><span>Nombre</span><input id="au_name" autocomplete="name" required></label>` : ''}
         <label class="fld"><span>Email</span><input id="au_email" type="email" autocomplete="email" required></label>
@@ -1290,7 +1313,7 @@ function auth() {
         <p class="err" id="authErr" role="alert"></p>
         <div class="row"><button class="btn" type="submit">${reg ? 'Crear cuenta' : 'Ingresar'}</button><button class="btn line" type="button" data-go="pa">Seguir sin cuenta</button></div>
       </form>
-      <p class="note">Las cuentas de flowDev se guardan solo en este navegador: no se envía nada a un servidor y no sirven en otro dispositivo. No uses una contraseña que uses en otros sitios.</p>
+      ${sb ? '<p class="note">Tu cuenta y tu avance se guardan en la nube: podés seguir desde cualquier dispositivo.</p>' : '<p class="note">Las cuentas de flowDev se guardan solo en este navegador: no se envía nada a un servidor y no sirven en otro dispositivo. No uses una contraseña que uses en otros sitios.</p>'}
     </div>
   </section>`;
 }
@@ -1659,7 +1682,8 @@ document.addEventListener('click', e => {
   if (d.node) { state.sel = d.node; state.ptab = 'prop'; render(); return openProps(d.node); }
   const pf = state.pf;
   switch (d.act) {
-    case 'logout': db.session = null; persist(); toast('Sesión cerrada.'); return go('home', { pf: null });
+    case 'google': sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: location.origin + location.pathname } }).then(({ error }) => { if (error) toast('No se pudo ingresar con Google: ' + error.message); }); return;
+    case 'logout': if (cloud) { clearTimeout(syncT); pushCloud().finally(() => sb.auth.signOut()); cloud = null; } db.session = null; persist(); toast('Sesión cerrada.'); return go('home', { pf: null });
     case 'read': mark(`${state.view === 'sap' ? 'sap' : pf}:L${d.i}`); toast('Lección marcada como leída.'); return render();
     case 'reveal': { const i = +d.i; state.reveal.has(i) ? state.reveal.delete(i) : state.reveal.add(i); return render(); }
     case 'grade': { const qz = P[pf].quizzes.find(q => q.id === state.quizId), ans = data().quiz[`${pf}:${qz.id}`] || {}; state.graded = true; if (qz.qs.every((_, i) => ans[i] === 0)) { mark(`${pf}:Q:${qz.id}`); toast('Cuestionario aprobado.'); } return render(); }
@@ -1687,6 +1711,22 @@ document.addEventListener('submit', async e => {
   const err = $('#authErr'), email = $('#au_email').value.trim().toLowerCase(), pass = $('#au_pass').value, reg = state.auth === 'registro';
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { err.textContent = 'Escribí un email válido.'; return; }
   if (pass.length < 6) { err.textContent = 'La contraseña tiene que tener al menos 6 caracteres.'; return; }
+  if (sb) {
+    const btn = e.target.querySelector('[type="submit"]'); btn.disabled = true; err.textContent = '';
+    try {
+      if (reg) {
+        const name = $('#au_name').value.trim();
+        if (!name) { err.textContent = 'Escribí tu nombre.'; return; }
+        const { data: r, error } = await sb.auth.signUp({ email, password: pass, options: { data: { name }, emailRedirectTo: location.origin + location.pathname } });
+        if (error) { err.textContent = error.message; return; }
+        if (!r.session) { err.textContent = 'Te enviamos un email para confirmar la cuenta. Después de confirmarla, ingresá.'; return; }
+        await loadCloud(r.user); toast(`Cuenta creada. Hola, ${name.split(' ')[0]}.`); return go('dash', { pf: null });
+      }
+      const { data: r, error } = await sb.auth.signInWithPassword({ email, password: pass });
+      if (error) { err.textContent = /invalid/i.test(error.message) ? 'El email o la contraseña no son correctos.' : error.message; return; }
+      await loadCloud(r.user); toast(`Hola de nuevo, ${cloud.name.split(' ')[0]}.`); return go('dash', { pf: null });
+    } finally { btn.disabled = false; }
+  }
   if (reg) {
     const name = $('#au_name').value.trim();
     if (!name) { err.textContent = 'Escribí tu nombre.'; return; }
@@ -1701,4 +1741,8 @@ document.addEventListener('submit', async e => {
 });
 if (location.hash === '#sap') { state.view = 'sap'; state.tab = 'lecciones'; }
 render();
+if (sb) {
+  sb.auth.getSession().then(async ({ data: { session } }) => { if (session) { await loadCloud(session.user); render(); } });
+  sb.auth.onAuthStateChange((ev, session) => { if (ev === 'SIGNED_IN' && session && !cloud) loadCloud(session.user).then(render); });
+}
 })();
