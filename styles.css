@@ -288,18 +288,16 @@ a.list-item:hover .h3{text-decoration:underline}
 /* ---- Power Automate: tarjetas de acción en columna, con franja por conector ---- */
 .canvas.pa{background-color:#F4F6F8;background-image:radial-gradient(#d6dbe0 1px,transparent 1.2px)}
 .flow.pa{display:flex;justify-content:center;min-width:max-content}
-.flow.pa .fnode{width:300px;border:1.5px solid #d6dbe0;border-left:6px solid var(--sky-3);border-radius:10px;padding:11px 14px;gap:12px;background:var(--paper);box-shadow:0 1px 3px rgba(17,17,16,.08)}
-.flow.pa .fnode.k-trigger{border-left-color:var(--ink)}
-.flow.pa .fnode.k-tool{border-left-color:var(--grey)}
-.flow.pa .fnode .ic{border-radius:8px;width:34px;height:34px;flex:none}
-.flow.pa .fnode.k-app .ic{background:var(--sky);color:var(--ink)}
-.flow.pa .fnode .tx{gap:1px}
-.flow.pa .fnode .nm{font-size:14px}
-.flow.pa .fnode .sb{font-size:11.5px}
-.flow.pa .fnode:hover{border-color:var(--ink);border-left-color:var(--ink)}
-.flow.pa .fnode.sel{box-shadow:0 0 0 4px var(--sky)}
-.flow.pa .fnode.ran{background:var(--ok-soft)}
-.flow.pa .fnode.failed{background:var(--bad-soft);border-color:var(--bad)}
+.flow.pa .fnode{position:relative;width:320px;border:1px solid #d1d5db;border-radius:8px;padding:10px 40px 10px 12px;gap:12px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.06),0 2px 6px rgba(0,0,0,.05);color:#242424}
+.flow.pa .fnode .ic{border-radius:6px;width:32px;height:32px;flex:none;background:var(--cc);color:#fff;display:grid;place-items:center}
+.flow.pa .fnode .ic svg{width:18px;height:18px}
+.flow.pa .fnode .nm{font-size:14px;font-weight:600}
+.flow.pa .fnode .sb{font-size:12px;color:#616161}
+.flow.pa .fnode .num{position:absolute;top:50%;right:10px;left:auto;transform:translateY(-50%);background:#f0f0f0;color:#616161;font-size:11px}
+.flow.pa .fnode:hover{border-color:var(--cc)}
+.flow.pa .fnode.sel{border-color:var(--cc);box-shadow:0 0 0 2px var(--cc)}
+.flow.pa .fnode.ran{background:#f1faf4;border-color:#62b37f}
+.flow.pa .fnode.failed{background:#fdf1f0;border-color:var(--bad)}
 .flow.pa .link::before,.flow.pa .link::after{background:#9aa3ab;height:12px}
 .flow.pa .add{border-radius:50%;border-color:#9aa3ab}
 .flow.pa .branches{gap:22px;border-color:#9aa3ab}
@@ -308,4 +306,6 @@ a.list-item:hover .h3{text-decoration:underline}
 .flow.pa .blabel{background:var(--sky);color:var(--ink);font-weight:500}
 .flow.pa .fnode{flex-direction:row;text-align:left;align-items:center}
 .flow.pa .fnode .tx{display:flex;flex-direction:column;gap:1px;min-width:0}
-.flow.pa .fnode .sb{order:-1}
+
+/* Paleta de Power Automate: ícono con el color de cada conector */
+.pitem[style*="--cc"] svg{color:#fff;background:var(--cc);border-radius:5px;padding:3px;box-sizing:content-box}

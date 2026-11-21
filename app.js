@@ -106,7 +106,7 @@ const vr = n => pa(`variables('${n}')`);
 
 /* Teoría: 20 clases, cada una con su cuestionario (la opción correcta va primero) */
 const CLASSES = [
-  ['Power Platform: panorama y licencias', [
+  ['Power Automate y Power Platform: panorama y licencias', [
     '<p><b>Microsoft Power Platform</b> reúne las herramientas low-code de Microsoft: <b>Power Apps</b> (aplicaciones), <b>Power Automate</b> (flujos), <b>Power BI</b> (reportes), <b>Copilot Studio</b> (agentes) y <b>Dataverse</b> (la base de datos común).</p>',
     '<p>Microsoft 365 incluye un uso básico de Power Automate con conectores <b>standard</b>. Los conectores <b>premium</b> (HTTP, Dataverse, SQL, SAP), los flujos de escritorio con ejecución desatendida, AI Builder y las aprobaciones avanzadas requieren licencias pagas: <b>Power Automate Premium</b> por usuario, <b>Process</b> por flujo o bot, o pago por uso con Azure.</p>',
     '<p>Por eso, en la práctica, Power Automate se aprende dentro de una empresa que ya pagó las licencias.</p>'
@@ -305,9 +305,9 @@ const CLASSES = [
 
 const P = {
   pa: {
-    name: 'Power Platform', short: 'Power Automate', tone: 'sky', layout: 'v', flow: 'flujo', node: 'acción', run: 'Probar', enterprise: true,
-    tag: 'Power Automate y Power Platform de Microsoft',
-    intro: 'Power Automate es la herramienta de flujos de Microsoft Power Platform. Conecta Outlook, Teams, Excel, SharePoint, Dataverse y cientos de servicios, y se combina con Power Apps, Power BI y AI Builder. Los conectores premium, la automatización de escritorio y AI Builder requieren licencia paga.',
+    name: 'Power Automate', short: 'Power Automate', tone: 'sky', layout: 'v', flow: 'flujo', node: 'acción', run: 'Probar', enterprise: true,
+    tag: 'Cloud flows · automatización empresarial',
+    intro: 'Power Automate es la herramienta de automatización de Microsoft. Los procesos se modelan como cloud flows: un trigger inicia el flujo y cada acción usa un conector para leer, transformar o enviar datos. Conecta Outlook, Teams, Excel, SharePoint, Dataverse y cientos de servicios, y se combina con Power Apps, Power BI y AI Builder. Los conectores premium, la automatización de escritorio y AI Builder requieren licencia paga.',
     cheat: ['Las expresiones van entre <code>@{ }</code>: <code>@{triggerBody()?[\'email\']}</code>.', 'La salida de una acción se lee por su nombre, con guiones bajos: <code>@{body(\'Run_a_prompt\')?[\'text\']}</code> u <code>outputs(\'Compose\')</code>.', 'En Apply to each: <code>@{items(\'Apply_to_each\')?[\'campo\']}</code>. En Filter array y Select: <code>@{item()?[\'campo\']}</code>.', 'Variables: <code>@{variables(\'total\')}</code>. Funciones: <code>toLower</code>, <code>concat</code>, <code>replace</code>, <code>add</code>, <code>mul</code>, <code>div</code>, <code>int</code>, <code>json</code>, <code>length</code>, <code>join</code>, <code>empty</code>, <code>and</code>, <code>not</code>.'],
     cat: {
       formsIn: ['When a new response is submitted', 'Triggers', 'Microsoft Forms: arranca cuando alguien envía el formulario.'],
@@ -343,13 +343,14 @@ const P = {
       http: ['HTTP', 'HTTP (premium)', 'Llama a cualquier API.'],
     },
     lessons: CLASSES.map(c => [c[0], c[1]]),
-    quizzes: CLASSES.map((c, i) => ({ id: 'c' + (i + 1), title: `Clase ${i + 1}: ${c[0]}`, qs: c[2] })),
+    quizzes: CLASSES.map((c, i) => ({ id: 'c' + (i + 1), cls: `Clase ${i + 1}`, title: c[0], qs: c[2] })),
   },
 };
 
 /* ---------------- Ejercicios: 11 escenarios guiados y 9 de práctica extra ---------------- */
-const G = (n, j) => ({ ...j, cat: 'Escenarios guiados', level: `Clase ${n}` });
-const X = j => ({ ...j, cat: 'Práctica extra', level: 'Extra' });
+let gN = 0;
+const G = (n, j) => ({ ...j, title: `Ejercicio_${String(++gN).padStart(3, '0')}: ${j.title}`, cat: 'Escenarios guiados', level: `Clase ${n}`, source: `Escenario guiado · Clase N° ${n}` });
+const X = j => ({ ...j, cat: 'Práctica extra', level: 'Extra', source: 'Práctica extra' });
 const okText = (call, ex) => call.params.text === ex || `El mensaje fue «${call.params.text}»; se esperaba «${ex}».`;
 const inChannel = (r, ch) => { const t = callsOf(r, 'slack'); return t.find(x => String(x.params.channel).trim() === ch); };
 const GASTO = (empleado, email, monto, concepto) => ({ empleado, email, monto, concepto });
@@ -1253,9 +1254,9 @@ function home() {
   <section class="card">
     <div class="grid2" style="align-items:end;margin-bottom:22px">
       <h2 class="display">Plataformas empresariales</h2>
-      <p class="lead">Las herramientas que piden las empresas y que no se pueden practicar gratis: integración con SAP y automatización con Microsoft Power Platform.</p>
+      <p class="lead">Las herramientas que piden las empresas y que no se pueden practicar gratis: integración con SAP y automatización con Microsoft Power Automate.</p>
     </div>
-    <div class="grid2">${pcard('pa')}<button type="button" class="pcard grey" data-go="sap" style="text-align:left"><div class="row" style="justify-content:space-between"><span class="pill">iFlows</span><span class="arrow">${svg('arrow')}</span></div><div class="name">SAP CPI</div><p class="dim">Integración empresarial con SAP Cloud Integration.</p><div class="foot-row"><span class="pill fill">${SAP.scenarios} escenarios</span><span class="pill fill">${SAP.quizzes} cuestionarios</span></div></button></div>
+    <div class="grid2"><button type="button" class="pcard grey" data-go="pa" style="text-align:left"><div class="row" style="justify-content:space-between"><span class="pill">Cloud flows</span><span class="arrow">${svg('arrow')}</span></div><div class="name">Power Automate</div><p class="dim">Automatización empresarial con Microsoft Power Automate.</p><div class="foot-row"><span class="pill fill">${graded('pa').length} escenarios</span><span class="pill fill">${P.pa.quizzes.length} cuestionarios</span></div></button><button type="button" class="pcard grey" data-go="sap" style="text-align:left"><div class="row" style="justify-content:space-between"><span class="pill">iFlows</span><span class="arrow">${svg('arrow')}</span></div><div class="name">SAP CPI</div><p class="dim">Integración empresarial con SAP Cloud Integration.</p><div class="foot-row"><span class="pill fill">${SAP.scenarios} escenarios</span><span class="pill fill">${SAP.quizzes} cuestionarios</span></div></button></div>
     <div class="grid2" style="margin-top:14px">${SOON.map(([n, d]) => `<div class="pcard soon"><div><span class="pill">Próximamente</span></div><div class="name">${n}</div><p>${esc(d)}</p></div>`).join('')}</div>
   </section>
 
@@ -1339,33 +1340,33 @@ function dash() {
 const order = q => { let s = 7; for (const ch of q[0]) s = (Math.imul(s, 31) + ch.charCodeAt(0)) >>> 0; const idx = q[1].map((_, i) => i); for (let i = idx.length - 1; i > 0; i--) { s = (Math.imul(s, 1103515245) + 12345) >>> 0; const k = (s >>> 16) % (i + 1); [idx[i], idx[k]] = [idx[k], idx[i]]; } return idx; };
 function platform() {
   const pf = state.pf, p = P[pf], pr = data().progress, tab = state.tab, gr = graded(pf);
-  const item = j => `<button type="button" class="list-item" data-proj="${j.id}"><span class="pill${pr[`${pf}:P:${j.id}`] ? ' ok' : ''}">${pr[`${pf}:P:${j.id}`] ? 'Resuelto' : esc(j.level)}</span><span class="grow"><span class="h3">${esc(j.title)}</span><br><span class="dim">${esc(j.story)}</span></span><span class="arrow">${svg('arrow')}</span></button>`;
+  const total = TOTAL(pf), item = j => `<button type="button" class="list-item" data-proj="${j.id}"><span class="pill${pr[`${pf}:P:${j.id}`] ? ' ok' : ''}">${pr[`${pf}:P:${j.id}`] ? 'Resuelto' : esc(j.level)}</span><span class="grow"><span class="h3">${esc(j.title)}</span><br><span class="dim">${esc(j.objectives ? j.objectives[0] : j.story)}</span></span><span class="arrow">${svg('arrow')}</span></button>`;
   let body = '';
   if (tab === 'lecciones') body = p.lessons.map(([t, parts], i) => `<details class="lesson${pr[`${pf}:L${i}`] ? ' done' : ''}"${i === 0 && !pr[`${pf}:L0`] ? ' open' : ''}>
       <summary><span class="n">${i + 1}</span><span class="h3" style="flex:1">${esc(t)}</span>${pr[`${pf}:L${i}`] ? '<span class="pill ok">Leída</span>' : ''}</summary>
       <div class="body">${parts.join('')}<button type="button" class="btn sm" data-act="read" data-i="${i}">${pr[`${pf}:L${i}`] ? 'Leída' : 'Marcar como leída'}</button></div></details>`).join('');
-  else if (tab === 'proyectos') body = [...new Set(gr.map(j => j.cat))].map(c2 => `<p class="gtitle" style="margin-top:20px">${esc(c2)} · ${gr.filter(j => j.cat === c2).length}</p><div>${gr.filter(j => j.cat === c2).map(item).join('')}</div>`).join('');
-  else if (tab === 'libre') body = `<div class="grid2" style="align-items:center"><div class="stack"><h2 class="h2">Modo libre</h2><p class="lead">Abrí el ${TALLER[pf].toLowerCase()} sin requisitos ni verificación, con todas las acciones: IA, APIs, Excel, aprobaciones, variables y RPA.</p><p class="dim">Vos definís los datos de entrada y qué responden la API, la IA, Excel, las aprobaciones y el flujo de escritorio. Tu ${esc(p.flow)} queda guardado.</p><div><button type="button" class="btn" data-proj="libre">Abrir el editor libre</button></div></div><div class="tiles"><div class="tile">${svg('ai')}<p>Respuesta de la IA a tu medida</p></div><div class="tile grey">${svg('http')}<p>Respuesta de la API en JSON</p></div><div class="tile grey">${svg('sheetsRead')}<p>Filas de la hoja de cálculo</p></div><div class="tile">${svg('approval')}<p>Aprobaciones que se aprueban o rechazan</p></div></div></div>`;
-  else if (!state.quizId) body = p.quizzes.map(q => `<button type="button" class="list-item" data-quiz="${q.id}"><span class="pill${pr[`${pf}:Q:${q.id}`] ? ' ok' : ''}">${pr[`${pf}:Q:${q.id}`] ? 'Aprobado' : q.qs.length + ' preguntas'}</span><span class="grow"><span class="h3">${esc(q.title)}</span></span><span class="arrow">${svg('arrow')}</span></button>`).join('');
+  else if (tab === 'proyectos') body = [...new Set(gr.map(j => j.cat))].map((c2, k) => `<p class="gtitle" style="margin-top:${k ? 20 : 6}px">${esc(c2)} · ${gr.filter(j => j.cat === c2).length}</p><div>${gr.filter(j => j.cat === c2).map(item).join('')}</div>`).join('');
+  else if (tab === 'libre') body = `<div class="grid2" style="align-items:center"><div class="stack"><h2 class="h2">Modo libre</h2><p class="lead">Abrí el ${TALLER[pf].toLowerCase()} sin requisitos ni verificación y armá cualquier flujo con todos los triggers, acciones y conectores.</p><p class="dim">Las acciones responden con la respuesta simulada que les configures: la API, la IA, Excel, las aprobaciones y el flujo de escritorio.</p><div><button type="button" class="btn" data-proj="libre">Abrir el editor libre</button></div></div><div class="tiles"><div class="tile">${svg('router')}<p>Condition, Switch y Apply to each</p></div><div class="tile grey">${svg('varInit')}<p>Variables y expresiones</p></div><div class="tile grey">${svg('http')}<p>Conectores con respuesta simulada</p></div><div class="tile">${svg('approval')}<p>Historial de ejecución paso a paso</p></div></div></div>`;
+  else if (!state.quizId) body = p.quizzes.map(q => `<button type="button" class="list-item" data-quiz="${q.id}"><span class="pill${pr[`${pf}:Q:${q.id}`] ? ' ok' : ''}">${pr[`${pf}:Q:${q.id}`] ? 'Aprobado' : esc(q.cls)}</span><span class="grow"><span class="h3">${esc(q.title)}</span></span><span class="arrow">${svg('arrow')}</span></button>`).join('');
   else {
     const quiz = p.quizzes.find(q => q.id === state.quizId), ans = data().quiz[`${pf}:${quiz.id}`] || {};
-    body = `<div class="row" style="justify-content:space-between;margin-bottom:14px"><button type="button" class="btn line sm" data-quiz="">← Cuestionarios</button><span class="h3">${esc(quiz.title)}</span></div>` + quiz.qs.map((q, i) => { const g = state.graded && ans[i] != null, ok = ans[i] === 0, show = state.reveal.has(i);
+    body = `<div class="row" style="justify-content:space-between;margin-bottom:14px"><button type="button" class="btn line sm" data-quiz="">← Cuestionarios</button><span class="h3">${esc(quiz.cls)} · ${esc(quiz.title)}</span></div>` + quiz.qs.map((q, i) => { const g = state.graded && ans[i] != null, ok = ans[i] === 0, show = state.reveal.has(i);
       return `<div class="q${g ? (ok ? ' ok' : ' bad') : ''}"><p class="t">${i + 1}. ${esc(q[0])}</p>${order(q).map(k => `<label class="${show && k === 0 ? 'right' : ''}"><input type="radio" name="q${i}" data-q="${i}" data-o="${k}"${ans[i] === k ? ' checked' : ''}><span>${esc(q[1][k])}</span></label>`).join('')}${g || show ? `<p class="why">${g ? (ok ? 'Correcto. ' : 'No es esa. ') : ''}${esc(q[2])}</p>` : ''}<div class="row" style="justify-content:flex-end;margin-top:6px"><button type="button" class="btn line sm" data-act="reveal" data-i="${i}">${show ? 'Ocultar respuesta' : 'Ver respuesta'}</button></div></div>`; }).join('')
       + `<div class="row"><button type="button" class="btn" data-act="grade">Corregir</button>${pr[`${pf}:Q:${quiz.id}`] ? '<span class="pill ok">Aprobado</span>' : ''}</div>`;
   }
-  return `<section class="card ${p.tone === 'dark' ? 'dark' : ''} flush split">
-    <div class="side"><h1 class="display">${p.name}</h1><div><span class="pill">${esc(p.tag)}</span></div><p class="lead ${p.tone === 'dark' ? 'dim' : ''}">${esc(p.intro)}</p><div><button type="button" class="btn ${p.tone === 'dark' ? 'sky' : ''}" data-proj="${(gr.find(j => !pr[`${pf}:P:${j.id}`]) || gr[0]).id}">Abrir el ${TALLER[pf].toLowerCase()}</button></div></div>
-    <div class="side ${p.tone === 'dark' ? '' : 'dark'}">
+  return `<section class="card flush split" style="background:var(--grey);color:var(--paper)">
+    <div class="side"><h1 class="display">${p.name}</h1><div><span class="pill">${esc(p.tag)}</span></div><p class="lead" style="color:#D6D6CE">${esc(p.intro)}</p><div><button type="button" class="btn sky" data-proj="${(gr.find(j => !pr[`${pf}:P:${j.id}`]) || gr[0]).id}">Abrir el ${TALLER[pf].toLowerCase()}</button></div></div>
+    <div class="side dark">
       <div class="tiles">
-        <div class="tile"><span class="big">${pct(pf)}%</span><p>de ${p.name} completado</p></div>
-        <div class="tile grey"><span class="big">${gr.length}</span><p>ejercicios con verificación</p></div>
-        <div class="tile grey"><span class="big">${p.quizzes.length}</span><p>${p.quizzes.length === 1 ? 'cuestionario' : 'cuestionarios, uno por clase'}</p></div>
+        <div class="tile"><span class="big">${Math.round(doneCount(pf) / total * 100)}%</span><p>del taller completado</p></div>
+        <div class="tile grey"><span class="big">${gr.length}</span><p>escenarios y ejercicios</p></div>
+        <div class="tile grey"><span class="big">${p.quizzes.length}</span><p>cuestionarios teóricos</p></div>
         <div class="tile"><span class="big">${p.lessons.length}</span><p>clases de teoría</p></div>
       </div>
     </div>
   </section>
   <section class="card">
-    <div class="tabs" role="tablist" style="margin-bottom:16px">${[['lecciones', 'Teoría'], ['proyectos', 'Proyectos'], ['quiz', 'Cuestionarios'], ['libre', 'Modo libre']].map(([k, l]) => `<button type="button" role="tab" data-tab="${k}" aria-selected="${tab === k}">${l}</button>`).join('')}</div>
+    <div class="tabs" role="tablist" style="margin-bottom:16px">${[['lecciones', 'Teoría'], ['proyectos', 'Escenarios'], ['quiz', 'Cuestionarios'], ['libre', 'Modo libre']].map(([k, l]) => `<button type="button" role="tab" data-tab="${k}" aria-selected="${tab === k}">${l}</button>`).join('')}</div>
     ${body}
   </section>`;
 }
@@ -1453,11 +1454,13 @@ const getSeq = id => { if (id === 'root') return state.flow.steps; const [nid, b
 const findNode = id => all(state.flow).find(n => n.id === id);
 const condText = c => (c && c.left ? `${c.left} ${OPS.find(o => o[0] === c.op)[1]}${['exists', 'empty'].includes(c.op) ? '' : ' ' + c.right}` : 'sin condición');
 const kind = op => (TRIGGERS.includes(op) ? 'trigger' : APPS.includes(op) ? 'app' : 'tool');
+// Color de cada conector, como en el diseñador de Power Automate
+const CONN = { 'Triggers': '#0F6CBD', 'Control': '#484F58', 'Variables': '#770BD6', 'Operaciones de datos': '#8C6CFF', 'Office 365 Outlook': '#0078D4', 'Microsoft Teams': '#4B53BC', 'Excel Online (Business)': '#107C41', 'OneDrive for Business': '#0364B8', 'Planner': '#31752F', 'Dataverse': '#088142', 'Approvals': '#4A72C4', 'AI Builder': '#0B53CE', 'Power BI': '#C19C00', 'Power Automate Desktop': '#0066FF', 'Power Apps': '#742774', 'HTTP (premium)': '#709727' };
 function nodeHtml(n, pf) {
   const cat = P[pf].cat[n.op] || [n.op], r = state.run;
   const cls = ['fnode', 'k-' + kind(n.op), state.sel === n.id ? 'sel' : '', r && r.failed === n.num ? 'failed' : r && r.trace.some(t => t.num === n.num && !t.skipped && !t.error) ? 'ran' : ''].join(' ');
-  const inner = `<span class="ic">${svg(n.op)}</span><span class="tx"><span class="sb">${esc(cat[0])}</span><span class="nm">${n.num}. ${esc(n.name)}</span></span>`;
-  return `<button type="button" class="${cls}" data-node="${n.id}">${inner}</button>`;
+  const inner = `<span class="ic">${svg(n.op)}</span><span class="tx"><span class="nm">${esc(n.name)}</span><span class="sb">${esc(cat[1] || '')}</span></span><span class="num">${n.num}</span>`;
+  return `<button type="button" class="${cls}" data-node="${n.id}" style="--cc:${CONN[cat[1]] || '#484F58'}">${inner}</button>`;
 }
 const insOn = (seqId, idx) => state.ins && state.ins.seqId === seqId && state.ins.idx === idx;
 const addBtn = (seqId, idx) => `<span class="link"><button type="button" class="add${insOn(seqId, idx) ? ' on' : ''}" data-add="${seqId}" data-idx="${idx}" aria-label="Insertar acá" title="Insertar acá">+</button></span>`;
@@ -1475,16 +1478,16 @@ function seqHtml(steps, seqId, pf) {
 }
 function paletteHtml(pf) {
   const cat = P[pf].cat, groups = [...new Set(Object.values(cat).map(c => c[1]))];
-  return groups.map(g => `<div class="pgroup"><h4>${esc(g)}</h4><div class="pitems">${Object.keys(cat).filter(o => cat[o][1] === g).map(o => `<button type="button" class="pitem" data-pal="${o}" title="${esc(cat[o][2])}">${svg(o)}<span>${esc(cat[o][0])}</span></button>`).join('')}</div></div>`).join('');
+  return groups.map(g => `<div class="pgroup"><h4>${esc(g)}</h4><div class="pitems">${Object.keys(cat).filter(o => cat[o][1] === g).map(o => `<button type="button" class="pitem" data-pal="${o}" title="${esc(cat[o][2])}" style="--cc:${CONN[cat[o][1]] || '#484F58'}">${svg(o)}<span>${esc(cat[o][0])}</span></button>`).join('')}</div></div>`).join('');
 }
 function selectorHtml(pf) {
   const pr = data().progress, gr = graded(pf), cur = state.tquiz ? 'quiz:' + state.tquiz : state.proj.id;
   const opt = (v, text, done) => `<option value="${v}"${v === cur ? ' selected' : ''}>${done ? '✓ ' : ''}${esc(text)}</option>`;
-  return `<select id="tlSel" aria-label="Ejercicio">${[...new Set(gr.map(j => j.cat))].map(c => `<optgroup label="${esc(c)}">${gr.filter(j => j.cat === c).map(j => opt(j.id, j.title, pr[`${pf}:P:${j.id}`])).join('')}</optgroup>`).join('')}<optgroup label="Cuestionarios teóricos">${P[pf].quizzes.map(q => opt('quiz:' + q.id, q.title, pr[`${pf}:Q:${q.id}`])).join('')}</optgroup><optgroup label="Modo libre">${opt('libre', 'Modo libre', false)}</optgroup></select>`;
+  return `<select id="tlSel" aria-label="Ejercicio">${[...new Set(gr.map(j => j.cat))].map(c => `<optgroup label="${esc(c)}">${gr.filter(j => j.cat === c).map(j => opt(j.id, j.cat === 'Práctica extra' ? j.title : `${j.level} · ${j.title}`, pr[`${pf}:P:${j.id}`])).join('')}</optgroup>`).join('')}<optgroup label="Cuestionarios teóricos">${P[pf].quizzes.map(q => opt('quiz:' + q.id, `${q.cls} · ${q.title}`, pr[`${pf}:Q:${q.id}`])).join('')}</optgroup><optgroup label="Modo libre">${opt('libre', 'Modo libre', false)}</optgroup></select>`;
 }
 function quizHtml(pf, quiz) {
   const ans = data().quiz[`${pf}:${quiz.id}`] || {}, done = data().progress[`${pf}:Q:${quiz.id}`];
-  return `<div class="row" style="margin-bottom:6px"><span class="pill">Cuestionario teórico</span>${done ? '<span class="pill ok">Aprobado</span>' : ''}</div><h2 class="h2" style="margin-bottom:14px">${esc(quiz.title)}</h2>`
+  return `<div class="row" style="margin-bottom:6px"><span class="pill">Cuestionario teórico</span>${done ? '<span class="pill ok">Aprobado</span>' : ''}</div><h2 class="h2" style="margin-bottom:14px">${esc(quiz.cls)} · ${esc(quiz.title)}</h2>`
     + quiz.qs.map((q, i) => { const g = state.graded && ans[i] != null, ok = ans[i] === 0, show = state.reveal.has(i);
       return `<div class="q${g ? (ok ? ' ok' : ' bad') : ''}"><p class="t">${i + 1}. ${esc(q[0])}</p>${order(q).map(k => `<label class="${show && k === 0 ? 'right' : ''}"><input type="radio" name="q${i}" data-q="${i}" data-o="${k}"${ans[i] === k ? ' checked' : ''}><span>${esc(q[1][k])}</span></label>`).join('')}${g || show ? `<p class="why">${g ? (ok ? 'Correcto. ' : 'No es esa. ') : ''}${esc(q[2])}</p>` : ''}<div class="row" style="justify-content:flex-end;margin-top:6px"><button type="button" class="btn line sm" data-act="reveal" data-i="${i}">${show ? 'Ocultar respuesta' : 'Ver respuesta'}</button></div></div>`; }).join('')
     + `<div class="row"><button type="button" class="btn" data-act="grade">Corregir</button></div>`;
@@ -1502,7 +1505,7 @@ function project() {
   number(state.flow);
   const r = state.run, R = state.results, tab = state.ptab, done = data().progress[`${pf}:P:${j.id}`];
   const fm = j.free ? freeMocks(pf) : null;
-  const ej = `<div class="row" style="margin-bottom:6px"><span class="pill">${esc(j.cat)}</span>${j.free ? '' : `<span class="pill">${esc(j.level)}</span>`}${done ? '<span class="pill ok">Resuelto</span>' : ''}</div>
+  const ej = `<div class="row" style="margin-bottom:6px"><span class="pill">${esc(j.source || j.cat)}</span>${done ? '<span class="pill ok">Resuelto</span>' : ''}</div>
     <h2 class="h2">${esc(j.title)}</h2><p style="margin:8px 0 14px">${esc(j.story)}</p>
     ${j.objectives ? `<details class="fold"><summary>Objetivos de aprendizaje (${j.objectives.length})</summary><ul class="reqs">${j.objectives.map(x => `<li>${esc(x)}</li>`).join('')}</ul></details>` : ''}
     ${j.free ? `<p class="note">Definí los datos de entrada y las respuestas simuladas en la pestaña Probar.</p>` : `<p class="gtitle">Requisitos</p><ol class="reqs">${j.reqs.map(x => `<li>${x}</li>`).join('')}</ol>`}
