@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Simulador gratuito para practicar la creación de iFlows de SAP Cloud Integration: escenarios guiados, cuestionarios teóricos y trace paso a paso.">
+<meta name="theme-color" content="#262624">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 40 24%22%3E%3Ccircle cx=%225%22 cy=%2212%22 r=%224%22 fill=%22none%22 stroke=%22%231D59B5%22 stroke-width=%222%22/%3E%3Crect x=%2214%22 y=%225%22 width=%2213%22 height=%2214%22 rx=%223%22 fill=%22none%22 stroke=%22%231D59B5%22 stroke-width=%222%22/%3E%3Ccircle cx=%2235%22 cy=%2212%22 r=%224%22 fill=%22none%22 stroke=%22%2317201C%22 stroke-width=%223%22/%3E%3C/svg%3E">
+<title>SAP CPI · flowDev</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="taller.css?v=5">
+</head>
+<body>
+
+<div class="app">
+  <header class="top">
+    <a class="back" href="index.html">← SAP CPI</a>
+    <div class="brand">
+      <svg viewBox="0 0 40 24" aria-hidden="true"><circle cx="5" cy="12" r="4" fill="none" stroke="var(--accent)" stroke-width="1.6"/><path d="M9 12h5" stroke="var(--ink)" stroke-width="1.4"/><rect x="14" y="5" width="13" height="14" rx="3" fill="none" stroke="var(--accent)" stroke-width="1.6"/><path d="M27 12h4" stroke="var(--ink)" stroke-width="1.4"/><circle cx="35" cy="12" r="4" fill="none" stroke="var(--ink)" stroke-width="2.6"/></svg>
+      <div><h1>Taller de iFlows</h1><small>Práctica de Cloud Integration (SAP Integration Suite)</small></div>
+    </div>
+    <div class="exsel">
+      <label for="exSelect">Ejercicio</label>
+      <select id="exSelect"></select>
+      <span id="progress" class="pill"></span>
+    </div>
+    <div class="actions">
+      <button id="btnCheck" type="button" title="Revisa errores de modelado, como el botón Check del editor">Check</button>
+      <button id="btnRun" type="button" title="Ejecuta el iFlow con el mensaje de prueba">Probar</button>
+      <button id="btnVerify" type="button" class="primary">Verificar ejercicio</button>
+    </div>
+  </header>
+
+  <aside class="palette" id="palette" aria-label="Paleta de elementos"></aside>
+
+  <main class="stage">
+    <div class="stage-bar">
+      <span class="tip" id="tip"></span>
+      <div class="zoom">
+        <button type="button" id="zOut" aria-label="Alejar">−</button>
+        <span id="zVal">100%</span>
+        <button type="button" id="zIn" aria-label="Acercar">+</button>
+        <button type="button" id="zFit">Ajustar</button>
+      </div>
+    </div>
+    <div class="canvas-wrap" id="canvasWrap"><svg id="canvas" xmlns="http://www.w3.org/2000/svg"></svg></div>
+  </main>
+
+  <section class="panel" aria-label="Panel">
+    <nav class="tabs" role="tablist">
+      <button type="button" role="tab" data-tab="ej" id="t-ej">Ejercicio</button>
+      <button type="button" role="tab" data-tab="prop" id="t-prop">Propiedades</button>
+      <button type="button" role="tab" data-tab="test" id="t-test">Probar</button>
+    </nav>
+    <div class="tabbody" id="tab-ej"></div>
+    <div class="tabbody" id="tab-prop" hidden></div>
+    <div class="tabbody" id="tab-test" hidden>
+      <label class="fld"><span>Body de entrada</span><textarea id="simBody" class="code" rows="7" spellcheck="false"></textarea></label>
+      <label class="fld"><span>Headers de entrada (uno por línea: nombre=valor)</span><textarea id="simHeaders" class="code" rows="3" spellcheck="false"></textarea></label>
+      <div class="btnrow">
+        <button type="button" data-act="sample">Usar entrada del ejercicio</button>
+        <button type="button" data-act="run" class="primary">Ejecutar iFlow</button>
+      </div>
+      <div id="simOut"></div>
+    </div>
+  </section>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script src="taller.js?v=6"></script>
+</body>
+</html>

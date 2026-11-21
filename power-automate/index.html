@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Power Automate · flowDev</title>
+<meta name="description" content="Aprendé Power Automate con clases, cuestionarios y un taller de cloud flows que verifica tu trabajo.">
+<meta name="theme-color" content="#262624">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%229%22 fill=%22%23111110%22/%3E%3Cpath d=%22M9 16h13M17 10l6 6-6 6%22 fill=%22none%22 stroke=%22%23DCEEFB%22 stroke-width=%222.6%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="power-automate.css?v=1">
+</head>
+<body>
+<div class="shell">
+  <header class="nav">
+    <a class="logo" href="../index.html" aria-label="flowDev, ir al inicio">
+      <span class="logo-mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span>
+      <span class="logo-word">flow<b>Dev</b></span>
+    </a>
+    <nav class="nav-links" id="navLinks" aria-label="Secciones"></nav>
+    <div class="nav-user" id="navUser"></div>
+  </header>
+  <main id="view"></main>
+  <footer class="foot">
+    <p>flowDev es un proyecto educativo independiente. SAP, Microsoft, Power Platform, Power Automate, MuleSoft y KNIME son marcas de sus respectivos dueños. El editor es un simulador simplificado: no se conecta a ninguna cuenta ni servicio real.</p>
+  </footer>
+</div>
+<div class="drawer" id="drawer" hidden>
+  <div class="drawer-card" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+    <div id="drawerBody"></div>
+  </div>
+</div>
+<div class="toast" id="toast" hidden></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="../config.js?v=21"></script>
+<script src="power-automate.js?v=1"></script>
+</body>
+</html>
