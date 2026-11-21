@@ -2220,7 +2220,11 @@ function order(q) {
   for (let i = idx.length - 1; i > 0; i--) { s = (Math.imul(s, 1103515245) + 12345) >>> 0; const j = (s >>> 16) % (i + 1); [idx[i], idx[j]] = [idx[j], idx[i]]; }
   return idx;
 }
+// Sin cuenta en flowDev: solo los primeros 2 cuestionarios
+const isGuest = () => { try { if (Object.keys(localStorage).some(k => /^sb-.+-auth-token$/.test(k) && localStorage.getItem(k))) return false; const fd = JSON.parse(localStorage.getItem('flowdev-v1') || '{}'); return !(fd.session && fd.users && fd.users[fd.session]); } catch (_) { return true; } };
+const quizLocked = ex => !!ex.quiz && isGuest() && +ex.id.replace('q-c', '') > 2;
 function renderQuiz(ex) {
+  if (quizLocked(ex)) { tabEj.innerHTML = `<div class="ex-head"><span class="lvl">${esc(ex.level)}</span><span class="pill">Con cuenta</span></div><h2>${esc(ex.title)}</h2><p>Sin cuenta podés hacer los cuestionarios de las clases 1 y 2. Creá una cuenta gratis en flowDev para ver los 20 cuestionarios y guardar tu avance.</p><p><a class="primary" href="../index.html#registro" style="display:inline-block;padding:9px 16px;border-radius:99px;text-decoration:none">Crear cuenta gratis</a></p>`; return; }
   const done = !!store.done[ex.id]; const ans = store.quiz[ex.id] || {}; const R = state.results;
   let h = `<div class="ex-head"><span class="lvl">${esc(ex.level)}</span>${done ? '<span class="pill ok">Aprobado</span>' : ''}</div><h2>${esc(ex.title)}</h2>${ex.source ? `<p class="src">Basado en: ${esc(ex.source)}</p>` : ''}<p>${esc(ex.story)}</p>`;
   if (ex.keys?.length) h += `<h3>Ideas clave</h3><ul class="reqs">${ex.keys.map(k => `<li>${esc(k)}</li>`).join('')}</ul>`;
@@ -2373,7 +2377,7 @@ $('#tab-test').addEventListener('click', ev => {
 const exSel = $('#exSelect');
 function renderHeader() {
   const groups = [...new Set(EXERCISES.map(e => e.group))];
-  exSel.innerHTML = groups.map(g => `<optgroup label="${esc(g)}">${EXERCISES.filter(e => e.group === g).map(e => `<option value="${e.id}"${e.id === state.ex ? ' selected' : ''}>${store.done[e.id] ? '✓ ' : ''}${esc(e.short || e.title)}</option>`).join('')}</optgroup>`).join('');
+  exSel.innerHTML = groups.map(g => `<optgroup label="${esc(g)}">${EXERCISES.filter(e => e.group === g).map(e => `<option value="${e.id}"${e.id === state.ex ? ' selected' : ''}>${store.done[e.id] ? '✓ ' : ''}${esc(e.short || e.title)}${quizLocked(e) ? ' (con cuenta)' : ''}</option>`).join('')}</optgroup>`).join('');
   const graded = e => e.tests.length || e.quiz;
   const total = EXERCISES.filter(graded).length, done = EXERCISES.filter(e => graded(e) && store.done[e.id]).length;
   const pr = $('#progress'); pr.textContent = `${done}/${total} completados`; pr.classList.toggle('ok', done === total);

@@ -309,3 +309,63 @@ a.list-item:hover .h3{text-decoration:underline}
 
 /* Paleta de Power Automate: ícono con el color de cada conector */
 .pitem[style*="--cc"] svg{color:#fff;background:var(--cc);border-radius:5px;padding:3px;box-sizing:content-box}
+
+/* ---- Landing: qué es flowDev y carrusel de plataformas ---- */
+.landing .lc-steps{list-style:none;margin:0;padding:0;display:grid;gap:12px;counter-reset:st}
+.landing .lc-steps li{counter-increment:st;display:grid;grid-template-columns:auto 1fr;gap:2px 14px;padding:14px 16px;border:1.5px solid var(--line-dark);border-radius:18px}
+.landing .lc-steps li::before{content:"0" counter(st);grid-row:span 2;font-family:"JetBrains Mono",monospace;color:var(--sky);font-size:13px;padding-top:3px}
+.landing .lc-steps b{font-weight:500;font-size:18px}
+.landing .lc-steps span{color:var(--muted-dark)}
+.lc{overflow:hidden}
+.lc-head{margin-bottom:18px}
+.lc-rail{container-type:inline-size;overflow:hidden;touch-action:pan-y;user-select:none;-webkit-user-select:none;cursor:grab;border-radius:18px;padding:6px 0 4px;outline:none}
+.lc-rail:focus-visible{box-shadow:0 0 0 3px var(--sky-3)}
+.lc-rail:active{cursor:grabbing}
+.lc-track{list-style:none;margin:0;padding:0;display:flex;gap:3.5cqw;align-items:stretch;will-change:transform}
+.lc-slide{flex:none;display:flex;flex-direction:column;gap:8px}
+.lc-card{flex:1;display:flex;flex-direction:column;gap:12px;background:var(--sky);color:var(--ink);border-radius:22px;padding:22px;min-height:260px}
+.lc-slide.soon .lc-card{background:transparent;border:1.5px dashed #9b9b93;color:var(--ink)}
+.lc-name{font-size:clamp(26px,4.5cqw,38px);font-weight:500;letter-spacing:-.02em;line-height:1.05;margin:0}
+.lc-card p{margin:0;color:#3a3a36}
+.lc-foot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.lc-meta{font-size:13px;color:#55554f}
+.lc-cap{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--muted)}
+.lc-nav{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:18px;flex-wrap:wrap}
+.lc-btn{width:44px;height:44px;border-radius:50%;border:1.5px solid var(--ink);background:var(--paper);color:var(--ink);font-size:22px;line-height:1}
+.lc-btn:hover{background:var(--sky)}
+.lc-dots{display:flex;gap:4px}
+.lc-dot{width:28px;height:44px;border:0;background:none;display:grid;place-items:center;padding:0}
+.lc-dot::after{content:"";width:10px;height:10px;border-radius:50%;border:1.5px solid var(--ink);background:transparent;transition:background .3s}
+.lc-dot[aria-current="true"]::after{background:var(--ink)}
+.lc-btn:focus-visible,.lc-dot:focus-visible{outline:2.5px solid var(--sky-3);outline-offset:2px}
+.lc-reset{margin-left:8px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+@media (prefers-reduced-motion:reduce){.lc-track,.lc-slide{transition:none!important}}
+.lc-card .pill{align-self:flex-start}
+
+/* La landing ocupa toda la pantalla debajo de la barra de navegación */
+.landing{min-height:calc(100svh - 108px)}
+.landing .side{justify-content:center}
+.landing .display{font-size:clamp(40px,5.6vw,84px)}
+
+/* Inicio a todo el ancho de la pantalla */
+.shell.full{max-width:none;padding-inline:14px}
+/* Indicadores del inicio: el texto ocupa cada recuadro */
+.tiles.stats{height:100%;grid-auto-rows:1fr}
+.tiles.stats .tile{min-height:150px;padding:20px}
+.tiles.stats .big{font-size:clamp(40px,5vw,64px)}
+.tiles.stats .tile svg{width:34px;height:34px}
+.tiles.stats p{font-size:clamp(15px,1.4vw,19px);line-height:1.25}
+/* Ruta de aprendizaje con íconos */
+.rpath{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;align-items:end;height:100%}
+.rpath li{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
+.rpath svg{width:clamp(44px,5vw,64px);height:clamp(44px,5vw,64px);color:var(--sky);fill:none;stroke:currentColor;stroke-width:1.5}
+.rpath b{font-weight:500;font-size:14px}
+.rpath span{font-size:12px;border-radius:99px;background:var(--paper);color:var(--ink);padding:2px 8px;white-space:nowrap}
+@media (max-width:620px){.rpath{grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 12px}}
+
+/* Contenido para usuarios con cuenta */
+.list-item.locked{opacity:.75}
+.list-item.locked:hover{opacity:1}
+.guest-note{margin-bottom:12px}
+.linkbtn{background:none;border:0;padding:0;color:inherit;text-decoration:underline;font:inherit;cursor:pointer}
