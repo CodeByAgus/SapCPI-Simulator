@@ -12,6 +12,9 @@ const IC = {
   http: '<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c3 3 3 14 0 17M12 3.5c-3 3-3 14 0 17"/>',
   sheets: '<rect x="4" y="4" width="16" height="16" rx="2.5"/><path d="M4 10h16M4 15h16M10 4v16"/>',
   arrow: '<path d="M5 12h13M13 6l6 6-6 6"/>',
+  code: '<path d="M9 7l-5 5 5 5M15 7l5 5-5 5"/>',
+  doc: '<rect x="5" y="3.5" width="14" height="17" rx="2.5"/><path d="M8.5 8h7M8.5 12h7M8.5 16h4"/>',
+  check: '<path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/>',
 };
 const svg = (k, cls = '') => `<svg viewBox="0 0 24 24" class="${cls}" aria-hidden="true">${IC[k] || IC.arrow}</svg>`;
 
@@ -200,21 +203,34 @@ function sap() {
       <div class="body">${parts.join('')}<button type="button" class="btn sm" data-act="read" data-i="${i}">${pr[`sap:L${i}`] ? 'Leída' : 'Marcar como leída'}</button></div></details>`).join('');
   else if (tab === 'proyectos') body = `<p class="gtitle" style="margin-top:6px">Escenarios guiados · ${SAP_SCEN.length}</p><div>${SAP_SCEN.map(([id, c, t, s]) => link(id, c, t, s)).join('')}</div><p class="gtitle" style="margin-top:20px">Práctica extra · ${SAP_EXTRA.length}</p><div>${SAP_EXTRA.map(([id, t]) => link(id, 'Extra', t)).join('')}</div>`;
   else if (tab === 'quiz') body = guestNote('quiz') + SAP_QUIZ.map((t, i) => guest() && i >= FREE_QZ ? lockRow(`Clase ${i + 1}`, t, 'quiz') : link(`q-c${i + 1}`, `Clase ${i + 1}`, t)).join('');
-  else body = `<div class="grid2" style="align-items:center"><div class="stack"><h2 class="h2">Modo libre</h2><p class="lead">Abrí el taller de iFlows sin requisitos ni verificación y armá cualquier integración con todos los pasos y adaptadores.</p><p class="dim">Los Receivers responden con la respuesta simulada que les configures, y podés hacer que fallen para probar el manejo de errores.</p><div><a class="btn" href="${href('libre')}">Abrir el editor libre</a></div></div><div class="tiles"><div class="tile">${svg('router')}<p>Router, Multicast, Splitter y Gather</p></div><div class="tile grey">${svg('code')}<p>Groovy Script y Message Mapping</p></div><div class="tile grey">${svg('http')}<p>Adaptadores con respuesta simulada</p></div><div class="tile">${svg('sheets')}<p>Trace con headers, properties y body</p></div></div></div>`;
-  return `<section class="card flush split" style="background:var(--grey);color:var(--paper)">
-    <div class="side"><h1 class="display">SAP CPI</h1><div><span class="pill">iFlows · integración empresarial</span></div><p class="lead" style="color:#D6D6CE">${esc(SAP_INTRO)}</p><div><a class="btn sky" href="${href((SAP_SCEN.find(s => !done[s[0]]) || SAP_SCEN[0])[0])}">Abrir el taller de iFlows</a></div></div>
-    <div class="side dark">
-      <div class="tiles">
-        <div class="tile"><span class="big">${Math.round(n / total * 100)}%</span><p>del taller completado</p></div>
-        <div class="tile grey"><span class="big">${SAP_SCEN.length + SAP_EXTRA.length}</span><p>escenarios y ejercicios</p></div>
-        <div class="tile grey"><span class="big">${SAP_QUIZ.length}</span><p>cuestionarios teóricos</p></div>
-        <div class="tile"><span class="big">${SAP_LESSONS.length}</span><p>clases de teoría</p></div>
-      </div>
-    </div>
+  else body = `<div class="grid2" style="align-items:center"><div class="stack"><p class="lead">Abrí el taller de iFlows sin requisitos ni verificación y armá cualquier integración con todos los pasos y adaptadores.</p><p class="dim">Los Receivers responden con la respuesta simulada que les configures, y podés hacer que fallen para probar el manejo de errores.</p><div><a class="btn" href="${href('libre')}">Abrir el editor libre</a></div></div><div class="tiles"><div class="tile">${svg('router')}<p>Router, Multicast, Splitter y Gather</p></div><div class="tile grey">${svg('code')}<p>Groovy Script y Message Mapping</p></div><div class="tile grey">${svg('http')}<p>Adaptadores con respuesta simulada</p></div><div class="tile">${svg('sheets')}<p>Trace con headers, properties y body</p></div></div></div>`;
+  const tabs = [
+    ['lecciones', 'Teoría', `${SAP_LESSONS.length} clases cortas sobre Integration Suite, adaptadores, mapeos, Groovy y seguridad.`],
+    ['proyectos', 'Escenarios', 'Casos guiados que se resuelven en el taller y se verifican paso a paso.'],
+    ['quiz', 'Cuestionarios', 'Un cuestionario por clase para repasar lo que leíste.'],
+    ['libre', 'Modo libre', 'El taller sin requisitos: armá cualquier iFlow y probalo.'],
+  ], cur = tabs.find(t => t[0] === tab) || tabs[0];
+  const stats = [
+    [svg('check'), `${Math.round(n / total * 100)}%`, 'Taller completado', `${n} de ${total} ejercicios resueltos`],
+    [svg('router'), SAP_SCEN.length + SAP_EXTRA.length, 'Escenarios', 'Guiados y de práctica extra'],
+    [svg('doc'), SAP_LESSONS.length, 'Clases', 'Teoría corta, sin relleno'],
+    [svg('sheets'), SAP_QUIZ.length, 'Cuestionarios', 'Uno por cada clase'],
+  ];
+  return `<section class="card hero">
+    <p class="eyebrow dim">Plataforma</p>
+    <h1 class="display">SAP CPI</h1>
+    <span class="pill">iFlows · integración empresarial</span>
+    <p class="lead">${esc(SAP_INTRO)}</p>
+    <div class="row hero-cta"><a class="btn" href="${href((SAP_SCEN.find(s => !done[s[0]]) || SAP_SCEN[0])[0])}">Abrir el taller de iFlows</a><button type="button" class="btn line" data-tab="lecciones">Empezar por la teoría</button></div>
   </section>
-  <section class="card">
-    <div class="tabs" role="tablist" style="margin-bottom:16px">${[['lecciones', 'Teoría'], ['proyectos', 'Escenarios'], ['quiz', 'Cuestionarios'], ['libre', 'Modo libre']].map(([k, l]) => `<button type="button" role="tab" data-tab="${k}" aria-selected="${tab === k}">${l}</button>`).join('')}</div>
-    ${body}
+  <section class="card dark proc">
+    <div class="proc-head"><h2 class="display">Tu avance</h2><p class="lead dim">Lo que resolvés en el taller y lo que leés en la teoría se guarda solo.</p></div>
+    <ol class="proc-steps">${stats.map(([ic, big, t, s], i) => `<li><span class="proc-n">0${i + 1}</span>${ic}<span class="big">${big}</span><b>${t}</b><p>${s}</p></li>`).join('')}</ol>
+  </section>
+  <section class="card" id="contenido">
+    <div class="proc-head"><h2 class="display">${cur[1]}</h2><p class="lead">${cur[2]}</p></div>
+    <div class="tabs" role="tablist">${tabs.map(([k, l]) => `<button type="button" role="tab" data-tab="${k}" aria-selected="${tab === k}">${l}</button>`).join('')}</div>
+    <div class="tab-body">${body}</div>
   </section>`;
 }
 
@@ -224,7 +240,7 @@ document.addEventListener('click', e => {
   const el = e.target.closest('[data-auth],[data-tab],[data-act]'); if (!el) return;
   const d = el.dataset;
   if (d.auth) { location.href = `${HOME}#${d.auth}`; return; }
-  if (d.tab) { state.tab = d.tab; render(); window.scrollTo(0, 0); return; }
+  if (d.tab) { state.tab = d.tab; render(); document.getElementById('contenido').scrollIntoView({ block: 'start' }); return; }
   switch (d.act) {
     case 'logout': if (cloud) { clearTimeout(syncT); pushCloud().finally(() => sb.auth.signOut()); cloud = null; } db.session = null; persist(); toast('Sesión cerrada.'); return render();
     case 'read': mark(`sap:L${d.i}`); toast('Lección marcada como leída.'); return render();

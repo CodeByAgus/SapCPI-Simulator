@@ -19,7 +19,12 @@
       <span class="logo-mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span>
       <span class="logo-word">flow<b>Dev</b></span>
     </button>
-    <nav class="nav-links" id="navLinks" aria-label="Secciones"></nav>
+    <nav class="nav-links" id="navLinks" aria-label="Secciones">
+      <button type="button" data-go="home">Inicio</button>
+      <a href="sap-cpi/index.html">SAP CPI</a>
+      <a href="power-automate/index.html">Power Automate</a>
+      <button type="button" data-go="dash">Mi avance</button>
+    </nav>
     <div class="nav-user" id="navUser"></div>
   </header>
   <main id="view"></main>
@@ -28,8 +33,195 @@
   </footer>
 </div>
 <div class="toast" id="toast" hidden></div>
+
+<!--
+  Plantillas de las vistas. app.js las clona y completa:
+  - data-text="clave"  → pone el texto (números, nombres)
+  - data-if="clave"    → muestra el elemento solo si la condición se cumple ("!clave" para lo contrario)
+-->
+
+<!-- Barra de navegación: con sesión y sin sesión -->
+<template id="tplNavIn">
+  <span class="chip"><i data-text="initial"></i><span data-text="firstName"></span></span>
+  <button type="button" class="btn line sm" data-act="logout">Salir</button>
+</template>
+<template id="tplNavOut">
+  <button type="button" class="btn line sm" data-auth="ingreso">Ingresar</button>
+  <button type="button" class="btn sky sm" data-auth="registro">Crear cuenta</button>
+</template>
+
+<!-- Inicio -->
+<template id="tplHome">
+  <!-- Qué es flowDev -->
+  <section class="card flush split landing">
+    <div class="side">
+      <p class="eyebrow dim">Qué es flowDev</p>
+      <h1 class="display">Aprendé a automatizar con el software que usan las empresas</h1>
+      <p class="lead">SAP CPI, Power Automate y las demás plataformas de integración requieren licencias pagas: es difícil practicarlas fuera de un trabajo. flowDev las simula en el navegador para que puedas aprender, practicar y demostrar lo que sabés.</p>
+      <div class="row landing-cta" data-if="!user"><button class="btn" data-auth="registro">Crear cuenta</button><button class="btn line" data-go="dash">Probar ahora</button></div>
+      <div class="row landing-cta" data-if="user"><button class="btn" data-go="dash">Seguir donde quedé</button></div>
+    </div>
+  </section>
+
+  <!-- Carrusel de plataformas: cada elemento de la lista es una tarjeta. app.js la triplica para el bucle infinito y arma los puntos. -->
+  <section class="card lc" aria-labelledby="lcTitle">
+    <h2 class="sr-only" id="lcTitle">Plataformas de flowDev</h2>
+    <div class="lc-rail" tabindex="0" role="region" aria-roledescription="carrusel" aria-label="Plataformas de flowDev. Usá las flechas para cambiar.">
+      <ul class="lc-track">
+        <li class="lc-slide" style="width:min(78cqw, 420px)">
+          <div class="lc-card"><span class="pill">iFlows · integración empresarial</span><h3 class="lc-name">SAP CPI</h3>
+            <p>Conectá sistemas SAP y no SAP con iFlows en notación BPMN: adaptadores, mapeos, Groovy y manejo de errores.</p>
+            <div class="lc-foot"><span class="lc-meta"><span data-text="sapEsc"></span> escenarios · <span data-text="sapQz"></span> cuestionarios</span><a class="btn sky sm" href="sap-cpi/index.html">Entrar</a></div>
+          </div>
+          <span class="lc-cap"></span>
+        </li>
+        <li class="lc-slide" style="width:min(70cqw, 380px)">
+          <div class="lc-card"><span class="pill">Cloud flows · automatización</span><h3 class="lc-name">Power Automate</h3>
+            <p>Automatizá procesos de Microsoft 365: Outlook, Teams, Excel, SharePoint, Dataverse, aprobaciones, AI Builder y RPA.</p>
+            <div class="lc-foot"><span class="lc-meta"><span data-text="paEsc"></span> escenarios · <span data-text="paQz"></span> cuestionarios</span><a class="btn sky sm" href="power-automate/index.html">Entrar</a></div>
+          </div>
+          <span class="lc-cap"></span>
+        </li>
+        <li class="lc-slide soon" style="width:min(74cqw, 400px)">
+          <div class="lc-card"><span class="pill">Próximamente</span><h3 class="lc-name">MuleSoft</h3>
+            <p>Integración y APIs de Salesforce: flows de Mule, conectores y transformaciones con DataWeave.</p>
+            <div class="lc-foot"><span class="lc-meta">En preparación</span></div>
+          </div>
+          <span class="lc-cap"></span>
+        </li>
+        <li class="lc-slide soon" style="width:min(66cqw, 360px)">
+          <div class="lc-card"><span class="pill">Próximamente</span><h3 class="lc-name">KNIME</h3>
+            <p>Workflows de nodos para preparar, analizar y transformar datos sin programar.</p>
+            <div class="lc-foot"><span class="lc-meta">En preparación</span></div>
+          </div>
+          <span class="lc-cap"></span>
+        </li>
+      </ul>
+    </div>
+    <div class="lc-nav">
+      <button type="button" class="lc-btn" data-car="prev" aria-label="Plataforma anterior">‹</button>
+      <div class="lc-dots" role="group" aria-label="Elegir plataforma"></div>
+      <button type="button" class="lc-btn" data-car="next" aria-label="Plataforma siguiente">›</button>
+      <button type="button" class="btn line sm lc-reset" data-car="reset">Reiniciar</button>
+    </div>
+    <p class="sr-only" aria-live="polite" id="lcStatus"></p>
+  </section>
+
+  <!-- Ruta de aprendizaje -->
+  <section class="card dark flush split">
+    <div class="side">
+      <h2 class="display">Ruta de aprendizaje</h2>
+      <div><span class="pill">por etapa</span></div>
+      <p class="lead dim">Cada plataforma sigue el mismo recorrido. Avanzás de entender los conceptos a resolver un caso real con una API.</p>
+    </div>
+    <div class="side">
+      <ol class="rpath">
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3.5" width="14" height="17" rx="2.5"/><path d="M8.5 8h7M8.5 12h7M8.5 16h4"/></svg><b>Conceptos</b><span>Lecciones</span></li>
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3L5 14h6l-1 7 8-11h-6z"/></svg><b>Primer flujo</b><span>Inicial</span></li>
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h6M10 12l6-6h4M10 12l6 6h4"/></svg><b>Lógica</b><span>Intermedio</span></li>
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c3 3 3 14 0 17M12 3.5c-3 3-3 14 0 17"/></svg><b>APIs y listas</b><span>Avanzado</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- Cómo se practica -->
+  <section class="card proc">
+    <div class="proc-head">
+      <h2 class="display">Cómo se practica</h2>
+      <p class="lead">Cada escenario sigue el mismo proceso, igual que en un proyecto real: del requerimiento a un flujo que pasa todas las pruebas.</p>
+    </div>
+    <ol class="proc-steps">
+      <li><span class="proc-n">01</span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3.5" width="14" height="17" rx="2.5"/><path d="M8.5 8h7M8.5 12h7M8.5 16h4"/></svg><b>Leé el escenario</b><p>Requisitos, datos de ejemplo y pistas, como un pedido de un cliente.</p></li>
+      <li><span class="proc-n">02</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h5M9 12l6-7h5M9 12h11M9 12l6 7h5"/></svg><b>Armá el flujo</b><p>Arrastrá triggers y acciones de la paleta y configurá sus propiedades.</p></li>
+      <li><span class="proc-n">03</span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="3" width="12" height="18" rx="2.5"/><path d="M10 17.5h4"/><path d="M10 9l4 2-4 2z"/></svg><b>Ejecutá</b><p>Probalo con datos de prueba y mirá qué entra y sale de cada paso.</p></li>
+      <li><span class="proc-n">04</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg><b>Verificá</b><p>Las pruebas automáticas te dicen qué funciona y qué falta.</p></li>
+    </ol>
+    <p class="proc-foot"><span class="pill">Solución</span> Si te trabás, cargás la respuesta y la estudiás paso a paso.</p>
+  </section>
+</template>
+
+<!-- Crear cuenta / Ingresar ("reg" = pestaña Crear cuenta; "sb" = cuentas en Supabase configuradas) -->
+<template id="tplAuth">
+  <section class="card flush split">
+    <div class="side dark">
+      <h1 class="display" data-if="reg">Creá tu cuenta</h1>
+      <h1 class="display" data-if="!reg">Volvé a tu avance</h1>
+      <div><span class="pill">gratis</span></div>
+      <p class="lead dim" data-if="reg">Guardá tus flujos, tus respuestas y tu progreso en cada plataforma.</p>
+      <p class="lead dim" data-if="!reg">Ingresá para seguir con tus proyectos donde los dejaste.</p>
+      <div class="tiles" style="margin-top:auto">
+        <div class="tile"><span class="big" data-text="totalEsc"></span><p>proyectos para resolver</p></div>
+        <div class="tile grey"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2.5"/><path d="M4 10h16M4 15h16M10 4v16"/></svg>
+          <p data-if="sb">Tu avance queda guardado en tu cuenta</p>
+          <p data-if="!sb">Tu avance queda guardado en este navegador</p>
+        </div>
+      </div>
+    </div>
+    <div class="side">
+      <div class="tabs" role="tablist"><button type="button" data-auth="registro" role="tab">Crear cuenta</button><button type="button" data-auth="ingreso" role="tab">Ingresar</button></div>
+      <button type="button" class="btn line" data-act="google" data-if="sb" style="width:100%;justify-content:center;margin-bottom:14px"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5a5.6 5.6 0 01-2.4 3.6v3h3.9c2.2-2.1 3.5-5.1 3.5-8.8z"/><path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-2.9l-3.9-3c-1.1.7-2.5 1.2-4.1 1.2-3.1 0-5.8-2.1-6.7-5H1.3v3.1A12 12 0 0012 24z"/><path fill="#FBBC05" d="M5.3 14.3a7.2 7.2 0 010-4.6V6.6H1.3a12 12 0 000 10.8z"/><path fill="#EA4335" d="M12 4.8c1.8 0 3.3.6 4.6 1.8l3.4-3.4A12 12 0 001.3 6.6l4 3.1c.9-2.8 3.6-4.9 6.7-4.9z"/></svg> Continuar con Google</button>
+      <p class="note" data-if="sb" style="text-align:center;margin-bottom:10px">o con tu email</p>
+      <form id="authForm" novalidate>
+        <label class="fld" data-if="reg"><span>Nombre</span><input id="au_name" autocomplete="name" required></label>
+        <label class="fld"><span>Email</span><input id="au_email" type="email" autocomplete="email" required></label>
+        <label class="fld"><span>Contraseña</span><input id="au_pass" type="password" autocomplete="current-password" minlength="6" required></label>
+        <p class="err" id="authErr" role="alert"></p>
+        <div class="row">
+          <button class="btn" type="submit" data-if="reg">Crear cuenta</button>
+          <button class="btn" type="submit" data-if="!reg">Ingresar</button>
+          <a class="btn line" href="power-automate/index.html">Seguir sin cuenta</a>
+        </div>
+      </form>
+      <p class="note" data-if="sb">Tu cuenta y tu avance se guardan en la nube: podés seguir desde cualquier dispositivo.</p>
+      <p class="note" data-if="!sb">Las cuentas de flowDev se guardan solo en este navegador: no se envía nada a un servidor y no sirven en otro dispositivo. No uses una contraseña que uses en otros sitios.</p>
+    </div>
+  </section>
+</template>
+
+<!-- Mi avance -->
+<template id="tplDash">
+  <section class="card flush split dash-head">
+    <div class="side">
+      <p class="eyebrow dim">Mi avance</p>
+      <h1 class="display" data-if="user">Hola, <span data-text="firstName"></span></h1>
+      <h1 class="display" data-if="!user">Tu avance</h1>
+      <p class="lead" data-if="user">Tu progreso se guarda en tu cuenta: seguí desde cualquier dispositivo.</p>
+      <p class="lead" data-if="!user">Estás practicando sin cuenta: el avance queda solo en este navegador y ves 3 clases y 2 cuestionarios por plataforma.</p>
+      <div class="row" data-if="!user"><button class="btn" data-auth="registro">Crear cuenta gratis</button><button class="btn line" data-auth="ingreso">Ingresar</button></div>
+    </div>
+    <div class="side dark">
+      <div class="dash-total"><span class="dash-pc"><span data-text="pc"></span><small>%</small></span><span class="dim"><span data-text="done"></span> de <span data-text="total"></span> completados</span></div>
+      <div class="meter" data-meter><span></span></div>
+      <div class="dash-mini"></div>
+    </div>
+  </section>
+  <section class="grid2 dash-grid"></section>
+</template>
+<!-- Mi avance: resumen de una plataforma (arriba, en el panel oscuro) -->
+<template id="tplDashMini">
+  <div><span data-text="name"></span><b><span data-text="pc"></span>%</b><div class="meter" data-meter><span></span></div></div>
+</template>
+<!-- Mi avance: tarjeta de una plataforma -->
+<template id="tplDashCard">
+  <article class="card dash-card">
+    <div class="row" style="justify-content:space-between"><span class="pill" data-text="tag"></span><span class="dim"><span data-text="done"></span>/<span data-text="total"></span></span></div>
+    <h2 class="h2" data-text="name"></h2>
+    <ul class="dash-rows"></ul>
+    <div class="dash-next">
+      <p class="dim" data-if="next">Siguiente</p>
+      <p class="h3" data-if="next" data-text="nextLabel"></p>
+      <p class="h3" data-if="!next">Completaste todos los escenarios.</p>
+      <div class="row"><a class="btn" data-if="next" data-href="nextHref">Continuar</a><a class="btn line" data-href="href">Ver <span data-text="name"></span></a></div>
+    </div>
+  </article>
+</template>
+<!-- Mi avance: una fila (Teoría, Escenarios o Cuestionarios) -->
+<template id="tplDashRow">
+  <li><span data-text="label"></span><span class="dim"><span data-text="done"></span>/<span data-text="total"></span></span><div class="meter" data-meter><span></span></div></li>
+</template>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="config.js?v=21"></script>
-<script src="app.js?v=22"></script>
+<script src="app.js?v=23"></script>
 </body>
 </html>

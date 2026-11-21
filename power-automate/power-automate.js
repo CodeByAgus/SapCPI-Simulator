@@ -1227,7 +1227,7 @@ function platform() {
       <summary><span class="n">${i + 1}</span><span class="h3" style="flex:1">${esc(t)}</span>${pr[`${pf}:L${i}`] ? '<span class="pill ok">Leída</span>' : ''}</summary>
       <div class="body">${parts.join('')}<button type="button" class="btn sm" data-act="read" data-i="${i}">${pr[`${pf}:L${i}`] ? 'Leída' : 'Marcar como leída'}</button></div></details>`).join('');
   else if (tab === 'proyectos') body = [...new Set(gr.map(j => j.cat))].map((c2, k) => `<p class="gtitle" style="margin-top:${k ? 20 : 6}px">${esc(c2)} · ${gr.filter(j => j.cat === c2).length}</p><div>${gr.filter(j => j.cat === c2).map(item).join('')}</div>`).join('');
-  else if (tab === 'libre') body = `<div class="grid2" style="align-items:center"><div class="stack"><h2 class="h2">Modo libre</h2><p class="lead">Abrí el ${TALLER[pf].toLowerCase()} sin requisitos ni verificación y armá cualquier flujo con todos los triggers, acciones y conectores.</p><p class="dim">Las acciones responden con la respuesta simulada que les configures: la API, la IA, Excel, las aprobaciones y el flujo de escritorio.</p><div><button type="button" class="btn" data-proj="libre">Abrir el editor libre</button></div></div><div class="tiles"><div class="tile">${svg('router')}<p>Condition, Switch y Apply to each</p></div><div class="tile grey">${svg('varInit')}<p>Variables y expresiones</p></div><div class="tile grey">${svg('http')}<p>Conectores con respuesta simulada</p></div><div class="tile">${svg('approval')}<p>Historial de ejecución paso a paso</p></div></div></div>`;
+  else if (tab === 'libre') body = `<div class="grid2" style="align-items:center"><div class="stack"><p class="lead">Abrí el ${TALLER[pf].toLowerCase()} sin requisitos ni verificación y armá cualquier flujo con todos los triggers, acciones y conectores.</p><p class="dim">Las acciones responden con la respuesta simulada que les configures: la API, la IA, Excel, las aprobaciones y el flujo de escritorio.</p><div><button type="button" class="btn" data-proj="libre">Abrir el editor libre</button></div></div><div class="tiles"><div class="tile">${svg('router')}<p>Condition, Switch y Apply to each</p></div><div class="tile grey">${svg('varInit')}<p>Variables y expresiones</p></div><div class="tile grey">${svg('http')}<p>Conectores con respuesta simulada</p></div><div class="tile">${svg('approval')}<p>Historial de ejecución paso a paso</p></div></div></div>`;
   else if (!state.quizId) body = guestNote('quiz') + p.quizzes.map((q, qi) => guest() && qi >= FREE_QZ ? lockRow(q.cls, q.title, 'quiz') : `<button type="button" class="list-item" data-quiz="${q.id}"><span class="pill${pr[`${pf}:Q:${q.id}`] ? ' ok' : ''}">${pr[`${pf}:Q:${q.id}`] ? 'Aprobado' : esc(q.cls)}</span><span class="grow"><span class="h3">${esc(q.title)}</span></span><span class="arrow">${svg('arrow')}</span></button>`).join('');
   else {
     const quiz = p.quizzes.find(q => q.id === state.quizId), ans = data().quiz[`${pf}:${quiz.id}`] || {};
@@ -1235,20 +1235,33 @@ function platform() {
       return `<div class="q${g ? (ok ? ' ok' : ' bad') : ''}"><p class="t">${i + 1}. ${esc(q[0])}</p>${order(q).map(k => `<label class="${show && k === 0 ? 'right' : ''}"><input type="radio" name="q${i}" data-q="${i}" data-o="${k}"${ans[i] === k ? ' checked' : ''}><span>${esc(q[1][k])}</span></label>`).join('')}${g || show ? `<p class="why">${g ? (ok ? 'Correcto. ' : 'No es esa. ') : ''}${esc(q[2])}</p>` : ''}<div class="row" style="justify-content:flex-end;margin-top:6px"><button type="button" class="btn line sm" data-act="reveal" data-i="${i}">${show ? 'Ocultar respuesta' : 'Ver respuesta'}</button></div></div>`; }).join('')
       + `<div class="row"><button type="button" class="btn" data-act="grade">Corregir</button>${pr[`${pf}:Q:${quiz.id}`] ? '<span class="pill ok">Aprobado</span>' : ''}</div>`;
   }
-  return `<section class="card flush split" style="background:var(--grey);color:var(--paper)">
-    <div class="side"><h1 class="display">${p.name}</h1><div><span class="pill">${esc(p.tag)}</span></div><p class="lead" style="color:#D6D6CE">${esc(p.intro)}</p><div><button type="button" class="btn sky" data-proj="${(gr.find(j => !pr[`${pf}:P:${j.id}`]) || gr[0]).id}">Abrir el ${TALLER[pf].toLowerCase()}</button></div></div>
-    <div class="side dark">
-      <div class="tiles">
-        <div class="tile"><span class="big">${Math.round(doneCount(pf) / total * 100)}%</span><p>del taller completado</p></div>
-        <div class="tile grey"><span class="big">${gr.length}</span><p>escenarios y ejercicios</p></div>
-        <div class="tile grey"><span class="big">${p.quizzes.length}</span><p>cuestionarios teóricos</p></div>
-        <div class="tile"><span class="big">${p.lessons.length}</span><p>clases de teoría</p></div>
-      </div>
-    </div>
+  const tabs = [
+    ['lecciones', 'Teoría', `${p.lessons.length} clases cortas sobre triggers, acciones, expresiones, conectores y buenas prácticas.`],
+    ['proyectos', 'Escenarios', 'Casos guiados que se resuelven en el editor y se verifican paso a paso.'],
+    ['quiz', 'Cuestionarios', 'Un cuestionario por clase para repasar lo que leíste.'],
+    ['libre', 'Modo libre', 'El editor sin requisitos: armá cualquier flujo y probalo.'],
+  ], cur = tabs.find(t => t[0] === tab) || tabs[0], done = doneCount(pf);
+  const stats = [
+    [svg('approval'), `${Math.round(done / total * 100)}%`, 'Taller completado', `${done} de ${total} ejercicios resueltos`],
+    [svg('router'), gr.length, 'Escenarios', 'Guiados y de práctica extra'],
+    [svg('csv'), p.lessons.length, 'Clases', 'Teoría corta, sin relleno'],
+    [svg('task'), p.quizzes.length, 'Cuestionarios', 'Uno por cada clase'],
+  ];
+  return `<section class="card hero">
+    <p class="eyebrow dim">Plataforma</p>
+    <h1 class="display">${p.name}</h1>
+    <span class="pill">${esc(p.tag)}</span>
+    <p class="lead">${esc(p.intro)}</p>
+    <div class="row hero-cta"><button type="button" class="btn" data-proj="${(gr.find(j => !pr[`${pf}:P:${j.id}`]) || gr[0]).id}">Abrir el ${TALLER[pf].toLowerCase()}</button><button type="button" class="btn line" data-tab="lecciones">Empezar por la teoría</button></div>
   </section>
-  <section class="card">
-    <div class="tabs" role="tablist" style="margin-bottom:16px">${[['lecciones', 'Teoría'], ['proyectos', 'Escenarios'], ['quiz', 'Cuestionarios'], ['libre', 'Modo libre']].map(([k, l]) => `<button type="button" role="tab" data-tab="${k}" aria-selected="${tab === k}">${l}</button>`).join('')}</div>
-    ${body}
+  <section class="card dark proc">
+    <div class="proc-head"><h2 class="display">Tu avance</h2><p class="lead dim">Lo que resolvés en el editor y lo que leés en la teoría se guarda solo.</p></div>
+    <ol class="proc-steps">${stats.map(([ic, big, t, s], i) => `<li><span class="proc-n">0${i + 1}</span>${ic}<span class="big">${big}</span><b>${t}</b><p>${s}</p></li>`).join('')}</ol>
+  </section>
+  <section class="card" id="contenido">
+    <div class="proc-head"><h2 class="display">${cur[1]}</h2><p class="lead">${cur[2]}</p></div>
+    <div class="tabs" role="tablist">${tabs.map(([k, l]) => `<button type="button" role="tab" data-tab="${k}" aria-selected="${tab === k}">${l}</button>`).join('')}</div>
+    <div class="tab-body">${body}</div>
   </section>`;
 }
 
@@ -1472,6 +1485,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape' && state.view
 function render() {
   renderNav();
   $('.shell').classList.toggle('wide', state.view === 'project');
+  $('.shell').classList.toggle('full', state.view === 'platform');
   view.innerHTML = { platform, project }[state.view]();
   if (state.view === 'project') { const m = $('#propMount'); if (m) { if (!state.sel || !findNode(state.sel)) { state.sel = null; propsEmpty(); } m.appendChild(dBody); } }
 }
@@ -1480,7 +1494,7 @@ document.addEventListener('click', e => {
   const d = el.dataset;
   if (d.go) return go('platform', { tab: d.keepTab || 'lecciones' });
   if (d.auth) { location.href = `${HOME}#${d.auth}`; return; }
-  if (d.tab) { state.tab = d.tab; state.quizId = null; state.graded = false; state.reveal = new Set(); return render(); }
+  if (d.tab) { state.tab = d.tab; state.quizId = null; state.graded = false; state.reveal = new Set(); render(); document.getElementById('contenido')?.scrollIntoView({ block: 'start' }); return; }
   if (d.quiz) return openQuiz(d.quiz);
   if (d.proj) return openProject(d.proj);
   if (d.ptab) { state.ptab = d.ptab; return showTab(); }

@@ -1,24 +1,24 @@
 (() => {
 'use strict';
 const $ = (s, r = document) => r.querySelector(s);
-const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const uid = () => Math.random().toString(36).slice(2, 9);
 const clone = o => JSON.parse(JSON.stringify(o));
 const short = (s, n = 80) => { s = String(s ?? ''); return s.length > n ? s.slice(0, n) + '…' : s; };
 
-/* ---------------- Íconos ---------------- */
-const IC = {
-  webhook: '<path d="M13 3L5 14h6l-1 7 8-11h-6z"/>',
-  formsIn: '<rect x="5" y="3.5" width="14" height="17" rx="2.5"/><path d="M8.5 8h7M8.5 12h7M8.5 16h4"/>',
-  instant: '<rect x="6" y="3" width="12" height="18" rx="2.5"/><path d="M10 17.5h4"/><path d="M10 9l4 2-4 2z"/>',
-  if: '<path d="M4 12h6M10 12l6-6h4M10 12l6 6h4"/>',
-  router: '<path d="M4 12h5M9 12l6-7h5M9 12h11M9 12l6 7h5"/>',
-  http: '<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c3 3 3 14 0 17M12 3.5c-3 3-3 14 0 17"/>',
-  approval: '<path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/>',
-  sheets: '<rect x="4" y="4" width="16" height="16" rx="2.5"/><path d="M4 10h16M4 15h16M10 4v16"/>',
-  arrow: '<path d="M5 12h13M13 6l6 6-6 6"/>',
-};
-const svg = (k, cls = '') => `<svg viewBox="0 0 24 24" class="${cls}" aria-hidden="true">${IC[k] || IC.arrow}</svg>`;
+/* ---------------- Plantillas de index.html ---------------- */
+// Clona un <template> y lo completa: data-if="clave" (o "!clave") deja o quita el elemento,
+// data-text="clave" pone el texto y data-href="clave" el enlace.
+function tpl(id, vals = {}) {
+  const f = document.getElementById(id).content.cloneNode(true);
+  f.querySelectorAll('[data-if]').forEach(el => {
+    const k = el.dataset.if, neg = k[0] === '!';
+    if (!!vals[neg ? k.slice(1) : k] === neg) el.remove(); else el.removeAttribute('data-if');
+  });
+  f.querySelectorAll('[data-text]').forEach(el => { el.textContent = vals[el.dataset.text] ?? ''; });
+  f.querySelectorAll('[data-href]').forEach(el => { el.href = vals[el.dataset.href] ?? '#'; });
+  return f;
+}
+const meter = (el, d, t) => { el.querySelector('span').style.width = `${t ? Math.round(d / t * 100) : 0}%`; };
 
 /* ---------------- Catálogo de las plataformas ---------------- */
 // El contenido vive en sap-cpi/ y power-automate/. La landing solo necesita los ids y títulos para Mi avance:
@@ -75,7 +75,7 @@ const SAP = {
   ],
 };
 const sapDone = () => { try { return JSON.parse(localStorage.getItem('taller-iflows-v1') || '{}').done || {}; } catch (_) { return {}; } };
-const TOTAL_ESC = PA.esc.length + SAP.esc.length, TOTAL_LES = PA.lessons + SAP.lessons, TOTAL_QZ = PA.quizzes + SAP.quizzes;
+const TOTAL_ESC = PA.esc.length + SAP.esc.length;
 
 /* ---------------- Datos del usuario (en Supabase si está configurado; si no, en este navegador) ---------------- */
 const KEY = 'flowdev-v1';
@@ -121,62 +121,39 @@ function toast(m) { const t = $('#toast'); t.textContent = m; t.hidden = false; 
 function go(v, extra = {}) { Object.assign(state, { view: v }, extra); render(); window.scrollTo(0, 0); }
 
 function renderNav() {
-  const links = [['home', 'Inicio'], [SAP.href, 'SAP CPI'], [PA.href, 'Power Automate'], ['dash', 'Mi avance']];
-  $('#navLinks').innerHTML = links.map(([k, l]) => k.includes('/') ? `<a href="${k}">${l}</a>` : `<button type="button" data-go="${k}"${state.view === k ? ' aria-current="page"' : ''}>${l}</button>`).join('');
+  document.querySelectorAll('#navLinks [data-go]').forEach(b => {
+    if (b.dataset.go === state.view) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
+  });
   const u = me();
-  $('#navUser').innerHTML = u
-    ? `<span class="chip"><i>${esc(u.name.trim()[0]?.toUpperCase() || '?')}</i>${esc(u.name.split(' ')[0])}</span><button type="button" class="btn line sm" data-act="logout">Salir</button>`
-    : `<button type="button" class="btn line sm" data-auth="ingreso">Ingresar</button><button type="button" class="btn sky sm" data-auth="registro">Crear cuenta</button>`;
+  $('#navUser').replaceChildren(u
+    ? tpl('tplNavIn', { initial: u.name.trim()[0]?.toUpperCase() || '?', firstName: u.name.split(' ')[0] })
+    : tpl('tplNavOut'));
 }
 
 /* ---------------- Landing: qué es flowDev y carrusel infinito de plataformas ---------------- */
 // Mecanismo: tres copias del set, se centra la tarjeta elegida (track en translateX), foco 1 / 0.5 / 0.2,
 // y al salir del set del medio se rebasa sin transición al índice equivalente.
-const LAND = [
-  { name: 'SAP CPI', tag: 'iFlows · integración empresarial', text: 'Conectá sistemas SAP y no SAP con iFlows en notación BPMN: adaptadores, mapeos, Groovy y manejo de errores.', meta: () => `${SAP.esc.length} escenarios · ${SAP.quizzes} cuestionarios`, href: SAP.href, w: 'min(78cqw, 420px)' },
-  { name: 'Power Automate', tag: 'Cloud flows · automatización', text: 'Automatizá procesos de Microsoft 365: Outlook, Teams, Excel, SharePoint, Dataverse, aprobaciones, AI Builder y RPA.', meta: () => `${PA.esc.length} escenarios · ${PA.quizzes} cuestionarios`, href: PA.href, w: 'min(70cqw, 380px)' },
-  { name: 'MuleSoft', tag: 'Próximamente', text: 'Integración y APIs de Salesforce: flows de Mule, conectores y transformaciones con DataWeave.', meta: () => 'En preparación', w: 'min(74cqw, 400px)' },
-  { name: 'KNIME', tag: 'Próximamente', text: 'Workflows de nodos para preparar, analizar y transformar datos sin programar.', meta: () => 'En preparación', w: 'min(66cqw, 360px)' },
-];
-function landing() {
-  const slide = (s, i, copy) => `<li class="lc-slide${s.href ? '' : ' soon'}" data-i="${i}" style="width:${s.w}"${copy !== 1 ? ' aria-hidden="true" inert' : ` aria-roledescription="diapositiva" aria-label="${i + 1} de ${LAND.length}: ${esc(s.name)}"`}>
-      <div class="lc-card"><span class="pill">${esc(s.tag)}</span><h3 class="lc-name">${esc(s.name)}</h3><p>${esc(s.text)}</p>
-      <div class="lc-foot"><span class="lc-meta">${esc(s.meta())}</span>${s.href ? `<a class="btn sky sm" href="${s.href}">Entrar</a>` : ''}</div></div>
-      <span class="lc-cap">${String(i + 1).padStart(2, '0')} / ${String(LAND.length).padStart(2, '0')}</span></li>`;
-  return `<section class="card flush split landing">
-    <div class="side">
-      <p class="eyebrow dim">Qué es flowDev</p>
-      <h1 class="display">Aprendé a automatizar con el software que usan las empresas</h1>
-      <p class="lead">SAP CPI, Power Automate y las demás plataformas de integración requieren licencias pagas: es difícil practicarlas fuera de un trabajo. flowDev las simula en el navegador para que puedas aprender, practicar y demostrar lo que sabés.</p>
-    </div>
-    <div class="side dark">
-      <ol class="lc-steps">
-        <li><b>Aprendé</b><span>Clases cortas de teoría, de los conceptos básicos a la gobernanza.</span></li>
-        <li><b>Practicá</b><span>Talleres que imitan cada herramienta: paleta, lienzo y propiedades.</span></li>
-        <li><b>Verificá</b><span>Cada escenario se prueba con datos reales simulados y te dice qué falta.</span></li>
-        <li><b>Repasá</b><span>Cuestionarios por clase y modo libre para experimentar.</span></li>
-      </ol>
-    </div>
-  </section>
-  <section class="card lc" aria-labelledby="lcTitle">
-    <h2 class="sr-only" id="lcTitle">Plataformas de flowDev</h2>
-    <div class="lc-rail" tabindex="0" role="region" aria-roledescription="carrusel" aria-label="Plataformas de flowDev. Usá las flechas para cambiar.">
-      <ul class="lc-track">${[0, 1, 2].map(c => LAND.map((s, i) => slide(s, i, c)).join('')).join('')}</ul>
-    </div>
-    <div class="lc-nav">
-      <button type="button" class="lc-btn" data-car="prev" aria-label="Plataforma anterior">‹</button>
-      <div class="lc-dots" role="group" aria-label="Elegir plataforma">${LAND.map((s, i) => `<button type="button" class="lc-dot" data-car="dot" data-i="${i}" aria-label="${esc(s.name)}"></button>`).join('')}</div>
-      <button type="button" class="lc-btn" data-car="next" aria-label="Plataforma siguiente">›</button>
-      <button type="button" class="btn line sm lc-reset" data-car="reset">Reiniciar</button>
-    </div>
-    <p class="sr-only" aria-live="polite" id="lcStatus"></p>
-  </section>`;
+// Las tarjetas están en index.html (<template id="tplHome">): acá se numeran, se arman los puntos
+// y se agregan dos copias del set (antes y después) para el bucle infinito.
+function buildCarousel(root) {
+  const track = $('.lc-track', root), base = [...track.children], n = base.length, pad = x => String(x).padStart(2, '0');
+  const copy = () => base.map(s => { const c = s.cloneNode(true); c.setAttribute('aria-hidden', 'true'); c.setAttribute('inert', ''); return c; });
+  base.forEach((s, i) => { s.dataset.i = i; $('.lc-cap', s).textContent = `${pad(i + 1)} / ${pad(n)}`; });
+  const before = copy(), after = copy();
+  base.forEach((s, i) => {
+    const name = $('.lc-name', s).textContent;
+    s.setAttribute('aria-roledescription', 'diapositiva'); s.setAttribute('aria-label', `${i + 1} de ${n}: ${name}`);
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'lc-dot'; b.dataset.car = 'dot'; b.dataset.i = i; b.setAttribute('aria-label', name);
+    $('.lc-dots', root).append(b);
+  });
+  track.prepend(...before); track.append(...after);
 }
 let carKill = null;
 function initCarousel() {
   if (carKill) { carKill(); carKill = null; }
   const rail = $('.lc-rail'); if (!rail) return;
-  const track = $('.lc-track', rail), slides = [...track.children], n = LAND.length, dots = [...document.querySelectorAll('.lc-dot')], status = $('#lcStatus');
+  const track = $('.lc-track', rail), slides = [...track.children], dots = [...document.querySelectorAll(".lc-dot")], n = dots.length, status = $('#lcStatus');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   let idx = n, moving = false, queued = null, timer = null, drag = null, suppressClick = false;
   const center = i => rail.clientWidth / 2 - slides[i].offsetLeft - slides[i].offsetWidth / 2;
@@ -185,7 +162,7 @@ function initCarousel() {
     slides.forEach((s, i) => { const d = Math.abs(i - idx); s.style.opacity = d === 0 ? 1 : d === 1 ? 0.5 : 0.2; });
     const l = ((idx % n) + n) % n;
     dots.forEach((d, i) => d.setAttribute('aria-current', i === l ? 'true' : 'false'));
-    status.textContent = `Plataforma ${l + 1} de ${n}: ${LAND[l].name}`;
+    status.textContent = `Plataforma ${l + 1} de ${n}: ${dots[l].getAttribute("aria-label")}`;
   };
   const place = (dx = 0) => { track.style.transform = `translateX(${center(idx) + dx}px)`; };
   const rebase = () => { if (idx >= n && idx < 2 * n) return; idx = ((idx % n) + n) % n + n; anim(false); place(); paint(); void track.offsetWidth; anim(true); };
@@ -249,82 +226,17 @@ function initCarousel() {
   carKill = () => { clearTimeout(timer); queued = null; ro.disconnect(); };
 }
 function home() {
-  const u = me();
-  return `${landing()}
-  <section class="card flush split">
-    <div class="side">
-      <h1 class="display">Practicá el software de flujos que usan las empresas</h1>
-      <div><span class="pill">SAP CPI · Power Automate</span></div>
-      <p class="lead">Las plataformas de integración y automatización empresarial no se pueden usar libremente sin una licencia. flowDev te deja practicarlas con talleres que imitan cada herramienta, proyectos guiados y un simulador que revisa tu flujo paso a paso.</p>
-      <div class="row">${u ? `<button class="btn" data-go="dash">Seguir donde quedé</button>` : `<button class="btn" data-auth="registro">Crear cuenta gratis</button><a class="btn line" href="${PA.href}">Probar sin cuenta</a>`}</div>
-    </div>
-    <div class="side dark">
-      <div class="tiles stats">
-        <div class="tile"><span class="big">2</span><p>plataformas empresariales y 2 más en camino</p></div>
-        <div class="tile grey">${svg('router')}<p>${TOTAL_ESC} proyectos y ejercicios con verificación</p></div>
-        <div class="tile grey">${svg('formsIn')}<p>${TOTAL_LES} clases cortas, sin relleno</p></div>
-        <div class="tile"><span class="big">${TOTAL_QZ}</span><p>cuestionarios para repasar</p></div>
-      </div>
-    </div>
-  </section>
-
-
-  <section class="card dark flush split">
-    <div class="side">
-      <h2 class="display">Ruta de aprendizaje</h2>
-      <div><span class="pill">por etapa</span></div>
-      <p class="lead dim">Cada plataforma sigue el mismo recorrido. Avanzás de entender los conceptos a resolver un caso real con una API.</p>
-    </div>
-    <div class="side">
-      <ol class="rpath">
-        <li>${svg('formsIn')}<b>Conceptos</b><span>Lecciones</span></li>
-        <li>${svg('webhook')}<b>Primer flujo</b><span>Inicial</span></li>
-        <li>${svg('if')}<b>Lógica</b><span>Intermedio</span></li>
-        <li>${svg('http')}<b>APIs y listas</b><span>Avanzado</span></li>
-      </ol>
-    </div>
-  </section>
-
-  <section class="card proc">
-    <div class="proc-head">
-      <h2 class="display">Cómo se practica</h2>
-      <p class="lead">Cada escenario sigue el mismo proceso, igual que en un proyecto real: del requerimiento a un flujo que pasa todas las pruebas.</p>
-    </div>
-    <ol class="proc-steps">
-      <li><span class="proc-n">01</span>${svg('formsIn')}<b>Leé el escenario</b><p>Requisitos, datos de ejemplo y pistas, como un pedido de un cliente.</p></li>
-      <li><span class="proc-n">02</span>${svg('router')}<b>Armá el flujo</b><p>Arrastrá triggers y acciones de la paleta y configurá sus propiedades.</p></li>
-      <li><span class="proc-n">03</span>${svg('instant')}<b>Ejecutá</b><p>Probalo con datos de prueba y mirá qué entra y sale de cada paso.</p></li>
-      <li><span class="proc-n">04</span>${svg('approval')}<b>Verificá</b><p>Las pruebas automáticas te dicen qué funciona y qué falta.</p></li>
-    </ol>
-    <p class="proc-foot"><span class="pill">Solución</span> Si te trabás, cargás la respuesta y la estudiás paso a paso.</p>
-  </section>`;
+  const f = tpl('tplHome', { user: me(),
+    sapEsc: SAP.esc.length, sapQz: SAP.quizzes, paEsc: PA.esc.length, paQz: PA.quizzes });
+  buildCarousel(f);
+  return f;
 }
 
 function auth() {
-  const reg = state.auth === 'registro';
-  return `<section class="card flush split">
-    <div class="side dark">
-      <h1 class="display">${reg ? 'Creá tu cuenta' : 'Volvé a tu avance'}</h1>
-      <div><span class="pill">gratis</span></div>
-      <p class="lead dim">${reg ? 'Guardá tus flujos, tus respuestas y tu progreso en cada plataforma.' : 'Ingresá para seguir con tus proyectos donde los dejaste.'}</p>
-      <div class="tiles" style="margin-top:auto">
-        <div class="tile"><span class="big">${TOTAL_ESC}</span><p>proyectos para resolver</p></div>
-        <div class="tile grey">${svg('sheets')}<p>${sb ? 'Tu avance queda guardado en tu cuenta' : 'Tu avance queda guardado en este navegador'}</p></div>
-      </div>
-    </div>
-    <div class="side">
-      <div class="tabs" role="tablist"><button type="button" data-auth="registro" aria-selected="${reg}">Crear cuenta</button><button type="button" data-auth="ingreso" aria-selected="${!reg}">Ingresar</button></div>
-      ${sb ? `<button type="button" class="btn line" data-act="google" style="width:100%;justify-content:center;margin-bottom:14px"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5a5.6 5.6 0 01-2.4 3.6v3h3.9c2.2-2.1 3.5-5.1 3.5-8.8z"/><path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-2.9l-3.9-3c-1.1.7-2.5 1.2-4.1 1.2-3.1 0-5.8-2.1-6.7-5H1.3v3.1A12 12 0 0012 24z"/><path fill="#FBBC05" d="M5.3 14.3a7.2 7.2 0 010-4.6V6.6H1.3a12 12 0 000 10.8z"/><path fill="#EA4335" d="M12 4.8c1.8 0 3.3.6 4.6 1.8l3.4-3.4A12 12 0 001.3 6.6l4 3.1c.9-2.8 3.6-4.9 6.7-4.9z"/></svg> Continuar con Google</button><p class="note" style="text-align:center;margin-bottom:10px">o con tu email</p>` : ''}
-      <form id="authForm" novalidate>
-        ${reg ? `<label class="fld"><span>Nombre</span><input id="au_name" autocomplete="name" required></label>` : ''}
-        <label class="fld"><span>Email</span><input id="au_email" type="email" autocomplete="email" required></label>
-        <label class="fld"><span>Contraseña</span><input id="au_pass" type="password" autocomplete="${reg ? 'new-password' : 'current-password'}" minlength="6" required></label>
-        <p class="err" id="authErr" role="alert"></p>
-        <div class="row"><button class="btn" type="submit">${reg ? 'Crear cuenta' : 'Ingresar'}</button><a class="btn line" href="${PA.href}">Seguir sin cuenta</a></div>
-      </form>
-      ${sb ? '<p class="note">Tu cuenta y tu avance se guardan en la nube: podés seguir desde cualquier dispositivo.</p>' : '<p class="note">Las cuentas de flowDev se guardan solo en este navegador: no se envía nada a un servidor y no sirven en otro dispositivo. No uses una contraseña que uses en otros sitios.</p>'}
-    </div>
-  </section>`;
+  const reg = state.auth === 'registro', f = tpl('tplAuth', { reg, sb, totalEsc: TOTAL_ESC });
+  f.querySelectorAll('.tabs [data-auth]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.auth === state.auth)));
+  $('#au_pass', f).autocomplete = reg ? 'new-password' : 'current-password';
+  return f;
 }
 
 // Avance por plataforma: teoría, escenarios y cuestionarios (el taller de SAP CPI guarda su avance aparte)
@@ -346,34 +258,28 @@ function stats() {
 }
 function dash() {
   const u = me(), st = stats(), done = st.reduce((a, p) => a + p.done, 0), total = st.reduce((a, p) => a + p.total, 0), pc = Math.round(done / total * 100);
-  const bar = (d, t) => `<div class="meter"><span style="width:${t ? Math.round(d / t * 100) : 0}%"></span></div>`;
-  return `<section class="card flush split dash-head">
-    <div class="side">
-      <p class="eyebrow dim">Mi avance</p>
-      <h1 class="display">${u ? 'Hola, ' + esc(u.name.split(' ')[0]) : 'Tu avance'}</h1>
-      <p class="lead">${u ? 'Tu progreso se guarda en tu cuenta: seguí desde cualquier dispositivo.' : 'Estás practicando sin cuenta: el avance queda solo en este navegador y ves 3 clases y 2 cuestionarios por plataforma.'}</p>
-      ${u ? '' : '<div class="row"><button class="btn" data-auth="registro">Crear cuenta gratis</button><button class="btn line" data-auth="ingreso">Ingresar</button></div>'}
-    </div>
-    <div class="side dark">
-      <div class="dash-total"><span class="dash-pc">${pc}<small>%</small></span><span class="dim">${done} de ${total} completados</span></div>
-      ${bar(done, total)}
-      <div class="dash-mini">${st.map(p => `<div><span>${p.name}</span><b>${Math.round(p.done / p.total * 100)}%</b>${bar(p.done, p.total)}</div>`).join('')}</div>
-    </div>
-  </section>
-  <section class="grid2 dash-grid">${st.map(p => `<article class="card dash-card">
-      <div class="row" style="justify-content:space-between"><span class="pill">${p.tag}</span><span class="dim">${p.done}/${p.total}</span></div>
-      <h2 class="h2">${p.name}</h2>
-      <ul class="dash-rows">${p.rows.map(([l, d, t]) => `<li><span>${l}</span><span class="dim">${d}/${t}</span>${bar(d, t)}</li>`).join('')}</ul>
-      <div class="dash-next">${p.next ? `<p class="dim">Siguiente</p><p class="h3">${esc(p.next.label)}</p>` : '<p class="h3">Completaste todos los escenarios.</p>'}
-      <div class="row">${p.next ? `<a class="btn" href="${p.next.href}">Continuar</a>` : ''}<a class="btn line" href="${p.href}">Ver ${p.name}</a></div></div>
-    </article>`).join('')}</section>`;
+  const f = tpl('tplDash', { user: u, firstName: u?.name.split(' ')[0], pc, done, total });
+  meter($('[data-meter]', f), done, total);
+  $('.dash-mini', f).append(...st.map(p => {
+    const m = tpl('tplDashMini', { name: p.name, pc: Math.round(p.done / p.total * 100) });
+    meter($('[data-meter]', m), p.done, p.total); return m;
+  }));
+  $('.dash-grid', f).append(...st.map(p => {
+    const c = tpl('tplDashCard', { ...p, nextLabel: p.next?.label, nextHref: p.next?.href });
+    $('.dash-rows', c).append(...p.rows.map(([label, d, t]) => {
+      const r = tpl('tplDashRow', { label, done: d, total: t });
+      meter($('[data-meter]', r), d, t); return r;
+    }));
+    return c;
+  }));
+  return f;
 }
 
 /* ---------------- Render y eventos ---------------- */
 function render() {
   renderNav();
   $('.shell').classList.toggle('full', state.view === 'home');
-  view.innerHTML = { home, auth, dash }[state.view]();
+  view.replaceChildren({ home, auth, dash }[state.view]());
   if (state.view === 'home') initCarousel(); else if (carKill) { carKill(); carKill = null; }
 }
 document.addEventListener('click', e => {
