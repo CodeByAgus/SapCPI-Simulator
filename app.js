@@ -1387,19 +1387,18 @@ function home() {
     </div>
   </section>
 
-  <section class="card flush split">
-    <div class="side">
+  <section class="card proc">
+    <div class="proc-head">
       <h2 class="display">Cómo se practica</h2>
-      <span class="arrow">${svg('down')}</span>
-      <p class="lead">Armás el flujo en un editor con el vocabulario de cada herramienta, lo ejecutás con datos de prueba y flowDev te dice qué funciona y qué falta.</p>
+      <p class="lead">Cada escenario sigue el mismo proceso, igual que en un proyecto real: del requerimiento a un flujo que pasa todas las pruebas.</p>
     </div>
-    <div class="side" style="gap:10px">
-      <div class="tile black" style="min-height:0"><p class="eyebrow dim">Ejecutar</p><p class="h3">Mirá qué datos entran y salen de cada paso.</p></div>
-      <div class="grid2" style="gap:10px">
-        <div class="tile" style="min-height:140px"><span class="big">Verificar</span><p>Casos de prueba automáticos por proyecto.</p></div>
-        <div class="tile" style="min-height:140px"><span class="pill" style="align-self:flex-start;background:#fff;border-color:#fff">Solución</span><p>Si te trabás, cargás la respuesta y la estudiás.</p></div>
-      </div>
-    </div>
+    <ol class="proc-steps">
+      <li><span class="proc-n">01</span>${svg('formsIn')}<b>Leé el escenario</b><p>Requisitos, datos de ejemplo y pistas, como un pedido de un cliente.</p></li>
+      <li><span class="proc-n">02</span>${svg('router')}<b>Armá el flujo</b><p>Arrastrá triggers y acciones de la paleta y configurá sus propiedades.</p></li>
+      <li><span class="proc-n">03</span>${svg('instant')}<b>Ejecutá</b><p>Probalo con datos de prueba y mirá qué entra y sale de cada paso.</p></li>
+      <li><span class="proc-n">04</span>${svg('approval')}<b>Verificá</b><p>Las pruebas automáticas te dicen qué funciona y qué falta.</p></li>
+    </ol>
+    <p class="proc-foot"><span class="pill">Solución</span> Si te trabás, cargás la respuesta y la estudiás paso a paso.</p>
   </section>`;
 }
 
@@ -1430,22 +1429,49 @@ function auth() {
   </section>`;
 }
 
+// Avance por plataforma: teoría, escenarios y cuestionarios (SAP CPI lee su taller, que vive en otra página)
+function stats() {
+  const pr = data().progress, sd = sapDone(), cnt = (list, f) => list.filter(f).length;
+  const pa = P.pa, gr = graded('pa');
+  const nextPa = gr.find(j => !pr[`pa:P:${j.id}`]);
+  const sapEsc = [...SAP_SCEN.map(x => x[0]), ...SAP_EXTRA.map(x => x[0])];
+  const nextSap = sapEsc.find(id => !sd[id]);
+  return [
+    { key: 'pa', name: 'Power Automate', tag: 'Cloud flows', go: 'pa', rows: [
+      ['Teoría', cnt(pa.lessons, (_, i) => pr[`pa:L${i}`]), pa.lessons.length],
+      ['Escenarios', cnt(gr, j => pr[`pa:P:${j.id}`]), gr.length],
+      ['Cuestionarios', cnt(pa.quizzes, q => pr[`pa:Q:${q.id}`]), pa.quizzes.length]],
+      next: nextPa ? { label: nextPa.title, id: nextPa.id } : null },
+    { key: 'sap', name: 'SAP CPI', tag: 'iFlows', go: 'sap', rows: [
+      ['Teoría', cnt(SAP_LESSONS, (_, i) => pr[`sap:L${i}`]), SAP_LESSONS.length],
+      ['Escenarios', cnt(sapEsc, id => sd[id]), sapEsc.length],
+      ['Cuestionarios', cnt(SAP_QUIZ, (_, i) => sd[`q-c${i + 1}`]), SAP_QUIZ.length]],
+      next: nextSap ? { label: (SAP_SCEN.find(x => x[0] === nextSap) || SAP_EXTRA.find(x => x[0] === nextSap)).slice(-2)[0], href: `${SAP.href}#${nextSap}` } : null },
+  ].map(p => ({ ...p, done: p.rows.reduce((a, r) => a + r[1], 0), total: p.rows.reduce((a, r) => a + r[2], 0) }));
+}
 function dash() {
-  const u = me(), keys = Object.keys(P), totalDone = keys.reduce((a, k) => a + doneCount(k), 0), total = keys.reduce((a, k) => a + TOTAL(k), 0);
-  return `<section class="card flush split">
+  const u = me(), st = stats(), done = st.reduce((a, p) => a + p.done, 0), total = st.reduce((a, p) => a + p.total, 0), pc = Math.round(done / total * 100);
+  const bar = (d, t) => `<div class="meter"><span style="width:${t ? Math.round(d / t * 100) : 0}%"></span></div>`;
+  return `<section class="card flush split dash-head">
     <div class="side">
+      <p class="eyebrow dim">Mi avance</p>
       <h1 class="display">${u ? 'Hola, ' + esc(u.name.split(' ')[0]) : 'Tu avance'}</h1>
-      <div><span class="pill">${totalDone} de ${total} completados</span></div>
-      <p class="lead">${u ? 'Este es tu progreso en cada plataforma.' : 'Estás practicando sin cuenta. El avance se guarda en este navegador; con una cuenta queda separado por persona.'}</p>
-      ${u ? '' : '<div><button class="btn" data-auth="registro">Crear cuenta</button></div>'}
+      <p class="lead">${u ? 'Tu progreso se guarda en tu cuenta: seguí desde cualquier dispositivo.' : 'Estás practicando sin cuenta: el avance queda solo en este navegador y ves 3 clases y 2 cuestionarios por plataforma.'}</p>
+      ${u ? '' : '<div class="row"><button class="btn" data-auth="registro">Crear cuenta gratis</button><button class="btn line" data-auth="ingreso">Ingresar</button></div>'}
     </div>
     <div class="side dark">
-      <p class="eyebrow dim">${Math.round(totalDone / total * 100)}% del recorrido</p>
-      <div class="dots">${Array.from({ length: total }, (_, i) => `<i class="${i < totalDone ? 'on' : ''}"></i>`).join('')}</div>
-      <div class="bars" style="height:150px;margin-top:auto">${keys.map(k => `<div class="bar"><b>${pct(k)}%</b><i style="height:${Math.max(6, pct(k))}%"></i><span>${P[k].name}</span></div>`).join('')}</div>
+      <div class="dash-total"><span class="dash-pc">${pc}<small>%</small></span><span class="dim">${done} de ${total} completados</span></div>
+      ${bar(done, total)}
+      <div class="dash-mini">${st.map(p => `<div><span>${p.name}</span><b>${Math.round(p.done / p.total * 100)}%</b>${bar(p.done, p.total)}</div>`).join('')}</div>
     </div>
   </section>
-  <section class="grid2">${keys.map(pcard).join('')}</section>`;
+  <section class="grid2 dash-grid">${st.map(p => `<article class="card dash-card">
+      <div class="row" style="justify-content:space-between"><span class="pill">${p.tag}</span><span class="dim">${p.done}/${p.total}</span></div>
+      <h2 class="h2">${p.name}</h2>
+      <ul class="dash-rows">${p.rows.map(([l, d, t]) => `<li><span>${l}</span><span class="dim">${d}/${t}</span>${bar(d, t)}</li>`).join('')}</ul>
+      <div class="dash-next">${p.next ? `<p class="dim">Siguiente</p><p class="h3">${esc(p.next.label)}</p>` : '<p class="h3">Completaste todos los escenarios.</p>'}
+      <div class="row">${p.next ? (p.next.href ? `<a class="btn" href="${p.next.href}">Continuar</a>` : `<button type="button" class="btn" data-proj="${p.next.id}" data-pf="${p.key}">Continuar</button>`) : ''}<button type="button" class="btn line" data-go="${p.go}">Ver ${p.name}</button></div></div>
+    </article>`).join('')}</section>`;
 }
 
 const order = q => { let s = 7; for (const ch of q[0]) s = (Math.imul(s, 31) + ch.charCodeAt(0)) >>> 0; const idx = q[1].map((_, i) => i); for (let i = idx.length - 1; i > 0; i--) { s = (Math.imul(s, 1103515245) + 12345) >>> 0; const k = (s >>> 16) % (i + 1); [idx[i], idx[k]] = [idx[k], idx[i]]; } return idx; };
@@ -1867,7 +1893,7 @@ document.addEventListener('click', e => {
   if (d.auth) return go('auth', { auth: d.auth, pf: null });
   if (d.tab) { state.tab = d.tab; state.quizId = null; state.graded = false; state.reveal = new Set(); return render(); }
   if (d.quiz) return openQuiz(d.quiz);
-  if (d.proj) return openProject(d.proj);
+  if (d.proj) { if (d.pf && P[d.pf]) state.pf = d.pf; return openProject(d.proj); }
   if (d.ptab) { state.ptab = d.ptab; return showTab(); }
   if (d.pal) return addOp(d.pal);
   if (d.add !== undefined) { state.ins = insOn(d.add, +d.idx) ? null : { seqId: d.add, idx: +d.idx }; return render(); }

@@ -369,3 +369,33 @@ a.list-item:hover .h3{text-decoration:underline}
 .list-item.locked:hover{opacity:1}
 .guest-note{margin-bottom:12px}
 .linkbtn{background:none;border:0;padding:0;color:inherit;text-decoration:underline;font:inherit;cursor:pointer}
+
+/* Cómo se practica: proceso en cuatro pasos */
+.proc-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:end;margin-bottom:26px}
+.proc-steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;position:relative}
+.proc-steps li{position:relative;display:flex;flex-direction:column;gap:10px;padding:20px;border-radius:var(--r-s);background:var(--sky);min-height:210px}
+.proc-steps li:nth-child(even){background:var(--ink);color:var(--paper)}
+.proc-steps li:nth-child(even) p{color:var(--muted-dark)}
+.proc-steps li:not(:last-child)::after{content:"";position:absolute;top:50%;right:-12px;width:12px;height:2px;background:var(--ink);z-index:1}
+.proc-n{font-family:"JetBrains Mono",monospace;font-size:13px;opacity:.7}
+.proc-steps svg{width:34px;height:34px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.proc-steps b{font-weight:500;font-size:clamp(20px,1.8vw,26px);letter-spacing:-.02em;line-height:1.1;margin-top:auto}
+.proc-steps p{margin:0;font-size:14.5px;line-height:1.35;color:#3a3a36}
+.proc-foot{display:flex;align-items:center;gap:10px;margin-top:16px;flex-wrap:wrap}
+@media (max-width:900px){.proc-steps{grid-template-columns:repeat(2,minmax(0,1fr))}.proc-steps li:nth-child(2)::after{display:none}.proc-head{grid-template-columns:1fr}}
+@media (max-width:520px){.proc-steps{grid-template-columns:1fr}.proc-steps li::after{display:none}.proc-steps li{min-height:0}}
+
+/* Mi avance */
+.dash-head .side.dark{justify-content:center;gap:18px}
+.dash-total{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.dash-pc{font-size:clamp(64px,8vw,112px);font-weight:500;letter-spacing:-.05em;line-height:.9}
+.dash-pc small{font-size:.4em;margin-left:4px}
+.dash-mini{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:8px}
+.dash-mini div{display:grid;grid-template-columns:1fr auto;gap:6px 10px;padding:14px;border:1.5px solid var(--line-dark);border-radius:var(--r-s)}
+.dash-mini .meter{grid-column:1/-1}
+.dash-card{display:flex;flex-direction:column;gap:14px}
+.dash-rows{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.dash-rows li{display:grid;grid-template-columns:1fr auto;gap:6px 10px}
+.dash-rows .meter{grid-column:1/-1}
+.dash-next{margin-top:auto;padding-top:14px;border-top:1.5px solid var(--line);display:flex;flex-direction:column;gap:8px}
+@media (max-width:620px){.dash-mini{grid-template-columns:1fr}}
