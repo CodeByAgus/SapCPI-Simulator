@@ -214,7 +214,7 @@ pre{font-family:var(--mono);font-size:12.5px;line-height:1.5;background:var(--in
 .tl-sel select{width:auto;max-width:300px;border-radius:99px;background:var(--grey);border-color:var(--grey);color:var(--paper);padding:7px 12px}
 .tl-prog{border-color:var(--grey);background:var(--grey);font-size:12.5px;font-variant-numeric:tabular-nums}
 .tl-top .btn.line{color:var(--paper)}
-.tl{display:grid;grid-template-columns:214px minmax(0,1fr) minmax(320px,400px);gap:14px;height:calc(100vh - 205px);min-height:540px}
+.tl{display:grid;grid-template-columns:214px minmax(0,1fr) minmax(360px,480px);gap:14px;height:calc(100vh - 205px);min-height:540px}
 .tl.quiz{grid-template-columns:minmax(0,1fr);height:auto;min-height:0}
 .tl.quiz .tl-panel{max-width:860px;width:100%;justify-self:center}
 .tl-pal,.tl-stage,.tl-panel{background:var(--paper);border-radius:var(--r);min-height:0;min-width:0}
@@ -332,3 +332,4 @@ a.list-item:hover .h3{text-decoration:underline}
 
 /* Taller: sin la barra de navegación del sitio */
 .in-taller .shell>.nav{display:none}
+@media (min-width:981px){.in-taller .tl:not(.quiz){height:calc(100vh - 110px)}}
