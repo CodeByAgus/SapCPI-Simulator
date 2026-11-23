@@ -329,3 +329,6 @@ a.list-item:hover .h3{text-decoration:underline}
 
 .foot a{color:inherit}
 .foot p+p{margin-top:6px}
+
+/* Taller: sin la barra de navegación del sitio */
+.in-taller .shell>.nav{display:none}

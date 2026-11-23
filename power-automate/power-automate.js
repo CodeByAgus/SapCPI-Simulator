@@ -1500,6 +1500,8 @@ function render() {
   renderNav();
   $('.shell').classList.toggle('wide', state.view === 'project');
   $('.shell').classList.toggle('full', state.view === 'platform');
+  // En el taller no va la barra del sitio, igual que en el taller de iFlows (se vuelve con «← Power Automate»)
+  document.body.classList.toggle('in-taller', state.view === 'project');
   view.innerHTML = { platform, project }[state.view]();
   if (state.view === 'project' && !state.tquiz && window.flowTour && !window.flowTour.isOpen()) setTimeout(() => window.flowTour.auto(TOUR_STEPS, 'pa-taller'), 400);
   if (state.view === 'project') { const m = $('#propMount'); if (m) { if (!state.sel || !findNode(state.sel)) { state.sel = null; propsEmpty(); } m.appendChild(dBody); } }
