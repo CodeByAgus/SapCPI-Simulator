@@ -233,7 +233,7 @@ function home() {
 }
 
 function auth() {
-  const reg = state.auth === 'registro', f = tpl('tplAuth', { reg, sb, totalEsc: TOTAL_ESC });
+  const reg = state.auth === 'registro', f = tpl('tplAuth', { reg, sb, forgot: !!sb && !reg, totalEsc: TOTAL_ESC });
   f.querySelectorAll('.tabs [data-auth]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.auth === state.auth)));
   $('#au_pass', f).autocomplete = reg ? 'new-password' : 'current-password';
   return f;
@@ -241,7 +241,7 @@ function auth() {
 
 // Avance por plataforma: teoría, escenarios y cuestionarios (el taller de SAP CPI guarda su avance aparte)
 function stats() {
-  const pr = data().progress, sd = sapDone(), cnt = (n, f) => Array.from({ length: n }, (_, i) => i).filter(f).length;
+  const pr = data().progress, sd = sapSolved(), cnt = (n, f) => Array.from({ length: n }, (_, i) => i).filter(f).length;
   const nextPa = PA.esc.find(([id]) => !pr[`pa:P:${id}`]), nextSap = SAP.esc.find(([id]) => !sd[id]);
   return [
     { name: 'Power Automate', tag: 'Cloud flows', href: PA.href, rows: [
@@ -256,9 +256,14 @@ function stats() {
       next: nextSap ? { label: nextSap[1], href: `${SAP.taller}#${nextSap[0]}` } : null },
   ].map(p => ({ ...p, done: p.rows.reduce((a, r) => a + r[1], 0), total: p.rows.reduce((a, r) => a + r[2], 0) }));
 }
+// Recuperar contraseña (view 'olvido') y elegir una nueva (view 'clave': desde el enlace del email o desde Mi avance)
+function pass() {
+  const ask = state.view === 'olvido';
+  return tpl('tplPass', { ask, passErr: state.passMsg || '' });
+}
 function dash() {
   const u = me(), st = stats(), done = st.reduce((a, p) => a + p.done, 0), total = st.reduce((a, p) => a + p.total, 0), pc = Math.round(done / total * 100);
-  const f = tpl('tplDash', { user: u, firstName: u?.name.split(' ')[0], pc, done, total });
+  const f = tpl('tplDash', { user: u, canPass: !!(sb && cloud), firstName: u?.name.split(' ')[0], pc, done, total });
   meter($('[data-meter]', f), done, total);
   $('.dash-mini', f).append(...st.map(p => {
     const m = tpl('tplDashMini', { name: p.name, pc: Math.round(p.done / p.total * 100) });
@@ -276,10 +281,33 @@ function dash() {
 }
 
 /* ---------------- Render y eventos ---------------- */
+// El taller de iFlows guarda lo resuelto en su propio localStorage: se copia al avance de la cuenta
+// (sap:P:<id> para escenarios, sap:Q:c<n> para cuestionarios) para que cuente en otros dispositivos y en el panel.
+// Lo resuelto en el taller: lo de este navegador más lo guardado en la cuenta
+const sapSolved = () => {
+  const sd = { ...sapDone() };
+  for (const k of Object.keys(data().progress)) {
+    if (k.startsWith('sap:P:')) sd[k.slice(6)] = true; else if (k.startsWith('sap:Q:')) sd['q-' + k.slice(6)] = true;
+  }
+  return sd;
+};
+const syncSap = () => {
+  const d = sapDone(), pr = data().progress; let changed = false;
+  for (const id of Object.keys(d)) {
+    if (!d[id] || id === 'libre') continue;
+    const k = id.startsWith('q-') ? `sap:Q:${id.slice(2)}` : `sap:P:${id}`;
+    if (!pr[k]) { pr[k] = true; changed = true; }
+  }
+  if (changed) persist();
+};
 function render() {
+  syncSap();
   renderNav();
   $('.shell').classList.toggle('full', state.view === 'home');
-  view.replaceChildren({ home, auth, dash }[state.view]());
+  if ((state.view === 'olvido' || state.view === 'clave') && !sb) state.view = 'auth';
+  if (state.view === 'clave' && !cloud && !state.recovery) state.view = 'auth';
+  view.replaceChildren({ home, auth, dash, olvido: pass, clave: pass }[state.view]());
+  state.passMsg = '';
   if (state.view === 'home') initCarousel(); else if (carKill) { carKill(); carKill = null; }
 }
 document.addEventListener('click', e => {
@@ -293,11 +321,36 @@ document.addEventListener('click', e => {
   }
 });
 document.addEventListener('submit', async e => {
+  if (e.target.id !== 'passForm') return;
+  e.preventDefault();
+  const err = $('#passErr'), ok = $('#passOk'), btn = e.target.querySelector('[type="submit"]');
+  err.textContent = ''; ok.textContent = '';
+  if (state.view === 'olvido') {
+    const email = $('#pw_email').value.trim().toLowerCase();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { err.textContent = 'Escribí un email válido.'; return; }
+    btn.disabled = true;
+    const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: location.origin + location.pathname });
+    btn.disabled = false;
+    // El mismo mensaje exista o no la cuenta, para no revelar qué emails están registrados
+    if (error && !/not found/i.test(error.message)) { err.textContent = /rate|seconds/i.test(error.message) ? 'Pediste varios enlaces seguidos. Esperá un minuto y probá de nuevo.' : error.message; return; }
+    ok.textContent = 'Si hay una cuenta con ese email, te llega un enlace en unos minutos. Revisá también el correo no deseado.';
+    return;
+  }
+  const pw = $('#pw_new').value, rp = $('#pw_rep').value;
+  if (pw.length < 8) { err.textContent = 'La contraseña tiene que tener al menos 8 caracteres.'; return; }
+  if (pw !== rp) { err.textContent = 'Las contraseñas no coinciden.'; return; }
+  btn.disabled = true;
+  const { error } = await sb.auth.updateUser({ password: pw });
+  btn.disabled = false;
+  if (error) { err.textContent = /session/i.test(error.message) ? 'El enlace no es válido o venció. Pedí uno nuevo desde «¿Olvidaste tu contraseña?».' : /different|same/i.test(error.message) ? 'La contraseña nueva tiene que ser distinta de la anterior.' : /reauth|recent/i.test(error.message) ? 'Por seguridad, cerrá sesión, volvé a ingresar y cambiala de nuevo.' : error.message; return; }
+  state.recovery = false; toast('Contraseña actualizada.'); go('dash');
+});
+document.addEventListener('submit', async e => {
   if (e.target.id !== 'authForm') return;
   e.preventDefault();
   const err = $('#authErr'), email = $('#au_email').value.trim().toLowerCase(), pass = $('#au_pass').value, reg = state.auth === 'registro';
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { err.textContent = 'Escribí un email válido.'; return; }
-  if (pass.length < 6) { err.textContent = 'La contraseña tiene que tener al menos 6 caracteres.'; return; }
+  if (pass.length < (reg ? 8 : 6)) { err.textContent = `La contraseña tiene que tener al menos ${reg ? 8 : 6} caracteres.`; return; }
   if (sb) {
     const btn = e.target.querySelector('[type="submit"]'); btn.disabled = true; err.textContent = '';
     try {
@@ -329,6 +382,8 @@ document.addEventListener('submit', async e => {
 // Las otras páginas enlazan a #registro, #ingreso y #avance; #sap es el enlace viejo a SAP CPI
 const fromHash = () => {
   const h = location.hash.slice(1);
+  if (/(^|&)type=recovery(&|$)/.test(h)) { state.recovery = true; state.view = 'clave'; render(); return; }
+  if (/(^|&)error_code=/.test(h)) { state.view = 'olvido'; state.passMsg = 'El enlace venció o ya se usó. Pedí uno nuevo.'; history.replaceState(null, '', location.pathname); render(); return; }
   if (h === 'sap') { location.replace(SAP.href); return; }
   if (h === 'registro' || h === 'ingreso') Object.assign(state, { view: 'auth', auth: h });
   else if (h === 'avance') state.view = 'dash';
@@ -339,6 +394,10 @@ window.addEventListener('hashchange', fromHash);
 fromHash();
 if (sb) {
   sb.auth.getSession().then(async ({ data: { session } }) => { if (session) { await loadCloud(session.user); render(); } });
-  sb.auth.onAuthStateChange((ev, session) => { if (ev === 'SIGNED_IN' && session && !cloud) loadCloud(session.user).then(render); });
+  sb.auth.onAuthStateChange((ev, session) => {
+    if (ev === 'PASSWORD_RECOVERY') { state.recovery = true; state.view = 'clave'; }
+    if ((ev === 'SIGNED_IN' || ev === 'PASSWORD_RECOVERY') && session && !cloud) loadCloud(session.user).then(render);
+    else if (ev === 'PASSWORD_RECOVERY') render();
+  });
 }
 })();

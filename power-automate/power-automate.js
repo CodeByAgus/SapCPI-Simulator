@@ -1316,6 +1316,7 @@ function project() {
     <div class="tl-brand"><b>${TALLER[pf]}</b><small>Práctica de ${p.name} en flowDev</small></div>
     <label class="tl-sel"><span>Ejercicio</span>${selectorHtml(pf)}</label>
     <span class="pill tl-prog">${doneCount(pf)}/${TOTAL(pf)} completados</span>
+    ${quiz ? '' : '<button type="button" class="btn line sm" data-act="tour">Cómo se usa</button>'}
     ${quiz ? '' : `<button type="button" class="btn line sm" data-act="run">${esc(p.run)}</button>${j.free ? '' : '<button type="button" class="btn sky sm" data-act="verify">Verificar ejercicio</button>'}`}
   </section>`;
   if (quiz) return `${top}<section class="tl quiz"><div class="tl-panel"><div class="tl-body">${quizHtml(pf, quiz)}</div></div></section>`;
@@ -1482,11 +1483,25 @@ dBody.addEventListener('focusout', () => { if (state.view === 'project' && state
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && state.view === 'project' && state.sel && !e.target.closest('input,textarea,select')) closeDrawer(); });
 
 /* ---------------- Render y eventos ---------------- */
+/* ---------------- Guía de uso del taller (tour.js) ---------------- */
+const ptab = k => () => document.querySelector(`[data-ptab="${k}"][role="tab"]`)?.click();
+const TOUR_STEPS = [
+  { title: 'Así se usa el taller de cloud flows', text: 'En 8 pasos cortos vas a ver dónde está cada cosa. Podés saltar la guía y volver a abrirla cuando quieras con el botón «Cómo se usa».' },
+  { sel: '.tl-sel', title: 'Elegí un ejercicio', text: 'Los escenarios guiados, la práctica extra y los cuestionarios están en esta lista. Al lado ves cuántos completaste.' },
+  { sel: '.tl-panel', before: ptab('ej'), title: 'Leé el escenario', text: 'En la pestaña Ejercicio están la historia, los requisitos, los datos de entrada de ejemplo y las pistas. Leelo antes de armar el flujo.' },
+  { sel: '.tl-pal', title: 'Agregá el trigger y las acciones', text: 'Hacé clic en un trigger o una acción de la paleta para sumarlo al final del flujo: Forms, Outlook, Teams, Excel, Condition, Apply to each, variables y más.' },
+  { sel: '.tl-stage', title: 'Ordená el flujo', text: 'El botón + entre dos pasos elige dónde insertar la próxima acción. Hacé clic en un paso para abrir sus propiedades.' },
+  { sel: '.tl-panel', before: ptab('prop'), title: 'Configurá cada acción', text: 'En Propiedades completás los campos. Podés usar expresiones como en Power Automate: `@{triggerBody()?[\'email\']}`, `body(\'Accion\')` o `variables(\'total\')`.' },
+  { sel: '.tl-panel', before: ptab('run'), title: 'Probá el flujo', text: 'En Probar editás los datos de entrada (JSON) y ejecutás el flujo. Vas a ver el resultado, las acciones que se realizaron y la salida de cada paso.' },
+  { sel: '[data-act="verify"]', before: ptab('ej'), after: ptab('ej'), title: 'Verificá el ejercicio', text: 'Corre las pruebas del escenario: cuando todas pasan, queda resuelto y suma a tu avance. Si te trabás, en Ejercicio podés ver la solución o reiniciar.' },
+];
+
 function render() {
   renderNav();
   $('.shell').classList.toggle('wide', state.view === 'project');
   $('.shell').classList.toggle('full', state.view === 'platform');
   view.innerHTML = { platform, project }[state.view]();
+  if (state.view === 'project' && !state.tquiz && window.flowTour && !window.flowTour.isOpen()) setTimeout(() => window.flowTour.auto(TOUR_STEPS, 'pa-taller'), 400);
   if (state.view === 'project') { const m = $('#propMount'); if (m) { if (!state.sel || !findNode(state.sel)) { state.sel = null; propsEmpty(); } m.appendChild(dBody); } }
 }
 document.addEventListener('click', e => {
@@ -1509,6 +1524,7 @@ document.addEventListener('click', e => {
     case 'grade': { const qz = P[pf].quizzes.find(q => q.id === state.quizId), ans = data().quiz[`${pf}:${qz.id}`] || {}; state.graded = true; if (qz.qs.every((_, i) => ans[i] === 0)) { mark(`${pf}:Q:${qz.id}`); toast('Cuestionario aprobado.'); } return render(); }
     case 'run': { const inp = readInput(); if (!inp) { state.ptab = 'run'; return showTab(); } state.run = runFlow(clone(state.flow), pf, inp, mocksFor(state.proj)); state.results = null; state.ptab = 'run'; return render(); }
     case 'verify': return verify();
+    case 'tour': return window.flowTour?.start(TOUR_STEPS, 'pa-taller');
     case 'sol': case 'reset': state.confirm = d.act; return render();
     case 'cancel': state.confirm = null; return render();
     case 'solok': state.flow = state.proj.solution(); Object.assign(state, { confirm: null, run: null, results: null, sel: null, ins: null }); saveFlow(); toast('Solución cargada: abrí cada paso para estudiarla.'); return render();

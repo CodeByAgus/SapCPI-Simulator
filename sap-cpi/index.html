@@ -3,14 +3,34 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>SAP CPI · flowDev</title>
-<meta name="description" content="Aprendé SAP Cloud Integration (CPI): 20 clases de teoría, escenarios guiados y un taller de iFlows que verifica tu trabajo.">
+<title>SAP CPI: curso y simulador de iFlows gratis · flowDev</title>
+<meta name="description" content="Aprendé SAP Cloud Integration (CPI): 20 clases de teoría, escenarios guiados, cuestionarios y un taller de iFlows que verifica tu trabajo en el navegador.">
+<link rel="canonical" href="https://flowdev-simulators.vercel.app/sap-cpi/">
+<meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="theme-color" content="#262624">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%229%22 fill=%22%23111110%22/%3E%3Cpath d=%22M9 16h13M17 10l6 6-6 6%22 fill=%22none%22 stroke=%22%23DCEEFB%22 stroke-width=%222.6%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/%3E%3C/svg%3E">
+<meta name="color-scheme" content="dark light">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="flowDev">
+<meta property="og:locale" content="es_AR">
+<meta property="og:url" content="https://flowdev-simulators.vercel.app/sap-cpi/">
+<meta property="og:title" content="SAP CPI: curso y simulador de iFlows gratis · flowDev">
+<meta property="og:description" content="Aprendé SAP Cloud Integration (CPI): 20 clases de teoría, escenarios guiados, cuestionarios y un taller de iFlows que verifica tu trabajo en el navegador.">
+<meta property="og:image" content="https://flowdev-simulators.vercel.app/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="flowDev: practicá SAP CPI y Power Automate gratis en el navegador">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="SAP CPI: curso y simulador de iFlows gratis · flowDev">
+<meta name="twitter:description" content="Aprendé SAP Cloud Integration (CPI): 20 clases de teoría, escenarios guiados, cuestionarios y un taller de iFlows que verifica tu trabajo en el navegador.">
+<meta name="twitter:image" content="https://flowdev-simulators.vercel.app/assets/og-image.png">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<link rel="manifest" href="../site.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="sap.css?v=4">
+<link rel="stylesheet" href="sap.css?v=5">
 </head>
 <body>
 <div class="shell">
@@ -25,10 +45,11 @@
   <main id="view"></main>
   <footer class="foot">
     <p>flowDev es un proyecto educativo independiente. SAP, Microsoft, Power Platform, Power Automate, MuleSoft y KNIME son marcas de sus respectivos dueños. El editor es un simulador simplificado: no se conecta a ninguna cuenta ni servicio real.</p>
+    <p><a href="../privacidad.html">Privacidad</a></p>
   </footer>
 </div>
 <div class="toast" id="toast" hidden></div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" integrity="sha384-0w2KAL2YHP6wKOkUDzkCDGgVvfmHnj02DHeQ6XcHOgTfFsGyonKOpShMH1x6nk9o" crossorigin="anonymous"></script>
 <script src="../config.js?v=21"></script>
 <script src="sap.js?v=2"></script>
 </body>

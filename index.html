@@ -3,14 +3,35 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>flowDev</title>
-<meta name="description" content="flowDev: aprendé a crear automatizaciones con flujos en SAP CPI y Power Automate (Power Platform): clases, proyectos guiados y un editor que verifica tu trabajo.">
+<title>flowDev · Practicá SAP CPI y Power Automate gratis</title>
+<meta name="description" content="Simuladores gratuitos para aprender SAP Cloud Integration (CPI) y Power Automate: clases cortas, escenarios guiados y un editor que verifica tus flujos en el navegador, sin licencias.">
+<link rel="canonical" href="https://flowdev-simulators.vercel.app/">
+<meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="theme-color" content="#262624">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%229%22 fill=%22%23111110%22/%3E%3Cpath d=%22M9 16h13M17 10l6 6-6 6%22 fill=%22none%22 stroke=%22%23DCEEFB%22 stroke-width=%222.6%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/%3E%3C/svg%3E">
+<meta name="color-scheme" content="dark light">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="flowDev">
+<meta property="og:locale" content="es_AR">
+<meta property="og:url" content="https://flowdev-simulators.vercel.app/">
+<meta property="og:title" content="flowDev · Practicá SAP CPI y Power Automate gratis">
+<meta property="og:description" content="Simuladores gratuitos para aprender SAP Cloud Integration (CPI) y Power Automate: clases cortas, escenarios guiados y un editor que verifica tus flujos en el navegador, sin licencias.">
+<meta property="og:image" content="https://flowdev-simulators.vercel.app/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="flowDev: practicá SAP CPI y Power Automate gratis en el navegador">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="flowDev · Practicá SAP CPI y Power Automate gratis">
+<meta name="twitter:description" content="Simuladores gratuitos para aprender SAP Cloud Integration (CPI) y Power Automate: clases cortas, escenarios guiados y un editor que verifica tus flujos en el navegador, sin licencias.">
+<meta name="twitter:image" content="https://flowdev-simulators.vercel.app/assets/og-image.png">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebSite", "@id": "https://flowdev-simulators.vercel.app/#website", "url": "https://flowdev-simulators.vercel.app/", "name": "flowDev", "inLanguage": "es", "description": "Simuladores gratuitos para aprender SAP Cloud Integration (CPI) y Power Automate: clases cortas, escenarios guiados y un editor que verifica tus flujos en el navegador, sin licencias."}, {"@type": "Course", "name": "SAP Cloud Integration (CPI)", "url": "https://flowdev-simulators.vercel.app/sap-cpi/", "inLanguage": "es", "description": "Aprendé SAP Cloud Integration (CPI): 20 clases de teoría, escenarios guiados, cuestionarios y un taller de iFlows que verifica tu trabajo en el navegador.", "isAccessibleForFree": true, "provider": {"@type": "Organization", "name": "flowDev", "url": "https://flowdev-simulators.vercel.app/"}}, {"@type": "Course", "name": "Power Automate", "url": "https://flowdev-simulators.vercel.app/power-automate/", "inLanguage": "es", "description": "Aprendé Power Automate: 20 clases, cuestionarios y un editor de cloud flows con expresiones reales que verifica tu flujo paso a paso, sin licencia de Microsoft 365.", "isAccessibleForFree": true, "provider": {"@type": "Organization", "name": "flowDev", "url": "https://flowdev-simulators.vercel.app/"}}]}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="styles.css?v=22">
+<link rel="stylesheet" href="styles.css?v=24">
 </head>
 <body>
 <div class="shell">
@@ -30,6 +51,7 @@
   <main id="view"></main>
   <footer class="foot">
     <p>flowDev es un proyecto educativo independiente. SAP, Microsoft, Power Platform, Power Automate, MuleSoft y KNIME son marcas de sus respectivos dueños. El editor es un simulador simplificado: no se conecta a ninguna cuenta ni servicio real.</p>
+    <p><a href="privacidad.html">Privacidad</a></p>
   </footer>
 </div>
 <div class="toast" id="toast" hidden></div>
@@ -164,8 +186,9 @@
       <form id="authForm" novalidate>
         <label class="fld" data-if="reg"><span>Nombre</span><input id="au_name" autocomplete="name" required></label>
         <label class="fld"><span>Email</span><input id="au_email" type="email" autocomplete="email" required></label>
-        <label class="fld"><span>Contraseña</span><input id="au_pass" type="password" autocomplete="current-password" minlength="6" required></label>
+        <label class="fld"><span>Contraseña</span><input id="au_pass" type="password" autocomplete="current-password" minlength="8" required></label>
         <p class="err" id="authErr" role="alert"></p>
+        <p class="forgot" data-if="forgot"><button type="button" class="linkbtn" data-go="olvido">¿Olvidaste tu contraseña?</button></p>
         <div class="row">
           <button class="btn" type="submit" data-if="reg">Crear cuenta</button>
           <button class="btn" type="submit" data-if="!reg">Ingresar</button>
@@ -175,6 +198,30 @@
       <p class="note" data-if="sb">Tu cuenta y tu avance se guardan en la nube: podés seguir desde cualquier dispositivo.</p>
       <p class="note" data-if="!sb">Las cuentas de flowDev se guardan solo en este navegador: no se envía nada a un servidor y no sirven en otro dispositivo. No uses una contraseña que uses en otros sitios.</p>
     </div>
+  </section>
+</template>
+
+<!-- Recuperar contraseña ("ask" = pedir el enlace por email) y elegir una contraseña nueva -->
+<template id="tplPass">
+  <section class="card pass-card">
+    <p class="eyebrow dim">Tu cuenta</p>
+    <h1 class="h2" data-if="ask">Recuperá tu contraseña</h1>
+    <h1 class="h2" data-if="!ask">Elegí una contraseña nueva</h1>
+    <p data-if="ask">Escribí el email de tu cuenta y te mandamos un enlace para crear una contraseña nueva.</p>
+    <p data-if="!ask">Tiene que tener al menos 8 caracteres.</p>
+    <form id="passForm" novalidate>
+      <label class="fld" data-if="ask"><span>Email</span><input id="pw_email" type="email" autocomplete="email" required></label>
+      <label class="fld" data-if="!ask"><span>Contraseña nueva</span><input id="pw_new" type="password" autocomplete="new-password" minlength="8" required></label>
+      <label class="fld" data-if="!ask"><span>Repetí la contraseña</span><input id="pw_rep" type="password" autocomplete="new-password" minlength="8" required></label>
+      <p class="err" id="passErr" role="alert" data-text="passErr"></p>
+      <p class="okmsg" id="passOk" role="status"></p>
+      <div class="row">
+        <button class="btn" type="submit" data-if="ask">Enviar enlace</button>
+        <button class="btn" type="submit" data-if="!ask">Guardar contraseña</button>
+        <button type="button" class="btn line" data-auth="ingreso" data-if="ask">Volver a ingresar</button>
+        <button type="button" class="btn line" data-go="dash" data-if="!ask">Cancelar</button>
+      </div>
+    </form>
   </section>
 </template>
 
@@ -188,6 +235,7 @@
       <p class="lead" data-if="user">Tu progreso se guarda en tu cuenta: seguí desde cualquier dispositivo.</p>
       <p class="lead" data-if="!user">Estás practicando sin cuenta: el avance queda solo en este navegador y ves 3 clases y 2 cuestionarios por plataforma.</p>
       <div class="row" data-if="!user"><button class="btn" data-auth="registro">Crear cuenta gratis</button><button class="btn line" data-auth="ingreso">Ingresar</button></div>
+      <div class="row" data-if="canPass"><button type="button" class="btn line sm" data-go="clave">Cambiar contraseña</button></div>
     </div>
     <div class="side dark">
       <div class="dash-total"><span class="dash-pc"><span data-text="pc"></span><small>%</small></span><span class="dim"><span data-text="done"></span> de <span data-text="total"></span> completados</span></div>
@@ -220,8 +268,8 @@
   <li><span data-text="label"></span><span class="dim"><span data-text="done"></span>/<span data-text="total"></span></span><div class="meter" data-meter><span></span></div></li>
 </template>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" integrity="sha384-0w2KAL2YHP6wKOkUDzkCDGgVvfmHnj02DHeQ6XcHOgTfFsGyonKOpShMH1x6nk9o" crossorigin="anonymous"></script>
 <script src="config.js?v=21"></script>
-<script src="app.js?v=23"></script>
+<script src="app.js?v=25"></script>
 </body>
 </html>

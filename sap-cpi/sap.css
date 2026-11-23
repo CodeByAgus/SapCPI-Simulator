@@ -151,3 +151,6 @@ a.list-item:hover .h3{text-decoration:underline}
 .card.proc .proc-head{margin-bottom:16px}
 .card.proc .proc-head .display{font-size:clamp(28px,3.6vw,44px)}
 .card.proc .proc-steps svg{width:26px;height:26px}
+
+.foot a{color:inherit}
+.foot p+p{margin-top:6px}

@@ -194,7 +194,7 @@ const SAP_LESSONS = [
 ];
 const sapDone = () => { try { return JSON.parse(localStorage.getItem('taller-iflows-v1') || '{}').done || {}; } catch (_) { return {}; } };
 function sap() {
-  const tab = state.tab, pr = data().progress, done = sapDone(), href = id => `${SAP.href}#${id}`;
+  const tab = state.tab, pr = data().progress, done = sapSolved(), href = id => `${SAP.href}#${id}`;
   const total = SAP_SCEN.length + SAP_EXTRA.length + SAP_QUIZ.length, n = [...SAP_SCEN.map(s => s[0]), ...SAP_EXTRA.map(s => s[0]), ...SAP_QUIZ.map((_, i) => `q-c${i + 1}`)].filter(id => done[id]).length;
   const link = (id, pill, title, sub) => `<a class="list-item" href="${href(id)}"><span class="pill${done[id] ? ' ok' : ''}">${done[id] ? 'Resuelto' : esc(pill)}</span><span class="grow"><span class="h3">${esc(title)}</span>${sub ? `<br><span class="dim">${esc(sub)}</span>` : ''}</span><span class="arrow">${svg('arrow')}</span></a>`;
   let body = '';
@@ -235,7 +235,26 @@ function sap() {
 }
 
 /* ---------------- Render y eventos ---------------- */
-function render() { renderNav(); view.innerHTML = sap(); }
+// El taller de iFlows guarda lo resuelto en su propio localStorage: se copia al avance de la cuenta
+// (sap:P:<id> para escenarios, sap:Q:c<n> para cuestionarios) para que cuente en otros dispositivos y en el panel.
+// Lo resuelto en el taller: lo de este navegador más lo guardado en la cuenta
+const sapSolved = () => {
+  const sd = { ...sapDone() };
+  for (const k of Object.keys(data().progress)) {
+    if (k.startsWith('sap:P:')) sd[k.slice(6)] = true; else if (k.startsWith('sap:Q:')) sd['q-' + k.slice(6)] = true;
+  }
+  return sd;
+};
+const syncSap = () => {
+  const d = sapDone(), pr = data().progress; let changed = false;
+  for (const id of Object.keys(d)) {
+    if (!d[id] || id === 'libre') continue;
+    const k = id.startsWith('q-') ? `sap:Q:${id.slice(2)}` : `sap:P:${id}`;
+    if (!pr[k]) { pr[k] = true; changed = true; }
+  }
+  if (changed) persist();
+};
+function render() { syncSap(); renderNav(); view.innerHTML = sap(); }
 document.addEventListener('click', e => {
   const el = e.target.closest('[data-auth],[data-tab],[data-act]'); if (!el) return;
   const d = el.dataset;

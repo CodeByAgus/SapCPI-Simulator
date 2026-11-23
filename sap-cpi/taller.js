@@ -2400,3 +2400,23 @@ function loadExercise(id) {
 }
 loadExercise(location.hash.slice(1) || store.last);
 })();
+
+/* ---------------- Guía de uso del taller (tour.js) ---------------- */
+(() => {
+  if (!window.flowTour) return;
+  const tab = id => () => document.getElementById(id)?.click();
+  const STEPS = [
+    { title: 'Así se usa el taller de iFlows', text: 'En 8 pasos cortos vas a ver dónde está cada cosa. Podés saltar la guía y volver a abrirla cuando quieras con el botón «Cómo se usa».' },
+    { sel: '.exsel', title: 'Elegí un ejercicio', text: 'Los escenarios guiados, la práctica extra y los cuestionarios están en esta lista. El contador muestra cuántos resolviste.' },
+    { sel: '.panel', before: tab('t-ej'), title: 'Leé el escenario', text: 'En la pestaña Ejercicio están los requisitos, el mensaje de ejemplo y las pistas. Es el pedido del cliente: leelo antes de armar el iFlow.' },
+    { sel: '#palette', title: 'Agregá elementos', text: 'Hacé clic en un elemento de la paleta para sumarlo al iFlow: eventos, adaptadores, Content Modifier, Router, Groovy Script, mapeos y más.' },
+    { sel: '#canvasWrap', title: 'Conectá el flujo', text: 'Arrastrá los elementos para moverlos. Para conectar, seleccioná uno y arrastrá el círculo azul hasta el destino. Con una flecha seleccionada, un clic en la paleta inserta el paso en el medio. `Supr` borra lo seleccionado.' },
+    { sel: '.panel', before: tab('t-prop'), title: 'Configurá cada paso', text: 'Con un elemento o una flecha seleccionados, la pestaña Propiedades muestra sus campos: adaptador, headers, properties, XPath, scripts y condiciones del Router.' },
+    { sel: '.panel', before: tab('t-test'), title: 'Probá con datos', text: 'En Probar escribís el body de entrada y ejecutás el iFlow. El trace muestra paso a paso los headers, las properties y el body que sale de cada elemento.' },
+    { sel: '.actions', before: tab('t-ej'), title: 'Revisá y verificá', text: '«Check» busca errores de modelado y «Probar» ejecuta el iFlow. «Verificar ejercicio» corre las pruebas del escenario: cuando todas pasan, queda resuelto. Si te trabás, en Ejercicio podés ver la solución.' },
+  ];
+  document.getElementById('btnTour')?.addEventListener('click', () => window.flowTour.start(STEPS, 'sap-taller'));
+  // La primera vez que se abre un ejercicio con lienzo (no un cuestionario), la guía arranca sola
+  const pal = document.getElementById('palette');
+  if (pal && pal.offsetWidth) setTimeout(() => window.flowTour.auto(STEPS, 'sap-taller'), 400);
+})();

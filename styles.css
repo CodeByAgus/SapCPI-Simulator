@@ -177,3 +177,21 @@ textarea{resize:vertical;border-radius:14px}
 .dash-rows .meter{grid-column:1/-1}
 .dash-next{margin-top:auto;padding-top:14px;border-top:1.5px solid var(--line);display:flex;flex-direction:column;gap:8px}
 @media (max-width:620px){.dash-mini{grid-template-columns:1fr}}
+
+/* Pie, página de privacidad y 404 */
+.foot a{color:inherit}
+.foot p+p{margin-top:6px}
+.legal{max-width:820px;margin-inline:auto;display:flex;flex-direction:column;gap:12px;width:100%}
+.legal .display{margin-bottom:4px}
+.legal h2{margin-top:14px}
+.legal ul{margin:0;padding-left:20px;display:grid;gap:6px}
+.legal a{color:inherit}
+.hero404{min-height:60svh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:18px}
+a.logo{text-decoration:none}
+
+/* Recuperar y cambiar contraseña */
+.linkbtn{background:none;border:0;padding:0;color:inherit;text-decoration:underline;font:inherit;cursor:pointer}
+.forgot{font-size:14px;margin:-4px 0 12px}
+.pass-card{max-width:520px;width:100%;margin-inline:auto;display:flex;flex-direction:column;gap:12px}
+.okmsg{color:var(--ok);font-size:14px}
+.okmsg:empty{display:none}

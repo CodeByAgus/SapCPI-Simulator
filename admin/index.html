@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Panel · flowDev</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#262624">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../styles.css?v=24">
+<link rel="stylesheet" href="admin.css?v=1">
+</head>
+<body>
+<div class="shell full">
+  <header class="nav">
+    <a class="logo" href="../index.html" aria-label="flowDev, ir al inicio">
+      <span class="logo-mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span>
+      <span class="logo-word">flow<b>Dev</b></span>
+    </a>
+    <nav class="nav-links" aria-label="Secciones">
+      <a href="../index.html">Inicio</a>
+      <span class="nav-here">Panel</span>
+    </nav>
+    <div class="nav-user"><button type="button" class="btn line sm" id="btnRefresh" hidden>Actualizar</button></div>
+  </header>
+  <main id="view"><section class="card"><p class="dim">Cargando…</p></section></main>
+</div>
+<div class="ad-tip" id="tip" role="status" hidden></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" integrity="sha384-0w2KAL2YHP6wKOkUDzkCDGgVvfmHnj02DHeQ6XcHOgTfFsGyonKOpShMH1x6nk9o" crossorigin="anonymous"></script>
+<script src="../config.js?v=21"></script>
+<script src="admin.js?v=1"></script>
+</body>
+</html>
