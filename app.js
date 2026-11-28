@@ -202,7 +202,7 @@ function initCarousel() {
     slides.forEach((s, i) => { const d = Math.abs(i - idx); s.style.opacity = d === 0 ? 1 : d === 1 ? 0.5 : 0.2; });
     const l = ((idx % n) + n) % n;
     dots.forEach((d, i) => d.setAttribute('aria-current', i === l ? 'true' : 'false'));
-    status.textContent = `Plataforma ${l + 1} de ${n}: ${dots[l].getAttribute("aria-label")}`;
+    status.textContent = `${rail.dataset.label || 'Plataforma'} ${l + 1} de ${n}: ${dots[l].getAttribute("aria-label")}`;
   };
   const place = (dx = 0) => { track.style.transform = `translateX(${center(idx) + dx}px)`; };
   const rebase = () => { if (idx >= n && idx < 2 * n) return; idx = ((idx % n) + n) % n + n; anim(false); place(); paint(); void track.offsetWidth; anim(true); };
@@ -268,6 +268,7 @@ function initCarousel() {
 function home() {
   const f = tpl('tplHome', { user: me(), nPlat: 4 + NEW.length, nEsc: TOTAL_ESC });
   homeCursos($('#homeCursos', f));
+  buildCarousel(f);
   return f;
 }
 // Cursos gratis destacados: el primero de cada nicho, con filtro por nicho
@@ -376,6 +377,7 @@ function render() {
   if (state.view === 'clave' && !cloud && !state.recovery) state.view = 'auth';
   view.replaceChildren({ home, auth, dash, olvido: pass, clave: pass }[state.view]());
   state.passMsg = '';
+  if (state.view === 'home') initCarousel(); else if (carKill) { carKill(); carKill = null; }
   if (state.view === 'home' && state.scroll) { const el = document.getElementById(state.scroll); state.scroll = null; if (el) requestAnimationFrame(() => el.scrollIntoView({ block: 'start' })); }
 }
 document.addEventListener('click', e => {

@@ -32,7 +32,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="styles.css?v=24">
-<link rel="stylesheet" href="inicio.css?v=3">
+<link rel="stylesheet" href="inicio.css?v=4">
 </head>
 <body>
 <div class="shell">
@@ -114,9 +114,13 @@
     <h2 class="display h-sec-t" id="areasT">Elegí tu área de trabajo</h2>
     <p class="lead dim-l">Cada área agrupa las herramientas de un perfil laboral. Empezá por la que querés sumar a tu CV.</p>
   </section>
-  <div class="h-areas">
-    <article class="card h-area wide">
-      <p class="mono dim">01</p><h3 class="h2">Integración y automatización</h3><p class="dim">Analista de integración · Consultor SAP · Automatización de procesos</p>
+  <!-- Carrusel de áreas: app.js numera las tarjetas, arma los puntos y las copia para el bucle infinito -->
+  <section class="lc h-car" aria-label="Áreas de trabajo">
+    <div class="lc-rail" data-label="Área" tabindex="0" role="region" aria-roledescription="carrusel" aria-label="Áreas de trabajo. Usá las flechas para cambiar.">
+      <ul class="lc-track">
+        <li class="lc-slide" style="width:min(88cqw, 640px)">
+          <article class="card h-area wide">
+      <p class="mono dim">01</p><h3 class="h2 lc-name">Integración y automatización</h3><p class="dim">Analista de integración · Consultor SAP · Automatización de procesos</p>
       <ul class="h-plats">
         <li><a href="sap-cpi/index.html"><span class="mark" data-mark="sap"></span><span><b>SAP CPI</b><small>iFlows, mapeos y adaptadores</small></span><span class="ok-pill">Disponible</span></a></li>
         <li><a href="power-automate/index.html"><span class="mark" data-mark="pa"></span><span><b>Power Automate</b><small>Cloud flows, conectores y aprobaciones</small></span><span class="ok-pill">Disponible</span></a></li>
@@ -124,33 +128,55 @@
         <li><a href="conexiones/index.html"><span class="mark" data-mark="api"></span><span><b>Conexiones y APIs</b><small>REST, JSON, autenticación y errores</small></span><span class="ok-pill">Disponible</span></a></li>
       </ul>
     </article>
-    <article class="card h-area">
-      <p class="mono dim">02</p><h3 class="h2">Desarrollo</h3><p class="dim">Desarrollador/a jr. · Soporte técnico</p>
+          <span class="lc-cap"></span>
+        </li>
+        <li class="lc-slide" style="width:min(78cqw, 400px)">
+          <article class="card h-area">
+      <p class="mono dim">02</p><h3 class="h2 lc-name">Desarrollo</h3><p class="dim">Desarrollador/a jr. · Soporte técnico</p>
       <ul class="h-plats">
         <li><a href="claude-code/index.html"><span class="mark" data-mark="cc"></span><span><b>Claude Code</b><small>Agente de programación en la terminal</small></span><span class="ok-pill">Disponible</span></a></li>
         <li><a href="abap/index.html"><span class="mark" data-mark="abap"></span><span><b>ABAP</b><small>Programación en SAP</small></span><span class="ok-pill new">Nuevo</span></a></li>
       </ul>
     </article>
-    <article class="card h-area">
-      <p class="mono dim">03</p><h3 class="h2">Finanzas y operaciones</h3><p class="dim">Analista contable · Compras · Operaciones</p>
+          <span class="lc-cap"></span>
+        </li>
+        <li class="lc-slide" style="width:min(78cqw, 400px)">
+          <article class="card h-area">
+      <p class="mono dim">03</p><h3 class="h2 lc-name">Finanzas y operaciones</h3><p class="dim">Analista contable · Compras · Operaciones</p>
       <ul class="h-plats">
         <li><a href="s4hana/index.html"><span class="mark" data-mark="s4"></span><span><b>SAP S/4HANA</b><small>Compras, ventas y contabilidad</small></span><span class="ok-pill new">Nuevo</span></a></li>
       </ul>
     </article>
-    <article class="card h-area">
-      <p class="mono dim">04</p><h3 class="h2">Datos</h3><p class="dim">Analista de datos · BI</p>
+          <span class="lc-cap"></span>
+        </li>
+        <li class="lc-slide" style="width:min(78cqw, 400px)">
+          <article class="card h-area">
+      <p class="mono dim">04</p><h3 class="h2 lc-name">Datos</h3><p class="dim">Analista de datos · BI</p>
       <ul class="h-plats">
         <li><a href="knime/index.html"><span class="mark" data-mark="knime"></span><span><b>KNIME</b><small>Flujos de datos sin código</small></span><span class="ok-pill new">Nuevo</span></a></li>
         <li><a href="power-bi/index.html"><span class="mark" data-mark="pbi"></span><span><b>Power BI</b><small>Tableros, modelo y DAX</small></span><span class="ok-pill new">Nuevo</span></a></li>
       </ul>
     </article>
-    <article class="card h-area">
-      <p class="mono dim">05</p><h3 class="h2">Personas y RRHH</h3><p class="dim">Analista de RRHH · HRIS</p>
+          <span class="lc-cap"></span>
+        </li>
+        <li class="lc-slide" style="width:min(78cqw, 400px)">
+          <article class="card h-area">
+      <p class="mono dim">05</p><h3 class="h2 lc-name">Personas y RRHH</h3><p class="dim">Analista de RRHH · HRIS</p>
       <ul class="h-plats">
         <li><a href="successfactors/index.html"><span class="mark" data-mark="sf"></span><span><b>SAP SuccessFactors</b><small>Legajos, ingresos y evaluaciones</small></span><span class="ok-pill new">Nuevo</span></a></li>
       </ul>
     </article>
-  </div>
+          <span class="lc-cap"></span>
+        </li>
+      </ul>
+    </div>
+    <div class="lc-nav">
+      <button type="button" class="lc-btn" data-car="prev" aria-label="Área anterior">‹</button>
+      <div class="lc-dots" role="group" aria-label="Elegir área"></div>
+      <button type="button" class="lc-btn" data-car="next" aria-label="Área siguiente">›</button>
+    </div>
+    <p class="sr-only" aria-live="polite" id="lcStatus"></p>
+  </section>
 
   <!-- Cómo funciona -->
   <section class="card dark h-how">
@@ -316,6 +342,6 @@
 <script src="cursos/catalogo.js?v=1"></script>
 <script src="plataforma/catalogo.js?v=1"></script>
 <script src="config.js?v=21"></script>
-<script src="app.js?v=30"></script>
+<script src="app.js?v=31"></script>
 </body>
 </html>

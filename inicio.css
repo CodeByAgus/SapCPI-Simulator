@@ -59,7 +59,7 @@
 .h-area.wide{grid-column:span 4}
 .h-area:nth-child(2){grid-column:span 2}
 .h-plats{list-style:none;padding:0;display:flex;flex-direction:column;gap:6px;margin:10px 0 0}
-.h-area.wide .h-plats{display:grid;grid-template-columns:1fr 1fr}
+.h-area.wide .h-plats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
 .h-plats a{display:flex;align-items:center;gap:10px;border:1.5px solid var(--line);border-radius:12px;padding:6px 10px;color:inherit;text-decoration:none;background:#F7F7F3}
 .h-plats a:hover{border-color:var(--ink);background:var(--paper)}
 .h-plats .mark{--mark:30px}
@@ -133,10 +133,19 @@
 }
 @media (max-width:560px){
   .h-areas{grid-template-columns:1fr}
-  .h-area.wide .h-plats{grid-template-columns:1fr}
+  .h-area.wide .h-plats{grid-template-columns:minmax(0,1fr)}
   .h-steps{grid-template-columns:1fr}
   .h-foot{grid-template-columns:1fr}
   .h-desk{padding:22px 14px;min-height:0}
   .h-ticket{transform:rotate(-1deg)}
   .h-inbox li:nth-child(n+3){display:none}
 }
+
+/* Carrusel de áreas (usa el mecanismo .lc-* de styles.css) */
+.h-car{padding:4px 0 0}
+.h-car .lc-track{align-items:stretch}
+.h-car .lc-slide{gap:8px}
+.h-car .h-area{flex:1;grid-column:auto;cursor:inherit;color:var(--ink)}
+.h-car .lc-cap{color:var(--muted-dark);padding-left:6px}
+.h-car .lc-nav{margin-top:12px}
+@media (max-width:560px){.h-car .h-area.wide .h-plats{grid-template-columns:minmax(0,1fr)}}
