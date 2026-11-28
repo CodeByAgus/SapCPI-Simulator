@@ -48,18 +48,25 @@
 .h-sec-row{width:100%;align-items:flex-end;gap:16px}
 
 /* Áreas */
-.h-areas{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px}
-.h-area{display:flex;flex-direction:column;gap:8px;grid-column:span 2}
+.h-areas{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+#areas{padding-top:12px}
+#areas .h-sec-t{font-size:clamp(28px,3.2vw,42px)}
+#areas .lead{font-size:15px}
+.h-area{display:flex;flex-direction:column;gap:2px;grid-column:span 2;padding:18px 20px}
+.h-area .h2{font-size:20px}
+.h-area>.dim{font-size:13px}
+.h-area>.mono{font-size:11.5px}
 .h-area.wide{grid-column:span 4}
 .h-area:nth-child(2){grid-column:span 2}
-.h-plats{list-style:none;padding:0;display:flex;flex-direction:column;gap:8px;margin-top:8px}
-.h-plats a{display:flex;align-items:center;gap:12px;border:1.5px solid var(--line);border-radius:16px;padding:10px 12px;color:inherit;text-decoration:none;background:#F7F7F3}
+.h-plats{list-style:none;padding:0;display:flex;flex-direction:column;gap:6px;margin:10px 0 0}
+.h-area.wide .h-plats{display:grid;grid-template-columns:1fr 1fr}
+.h-plats a{display:flex;align-items:center;gap:10px;border:1.5px solid var(--line);border-radius:12px;padding:6px 10px;color:inherit;text-decoration:none;background:#F7F7F3}
 .h-plats a:hover{border-color:var(--ink);background:var(--paper)}
-.h-plats .mark{--mark:38px}
+.h-plats .mark{--mark:30px}
 .h-plats a>span:nth-child(2){display:flex;flex-direction:column;margin-right:auto;min-width:0}
-.h-plats b{font-weight:500}
-.h-plats small{color:var(--muted);font-size:12.5px}
-.ok-pill{font-size:12px;border-radius:99px;padding:3px 10px;background:var(--sky);white-space:nowrap}
+.h-plats b{font-weight:500;font-size:14px}
+.h-plats small{color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ok-pill{font-size:11.5px;border-radius:99px;padding:2px 9px;background:var(--sky);white-space:nowrap}
 .ok-pill::before{content:'● ';font-size:9px;vertical-align:1px}
 .ok-pill.new{background:var(--ink);color:var(--paper)}
 
@@ -126,6 +133,7 @@
 }
 @media (max-width:560px){
   .h-areas{grid-template-columns:1fr}
+  .h-area.wide .h-plats{grid-template-columns:1fr}
   .h-steps{grid-template-columns:1fr}
   .h-foot{grid-template-columns:1fr}
   .h-desk{padding:22px 14px;min-height:0}
