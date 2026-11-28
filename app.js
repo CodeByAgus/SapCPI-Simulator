@@ -232,6 +232,8 @@ function initCarousel() {
     e.preventDefault();
   };
   rail.addEventListener('keydown', onKey);
+  const onFocus = e => { const s = e.target.closest('.lc-slide'); if (s && !s.hasAttribute('inert') && s.dataset.i !== undefined) toLogical(+s.dataset.i); };
+  rail.addEventListener('focusin', onFocus);
   const down = e => {
     if (moving || drag || (e.pointerType === 'mouse' && e.button !== 0)) return;
     drag = { id: e.pointerId, x: e.clientX, y: e.clientY, on: false };

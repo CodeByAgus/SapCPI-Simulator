@@ -102,7 +102,7 @@ window.FD_PLAT = {
       reqs: ['Constante <code>lc_iva</code> con valor <code>0.21</code>.', 'Variable <code>lv_total</code> de tipo empaquetado con 2 decimales.', 'Recorrer <code>lt_pedidos</code> con <code>LOOP AT ... ENDLOOP</code>.', 'Sumar cada importe con IVA: <code>importe * ( 1 + lc_iva )</code>.', 'Mostrar <code>lv_total</code> al final.'],
       hints: ['CONSTANTS lc_iva TYPE p DECIMALS 2 VALUE \'0.21\'.', 'Dentro del LOOP: lv_total = lv_total + ls_pedido-importe * ( 1 + lc_iva ).'],
       ws: { type: 'code', app: APP, screen: 'ZR_PEDIDOS_ABIERTOS · Report', lang: 'ABAP', start: "REPORT zr_pedidos_abiertos.\n\nSTART-OF-SELECTION.\n  SELECT pedido, cliente, importe\n    FROM ztb_pedidos\n    WHERE estado = 'A'\n    INTO TABLE @DATA(lt_pedidos).\n\n  \" Calculá el total con IVA\n\n",
-        run: out([[/loop\s+at\s+lt_pedidos/i, 'Recorriendo 3 pedidos…', ''], [/\*\s*\(\s*1\s*\+\s*lc_iva\s*\)/i, 'Total con IVA: 2.137.050,20', 'Total con IVA: 1.768.700,00 (¿falta el IVA?)']]) },
+        run: out([[/loop\s+at\s+lt_pedidos/i, 'Recorriendo 3 pedidos…', ''], [/\*\s*\(\s*1\s*\+\s*lc_iva\s*\)/i, 'Total con IVA: 2.140.127,00', 'Total con IVA: 1.768.700,00 (¿falta el IVA?)']]) },
       checks: [
         { t: 'Constante de IVA', ok: code(/constants\s*:?\s*lc_iva\s+type\s+p[^.]*value\s+'?0?\.21'?\s*\./i) },
         { t: 'lv_total con 2 decimales', ok: code(/data\s*:?\s*lv_total\s+type\s+p[^.]*decimals\s+2/i) },

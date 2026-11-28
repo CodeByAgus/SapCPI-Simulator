@@ -39,3 +39,48 @@ as $$
 $$;
 revoke all on function public.verify_certificate(text) from public;
 grant execute on function public.verify_certificate(text) to anon, authenticated;
+
+-- 2) Endurecimiento (revisión de código): el título, las partes y la fecha los pone la base, no el navegador.
+-- Plataformas que emiten certificado: el título y las partes salen de acá, no del navegador.
+create table if not exists public.cert_platforms (
+  id text primary key,
+  title text not null,
+  parts jsonb not null
+);
+alter table public.cert_platforms enable row level security;
+revoke all on public.cert_platforms from anon, authenticated;
+insert into public.cert_platforms (id, title, parts) values
+  ('btp', 'Proyecto final de SAP BTP: preparar la plataforma para conectar el ERP', '["Mapeo del ERP de producción","Destino OnPremise al ERP","Permisos del equipo"]'::jsonb),
+  ('abap', 'Proyecto final de ABAP: reporte de deuda de clientes', '["Leer las facturas vencidas","Validar el cliente y sumar la deuda","Alerta de límite en una clase"]'::jsonb),
+  ('s4hana', 'Proyecto final de SAP S/4HANA: proceso de compras completo (Procure to Pay)', '["Pedido de compra","Entrada de mercancías","Factura del proveedor"]'::jsonb),
+  ('knime', 'Proyecto final de KNIME: reporte mensual automatizado de ventas', '["Preparar las ventas","Enriquecer y calcular","Resumir y entregar"]'::jsonb),
+  ('power-bi', 'Proyecto final de Power BI: tablero de cumplimiento de objetivos de ventas', '["Preparar la tabla de objetivos","Medidas de cumplimiento","Visual de cumplimiento por provincia"]'::jsonb),
+  ('successfactors', 'Proyecto final de SAP SuccessFactors: ciclo de incorporación de una posición', '["Requisición de la búsqueda","Contratación","Objetivos del primer año"]'::jsonb)
+on conflict (id) do update set title = excluded.title, parts = excluded.parts;
+
+-- Al emitir: solo plataformas conocidas, título y partes oficiales, fecha del servidor.
+create or replace function public.certificates_fill()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare cp public.cert_platforms;
+begin
+  select * into cp from public.cert_platforms where id = new.platform;
+  if not found then
+    raise exception 'Plataforma sin certificado: %', new.platform using errcode = '22023';
+  end if;
+  new.title := cp.title;
+  new.summary := cp.parts;
+  new.issued_at := now();
+  return new;
+end;
+$$;
+revoke all on function public.certificates_fill() from public, anon, authenticated;
+drop trigger if exists certificates_fill on public.certificates;
+create trigger certificates_fill before insert on public.certificates
+  for each row execute function public.certificates_fill();
+
+-- Defensa extra: desde la web nadie actualiza ni borra certificados.
+revoke update, delete, truncate on public.certificates from anon, authenticated;

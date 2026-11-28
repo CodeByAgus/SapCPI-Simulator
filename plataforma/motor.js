@@ -177,7 +177,7 @@ function quiz() {
     <p class="eyebrow">Cuestionario ${state.i + 1} · preguntas tipo entrevista</p><h1 class="h1">${esc(l.t)}</h1>
     <ol class="qz">${qs.map((q, n) => `<li><p class="h3">${esc(q[0])}</p><div class="opts">${order(q).map(o => {
       const sel = state.answers[n] === o, cls = g ? (o === 0 ? ' ok' : sel ? ' bad' : '') : sel ? ' sel' : '';
-      return `<button type="button" class="opt${cls}" data-act="ans" data-n="${n}" data-o="${o}" ${g ? 'disabled' : ''}>${esc(q[1][o])}</button>`;
+      return `<button type="button" class="opt${cls}" data-act="ans" data-n="${n}" data-o="${o}" aria-pressed="${sel}" ${g ? 'disabled' : ''}>${esc(q[1][o])}</button>`;
     }).join('')}</div>${g ? `<p class="dim expl">${esc(q[2] || '')}</p>` : ''}</li>`).join('')}</ol>
     <div class="row">${g ? `<p class="h3">${right} de ${qs.length} correctas${right === qs.length ? ' · aprobado' : ''}</p><button type="button" class="btn line" data-act="retry">Volver a intentar</button>` : `<button type="button" class="btn" data-act="grade" ${Object.keys(state.answers).length < qs.length ? 'disabled' : ''}>Corregir</button>`}
     ${P.lessons[state.i + 1] ? `<button type="button" class="btn line" data-go="clase" data-i="${state.i + 1}">Siguiente clase</button>` : ''}</div>
@@ -249,7 +249,7 @@ function workspace(t) {
   const head = `<div class="ws-head"><span class="pill">${esc(w.app || P.name)}</span><b>${esc(w.screen)}</b>${w.code ? `<span class="mono dim">${esc(w.code)}</span>` : ''}</div>`;
   if (w.type === 'code') return `${head}<div class="ed"><div class="ln" aria-hidden="true">${Array.from({ length: Math.max(14, s.code.split('\n').length + 1) }, (_, i) => i + 1).join('<br>')}</div>
     <textarea class="code" data-code spellcheck="false" aria-label="Editor de ${esc(w.lang)}">${esc(s.code)}</textarea></div>
-    <p class="dim small">${esc(w.lang)} · el simulador revisa la estructura del código, no lo compila.</p>`;
+    <p class="dim small">${esc(w.lang)} · el simulador revisa la estructura del código, no lo compila. Tab inserta espacios; para salir del editor apretá Esc y después Tab.</p>`;
   if (w.type === 'pipeline') return `${head}<div class="pl">
     <div class="pal"><p class="h4">${esc(w.paletteLabel || 'Nodos')}</p><p class="dim small">Para separar datos en la configuración podés usar · o |</p>${w.palette.map(p => `<button type="button" class="pal-i" data-act="add" data-k="${p.k}">${ic('plus')}<span>${esc(p.label)}</span>${p.cat ? `<small>${esc(p.cat)}</small>` : ''}</button>`).join('')}</div>
     <ol class="chain">${s.nodes.length ? s.nodes.map((n, i) => { const p = w.palette.find(x => x.k === n.k) || { label: n.k }; return `<li>
@@ -339,11 +339,18 @@ function summarize(p, s) {
 }
 
 /* ---------------- Render y eventos ---------------- */
+// Selector del control que tiene el foco, para devolvérselo después de redibujar la misma vista
+const FOCUS_ATTRS = ['act', 'n', 'o', 'i', 'k', 'f', 'g', 'c', 'cfg', 'tab', 'tid', 'part', 'go', 'd'];
+const focusKey = el => { if (!el || !view.contains(el)) return null; const d = el.dataset, sel = FOCUS_ATTRS.filter(k => d[k] !== undefined).map(k => `[data-${k}="${CSS.escape(d[k])}"]`).join(''); return sel ? el.tagName.toLowerCase() + sel : el.hasAttribute('data-code') ? 'textarea[data-code]' : null; };
+let lastView = null;
 function render() {
   renderNav();
   document.body.classList.toggle('wide', state.view === 'ticket' || state.view === 'parte');
+  const sameView = lastView === state.view + (state.tid || '') + (state.part ?? '') + state.i, key = sameView ? focusKey(document.activeElement) : null;
+  lastView = state.view + (state.tid || '') + (state.part ?? '') + state.i;
   const html = { inicio, clase, quiz, ticket, parte: ticket, final: finalView }[state.view]();
   if (typeof html === 'string') view.innerHTML = html;
+  if (key) { const el = view.querySelector(key); if (el && !el.disabled) el.focus({ preventScroll: true }); }
   document.title = `${state.view === 'ticket' || state.view === 'parte' ? curTicket()?.title + ' · ' : ''}${P.name} · flowDev`;
 }
 function save() { persist(); }
@@ -393,11 +400,14 @@ document.addEventListener('input', e => {
   const ver = $('.tk-ver .crit'); if (ver) ver.querySelectorAll('li').forEach(li => li.className = '');
 });
 document.addEventListener('change', e => { if (e.target.matches('select[data-f],select[data-c],select[data-cfg]')) persist(); });
-// Tab dentro del editor de código inserta dos espacios
+// Tab dentro del editor inserta dos espacios; Esc y después Tab sale del editor (no queda atrapado el foco)
 document.addEventListener('keydown', e => {
-  if (e.key !== 'Tab' || !e.target.matches('textarea[data-code]')) return;
+  if (!e.target.matches('textarea[data-code]')) return;
+  if (e.key === 'Escape') { e.target.dataset.free = '1'; toast('Editor liberado: Tab pasa al siguiente control.'); return; }
+  if (e.key !== 'Tab' || e.target.dataset.free) return;
   e.preventDefault(); const t = e.target, a = t.selectionStart; t.setRangeText('  ', a, t.selectionEnd, 'end'); t.dispatchEvent(new Event('input', { bubbles: true }));
 });
+document.addEventListener('focusout', e => { if (e.target.matches?.('textarea[data-code]')) delete e.target.dataset.free; });
 document.addEventListener('scroll', e => { if (e.target.matches?.('textarea[data-code]')) e.target.previousElementSibling.scrollTop = e.target.scrollTop; }, true);
 window.addEventListener('hashchange', fromHash);
 
