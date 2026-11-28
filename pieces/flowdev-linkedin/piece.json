@@ -1,0 +1,9 @@
+{
+  "name": "flowdev-linkedin",
+  "title": "flowDev: aprendé sin pagar licencias",
+  "format": { "width": 1920, "height": 1080, "fps": 24, "bpm": 120, "duration": 26.0, "frames": 624 },
+  "formats": ["16:9"],
+  "storyFormat": "F4 mission (goal + helper, beat-cut on 120 BPM 8ths, one shape morph on the turn)",
+  "style": "flowdev",
+  "review": { "safe": { "top": 60, "bottom": 60, "right": 60 }, "refs": {} }
+}
