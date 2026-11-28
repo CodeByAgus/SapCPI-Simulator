@@ -48,6 +48,44 @@ const PA = {
     ['backup-csv', 'Respaldo semanal de clientes en CSV'],
   ],
 };
+const API = {
+  href: 'conexiones/index.html', lessons: 8, quizzes: 8,
+  esc: [
+    ['producto', 'Ejercicio_001: Consultar un producto'],
+    ['no-existe', 'Ejercicio_002: Entender un error'],
+    ['leer-json', 'Ejercicio_003: Leer un dato anidado en JSON'],
+    ['xml', 'Ejercicio_004: Pedir XML con una API key'],
+    ['filtrar', 'Ejercicio_005: Filtrar y paginar con parámetros de consulta'],
+    ['token', 'Ejercicio_006: Pedir un token con OAuth 2.0'],
+    ['crear-pedido', 'Ejercicio_007: Crear un pedido con JSON y Bearer'],
+    ['cancelar', 'Ejercicio_008: Cancelar un pedido con PATCH'],
+  ],
+};
+const CC = {
+  href: 'claude-code/index.html', lessons: 20, quizzes: 20,
+  esc: [
+    ['primera-sesion', 'Ejercicio_001: Tu primera sesión'],
+    ['atajos', 'Ejercicio_002: Los atajos de la consola'],
+    ['memoria', 'Ejercicio_003: Enseñarle una regla al proyecto'],
+    ['prompt-especifico', 'Ejercicio_004: De un pedido vago a uno específico'],
+    ['contexto', 'Ejercicio_005: Darle el contexto justo'],
+    ['plan', 'Ejercicio_006: Planear antes de tocar el código'],
+    ['skill', 'Ejercicio_007: Crear y usar una skill'],
+    ['comando', 'Ejercicio_008: Un comando para el equipo'],
+    ['subagente', 'Ejercicio_009: Un subagente que solo revisa'],
+    ['paralelo', 'Ejercicio_010: Dos agentes en paralelo'],
+    ['permisos', 'Ejercicio_011: Permisos: confiar y proteger'],
+    ['hook-formato', 'Formatear después de cada edición'],
+    ['hook-env', 'Un hook que protege el .env'],
+    ['mcp', 'Traer un issue con MCP'],
+    ['tdd', 'Primero el test'],
+    ['commit', 'Commitear con un buen mensaje'],
+    ['contexto-limpio', 'Cuidar el contexto'],
+    ['modelo', 'El modelo justo para la tarea'],
+    ['injection', 'Instrucciones escondidas'],
+    ['flujo-completo', 'De punta a punta'],
+  ],
+};
 const SAP = {
   href: 'sap-cpi/index.html', taller: 'sap-cpi/taller.html', lessons: 20, quizzes: 20, scenarios: 11, practice: 9,
   // Escenarios guiados y práctica extra del taller de iFlows
@@ -227,7 +265,7 @@ function initCarousel() {
 }
 function home() {
   const f = tpl('tplHome', { user: me(),
-    sapEsc: SAP.esc.length, sapQz: SAP.quizzes, paEsc: PA.esc.length, paQz: PA.quizzes });
+    sapEsc: SAP.esc.length, sapQz: SAP.quizzes, paEsc: PA.esc.length, paQz: PA.quizzes, ccEsc: CC.esc.length, ccQz: CC.quizzes, apiEsc: API.esc.length, apiQz: API.quizzes });
   buildCarousel(f);
   return f;
 }
@@ -242,18 +280,28 @@ function auth() {
 // Avance por plataforma: teoría, escenarios y cuestionarios (el taller de SAP CPI guarda su avance aparte)
 function stats() {
   const pr = data().progress, sd = sapSolved(), cnt = (n, f) => Array.from({ length: n }, (_, i) => i).filter(f).length;
-  const nextPa = PA.esc.find(([id]) => !pr[`pa:P:${id}`]), nextSap = SAP.esc.find(([id]) => !sd[id]);
+  const nextPa = PA.esc.find(([id]) => !pr[`pa:P:${id}`]), nextCc = CC.esc.find(([id]) => !pr[`cc:P:${id}`]), nextApi = API.esc.find(([id]) => !pr[`api:P:${id}`]), nextSap = SAP.esc.find(([id]) => !sd[id]);
   return [
-    { name: 'Power Automate', tag: 'Cloud flows', href: PA.href, rows: [
+    { name: 'Conexiones y APIs', mark: 'api', tag: 'Curso base', href: API.href, rows: [
+      ['Teoría', cnt(API.lessons, i => pr[`api:L${i}`]), API.lessons],
+      ['Ejercicios', API.esc.filter(([id]) => pr[`api:P:${id}`]).length, API.esc.length],
+      ['Cuestionarios', cnt(API.quizzes, i => pr[`api:Q:c${i + 1}`]), API.quizzes]],
+      next: nextApi ? { label: nextApi[1], href: `${API.href}#ejercicio=${nextApi[0]}` } : null },
+    { name: 'Power Automate', mark: 'pa', tag: 'Cloud flows', href: PA.href, rows: [
       ['Teoría', cnt(PA.lessons, i => pr[`pa:L${i}`]), PA.lessons],
       ['Escenarios', PA.esc.filter(([id]) => pr[`pa:P:${id}`]).length, PA.esc.length],
       ['Cuestionarios', cnt(PA.quizzes, i => pr[`pa:Q:c${i + 1}`]), PA.quizzes]],
       next: nextPa ? { label: nextPa[1], href: `${PA.href}#ejercicio=${nextPa[0]}` } : null },
-    { name: 'SAP CPI', tag: 'iFlows', href: SAP.href, rows: [
+    { name: 'SAP CPI', mark: 'sap', tag: 'iFlows', href: SAP.href, rows: [
       ['Teoría', cnt(SAP.lessons, i => pr[`sap:L${i}`]), SAP.lessons],
       ['Escenarios', SAP.esc.filter(([id]) => sd[id]).length, SAP.esc.length],
       ['Cuestionarios', cnt(SAP.quizzes, i => sd[`q-c${i + 1}`]), SAP.quizzes]],
       next: nextSap ? { label: nextSap[1], href: `${SAP.taller}#${nextSap[0]}` } : null },
+    { name: 'Claude Code', mark: 'cc', tag: 'Agente de programación', href: CC.href, rows: [
+      ['Teoría', cnt(CC.lessons, i => pr[`cc:L${i}`]), CC.lessons],
+      ['Escenarios', CC.esc.filter(([id]) => pr[`cc:P:${id}`]).length, CC.esc.length],
+      ['Cuestionarios', cnt(CC.quizzes, i => pr[`cc:Q:c${i + 1}`]), CC.quizzes]],
+      next: nextCc ? { label: nextCc[1], href: `${CC.href}#ejercicio=${nextCc[0]}` } : null },
   ].map(p => ({ ...p, done: p.rows.reduce((a, r) => a + r[1], 0), total: p.rows.reduce((a, r) => a + r[2], 0) }));
 }
 // Recuperar contraseña (view 'olvido') y elegir una nueva (view 'clave': desde el enlace del email o desde Mi avance)
@@ -271,6 +319,7 @@ function dash() {
   }));
   $('.dash-grid', f).append(...st.map(p => {
     const c = tpl('tplDashCard', { ...p, nextLabel: p.next?.label, nextHref: p.next?.href });
+    $('.h2', c).insertAdjacentHTML('beforebegin', `<span class="mark" data-mark="${p.mark}"></span>`);
     $('.dash-rows', c).append(...p.rows.map(([label, d, t]) => {
       const r = tpl('tplDashRow', { label, done: d, total: t });
       meter($('[data-meter]', r), d, t); return r;

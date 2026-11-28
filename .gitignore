@@ -1,0 +1,8 @@
+# Video para LinkedIn (skill animate): fuentes y renders, no van al sitio
+pieces/
+styles/
+references/
+
+# Skills de Superpowers y lo que generan (diseños y planes): solo para trabajar en local
+.claude/skills/
+docs/superpowers/

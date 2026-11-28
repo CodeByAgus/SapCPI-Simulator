@@ -60,7 +60,7 @@ function toast(m) { const t = $('#toast'); t.textContent = m; t.hidden = false; 
 // Inicio, Power Automate, Mi avance y la cuenta viven en otras páginas de flowDev
 const HOME = '../index.html';
 function renderNav() {
-  const links = [[HOME, 'Inicio'], [null, 'SAP CPI'], ['../power-automate/index.html', 'Power Automate'], [HOME + '#avance', 'Mi avance']];
+  const links = [[HOME, 'Inicio'], ['../conexiones/index.html', 'Conexiones'], [null, 'SAP CPI'], ['../power-automate/index.html', 'Power Automate'], ['../claude-code/index.html', 'Claude Code'], [HOME + '#avance', 'Mi avance']];
   $('#navLinks').innerHTML = links.map(([href, l]) => href ? `<a href="${href}">${l}</a>` : `<button type="button" data-tab="lecciones" aria-current="page">${l}</button>`).join('');
   const u = me();
   $('#navUser').innerHTML = u
@@ -217,7 +217,7 @@ function sap() {
     [svg('sheets'), SAP_QUIZ.length, 'Cuestionarios', 'Uno por cada clase'],
   ];
   return `<section class="card hero">
-    <p class="eyebrow dim">Plataforma</p>
+    <div class="mark-row"><span class="mark lg" data-mark="sap"></span><p class="eyebrow dim">Plataforma</p></div>
     <h1 class="display">SAP CPI</h1>
     <span class="pill">iFlows · integración empresarial</span>
     <p class="lead">${esc(SAP_INTRO)}</p>

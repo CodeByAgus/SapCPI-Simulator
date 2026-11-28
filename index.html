@@ -42,15 +42,17 @@
     </button>
     <nav class="nav-links" id="navLinks" aria-label="Secciones">
       <button type="button" data-go="home">Inicio</button>
+      <a href="conexiones/index.html">Conexiones</a>
       <a href="sap-cpi/index.html">SAP CPI</a>
       <a href="power-automate/index.html">Power Automate</a>
+      <a href="claude-code/index.html">Claude Code</a>
       <button type="button" data-go="dash">Mi avance</button>
     </nav>
     <div class="nav-user" id="navUser"></div>
   </header>
   <main id="view"></main>
   <footer class="foot">
-    <p>flowDev es un proyecto educativo independiente. SAP, Microsoft, Power Platform, Power Automate, MuleSoft y KNIME son marcas de sus respectivos dueños. El editor es un simulador simplificado: no se conecta a ninguna cuenta ni servicio real.</p>
+    <p>flowDev es un proyecto educativo independiente. SAP, Microsoft, Power Platform, Power Automate, Anthropic, Claude, Claude Code, MuleSoft y KNIME son marcas de sus respectivos dueños. El editor es un simulador simplificado: no se conecta a ninguna cuenta ni servicio real.</p>
     <p><a href="privacidad.html">Privacidad</a></p>
   </footer>
 </div>
@@ -90,17 +92,31 @@
     <h2 class="sr-only" id="lcTitle">Plataformas de flowDev</h2>
     <div class="lc-rail" tabindex="0" role="region" aria-roledescription="carrusel" aria-label="Plataformas de flowDev. Usá las flechas para cambiar.">
       <ul class="lc-track">
+        <li class="lc-slide" style="width:min(70cqw, 380px)">
+          <div class="lc-card"><span class="pill">Curso base · empezá por acá</span><span class="mark" data-mark="api"></span><h3 class="lc-name">Conexiones y APIs</h3>
+            <p>Cómo se conectan los sistemas: HTTP, JSON, XML, códigos de estado y autenticación, practicando con una API real simulada.</p>
+            <div class="lc-foot"><span class="lc-meta"><span data-text="apiEsc"></span> ejercicios · <span data-text="apiQz"></span> cuestionarios</span><a class="btn sky sm" href="conexiones/index.html">Entrar</a></div>
+          </div>
+          <span class="lc-cap"></span>
+        </li>
         <li class="lc-slide" style="width:min(78cqw, 420px)">
-          <div class="lc-card"><span class="pill">iFlows · integración empresarial</span><h3 class="lc-name">SAP CPI</h3>
+          <div class="lc-card"><span class="pill">iFlows · integración empresarial</span><span class="mark" data-mark="sap"></span><h3 class="lc-name">SAP CPI</h3>
             <p>Conectá sistemas SAP y no SAP con iFlows en notación BPMN: adaptadores, mapeos, Groovy y manejo de errores.</p>
             <div class="lc-foot"><span class="lc-meta"><span data-text="sapEsc"></span> escenarios · <span data-text="sapQz"></span> cuestionarios</span><a class="btn sky sm" href="sap-cpi/index.html">Entrar</a></div>
           </div>
           <span class="lc-cap"></span>
         </li>
         <li class="lc-slide" style="width:min(70cqw, 380px)">
-          <div class="lc-card"><span class="pill">Cloud flows · automatización</span><h3 class="lc-name">Power Automate</h3>
+          <div class="lc-card"><span class="pill">Cloud flows · automatización</span><span class="mark" data-mark="pa"></span><h3 class="lc-name">Power Automate</h3>
             <p>Automatizá procesos de Microsoft 365: Outlook, Teams, Excel, SharePoint, Dataverse, aprobaciones, AI Builder y RPA.</p>
             <div class="lc-foot"><span class="lc-meta"><span data-text="paEsc"></span> escenarios · <span data-text="paQz"></span> cuestionarios</span><a class="btn sky sm" href="power-automate/index.html">Entrar</a></div>
+          </div>
+          <span class="lc-cap"></span>
+        </li>
+        <li class="lc-slide" style="width:min(72cqw, 390px)">
+          <div class="lc-card"><span class="pill">Agente de programación</span><span class="mark" data-mark="cc"></span><h3 class="lc-name">Claude Code</h3>
+            <p>Trabajá con el agente de Anthropic en una consola como la real: prompts, skills y subagentes, con el flujo de lo que pasa por dentro.</p>
+            <div class="lc-foot"><span class="lc-meta"><span data-text="ccEsc"></span> escenarios · <span data-text="ccQz"></span> cuestionarios</span><a class="btn sky sm" href="claude-code/index.html">Entrar</a></div>
           </div>
           <span class="lc-cap"></span>
         </li>
@@ -269,7 +285,8 @@
 </template>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" integrity="sha384-0w2KAL2YHP6wKOkUDzkCDGgVvfmHnj02DHeQ6XcHOgTfFsGyonKOpShMH1x6nk9o" crossorigin="anonymous"></script>
+<script src="marks.js?v=2"></script>
 <script src="config.js?v=21"></script>
-<script src="app.js?v=25"></script>
+<script src="app.js?v=29"></script>
 </body>
 </html>

@@ -6,8 +6,10 @@ Plataforma educativa para aprender automatización e integración con flujos en 
 
 **Plataformas empresariales**, las que piden las empresas y no se pueden practicar libremente sin licencia:
 
+- **Conexiones y APIs** (`conexiones/`): curso base corto con 8 clases y sus cuestionarios (APIs, HTTP, códigos de estado, JSON, XML, REST, autenticación y otros tipos de conexión) y un taller con 8 ejercicios: se arman pedidos HTTP contra la API simulada de una empresa ficticia y se lee la respuesta.
 - **SAP CPI** (`sap-cpi/`): introducción con teoría y el taller de iFlows con editor BPMN, 11 escenarios guiados, 20 cuestionarios teóricos, 9 ejercicios extra y modo libre.
 - **Power Platform (Power Automate)** (`power-automate/`): 20 clases con su cuestionario, taller de cloud flows con 11 escenarios guiados, 9 ejercicios extra y modo libre. Incluye Condition, Switch, Apply to each, variables, Terminate, Filter array, Select, CSV, Excel, SharePoint, Teams, Outlook, Dataverse, aprobaciones, AI Builder, Power BI, Power Apps y flujos de escritorio, con las expresiones reales (`@{triggerBody()?['campo']}`, `body('Accion')`, `items('Apply_to_each')`, `variables('x')`).
+- **Claude Code** (`claude-code/`): 20 clases con su cuestionario (prompts, contexto, plan mode, skills, subagentes, permisos, hooks, MCP y flujos de trabajo) y un taller con una consola simulada como la real: comandos (`/init`, `/help`, `/agents`, `/model`…), `@archivo`, `!comando`, Shift+Tab y permisos s/n/a. Los prompts se reconocen por intención y al lado se ve el flujo de cada pedido (entrada, contexto, plan, agentes, herramientas y respuesta). 11 escenarios guiados, 9 de práctica extra y modo libre.
 - **Próximamente:** MuleSoft y KNIME.
 
 Los talleres comparten la misma distribución: barra con selector de ejercicios, paleta, lienzo con el estilo de cada herramienta y panel con las pestañas Ejercicio, Propiedades y Probar. La primera vez que se abre un taller aparece una guía paso a paso (`tour.js`, compartido por los dos talleres); el botón «Cómo se usa» la vuelve a abrir.
@@ -23,6 +25,9 @@ sap-cpi/
 power-automate/
   index.html  power-automate.css  power-automate.js
                                     Power Automate: clases, cuestionarios y taller de cloud flows
+claude-code/
+  index.html  claude-code.css  claude-code.js
+                                    Claude Code: clases, cuestionarios y taller de configuración
 supabase/schema.sql                 tabla de avance, políticas RLS y límites
 vercel.json                         headers de seguridad y caché del sitio
 assets/                             imagen para compartir (Open Graph) e íconos

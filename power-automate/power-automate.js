@@ -1205,7 +1205,7 @@ function go(v, extra = {}) { Object.assign(state, { view: v, sel: null, run: nul
 // Inicio, SAP CPI, Mi avance y la cuenta viven en otras páginas de flowDev
 const HOME = '../index.html';
 function renderNav() {
-  const links = [[HOME, 'Inicio'], ['../sap-cpi/index.html', 'SAP CPI'], [null, 'Power Automate'], [HOME + '#avance', 'Mi avance']];
+  const links = [[HOME, 'Inicio'], ['../conexiones/index.html', 'Conexiones'], ['../sap-cpi/index.html', 'SAP CPI'], [null, 'Power Automate'], ['../claude-code/index.html', 'Claude Code'], [HOME + '#avance', 'Mi avance']];
   $('#navLinks').innerHTML = links.map(([href, l]) => href ? `<a href="${href}">${l}</a>` : `<button type="button" data-go="pa" aria-current="page">${l}</button>`).join('');
   const u = me();
   $('#navUser').innerHTML = u
@@ -1248,7 +1248,7 @@ function platform() {
     [svg('task'), p.quizzes.length, 'Cuestionarios', 'Uno por cada clase'],
   ];
   return `<section class="card hero">
-    <p class="eyebrow dim">Plataforma</p>
+    <div class="mark-row"><span class="mark lg" data-mark="${pf}"></span><p class="eyebrow dim">Plataforma</p></div>
     <h1 class="display">${p.name}</h1>
     <span class="pill">${esc(p.tag)}</span>
     <p class="lead">${esc(p.intro)}</p>
@@ -1313,7 +1313,7 @@ function project() {
   const pf = state.pf, p = P[pf], j = state.proj, quiz = state.tquiz && p.quizzes.find(q => q.id === state.tquiz);
   const top = `<section class="tl-top">
     <button type="button" class="btn sky sm" data-go="${pf}" data-keep-tab="${quiz ? 'quiz' : 'proyectos'}">← ${p.name}</button>
-    <div class="tl-brand"><b>${TALLER[pf]}</b><small>Práctica de ${p.name} en flowDev</small></div>
+    <span class="mark sm" data-mark="${pf}"></span><div class="tl-brand"><b>${TALLER[pf]}</b><small>Práctica de ${p.name} en flowDev</small></div>
     <label class="tl-sel"><span>Ejercicio</span>${selectorHtml(pf)}</label>
     <span class="pill tl-prog">${doneCount(pf)}/${TOTAL(pf)} completados</span>
     ${quiz ? '' : '<button type="button" class="btn line sm" data-act="tour">Cómo se usa</button>'}
