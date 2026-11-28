@@ -11,6 +11,18 @@
     pa: ['Power Automate', g('#111110', '#DCEEFB', '<rect x="13" y="8" width="22" height="8" rx="3"/><rect x="13" y="20" width="22" height="8" rx="3"/><rect x="13" y="32" width="22" height="8" rx="3"/><path d="M24 16v4M24 28v4"/>')],
     // Claude Code: la terminal y las etapas del agente
     cc: ['Claude Code', g('#FFFFFF', '#111110', '<path d="M12 16l7 6-7 6M23 30h13"/><path d="M28 14h8M31 19h5" stroke-width="2"/>', '#111110')],
+    // SAP BTP: una nube con servicios conectados
+    btp: ['SAP BTP', g('#DCEEFB', '#111110', '<path d="M15 31h18a6 6 0 000-12 8.5 8.5 0 00-16.4-1.8A6.5 6.5 0 0015 31z"/><circle cx="19" cy="37" r="2"/><circle cx="29" cy="37" r="2"/><path d="M19 31v4M29 31v4"/>', '#111110')],
+    // ABAP: llaves de código
+    abap: ['ABAP', g('#FFFFFF', '#111110', '<path d="M19 13c-3 0-4 1.5-4 4v3c0 2-1 3.5-3 4 2 .5 3 2 3 4v3c0 2.5 1 4 4 4M29 13c3 0 4 1.5 4 4v3c0 2 1 3.5 3 4-2 .5-3 2-3 4v3c0 2.5-1 4-4 4"/><path d="M21.5 24h5"/>', '#111110')],
+    // S/4HANA: un documento contable con filas
+    s4: ['S/4HANA', g('#3D3D39', '#DCEEFB', '<rect x="13" y="10" width="22" height="28" rx="3"/><path d="M18 17h12M18 22.5h12M18 28h7"/><path d="M28 31l2.5 2.5L35 29"/>')],
+    // KNIME: nodos conectados en un workflow
+    knime: ['KNIME', g('#111110', '#DCEEFB', '<rect x="8" y="20" width="9" height="9" rx="2"/><rect x="31" y="11" width="9" height="9" rx="2"/><rect x="31" y="29" width="9" height="9" rx="2"/><path d="M17 24.5h5l4-9h5M22 24.5l4 9h5"/>')],
+    // Power BI: barras de un tablero
+    pbi: ['Power BI', g('#DCEEFB', '#111110', '<path d="M14 37V27M21 37V19M28 37V23M35 37V12"/><path d="M11 37h27"/>', '#111110')],
+    // SuccessFactors: una persona y su legajo
+    sf: ['SuccessFactors', g('#FFFFFF', '#111110', '<circle cx="19" cy="19" r="5"/><path d="M10 35c1-5 4.5-7.5 9-7.5s8 2.5 9 7.5"/><path d="M31 16h8M31 21h8M33 26h6"/>', '#111110')],
   };
   const css = document.createElement('style');
   css.textContent = '.mark{display:inline-flex;flex:none;width:var(--mark,44px);height:var(--mark,44px);vertical-align:middle}.mark svg{width:100%;height:100%;display:block}.mark-row{display:flex;align-items:center;gap:12px}.mark.sm{--mark:30px}.mark.lg{--mark:64px}.lc-card .mark,.dash-card .mark{--mark:52px}';

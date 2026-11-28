@@ -1,0 +1,211 @@
+/* flowDev · SAP S/4HANA: contenido de la plataforma (clases, tickets en pantallas tipo Fiori y proyecto final) */
+(() => {
+const { eq, match, filled, numEq, row, rows, all, photo } = window.FD;
+const APP = 'SAP Fiori · S/4HANA';
+const ORG = [
+  { k: 'soc', label: 'Sociedad', type: 'select', opts: [['AR10', 'AR10 · Distribuidora Andina SA'], ['AR20', 'AR20 · Andina Logística SRL']] },
+  { k: 'orgc', label: 'Organización de compras', type: 'select', opts: [['AR10', 'AR10 · Compras Andina'], ['AR20', 'AR20 · Compras Logística']] },
+  { k: 'gc', label: 'Grupo de compras', type: 'select', opts: [['001', '001 · Insumos'], ['002', '002 · Mercadería de reventa']] },
+];
+const ITEMS = { label: 'Posiciones', cols: [
+  { k: 'mat', label: 'Material', type: 'select', opts: [['MAT-101', 'MAT-101 · Yerba 1 kg'], ['MAT-102', 'MAT-102 · Café 500 g'], ['MAT-205', 'MAT-205 · Azúcar 1 kg'], ['MAT-310', 'MAT-310 · Aceite 900 ml']] },
+  { k: 'cant', label: 'Cantidad', type: 'number' },
+  { k: 'precio', label: 'Precio neto (ARS)', type: 'number' },
+  { k: 'centro', label: 'Centro', type: 'select', opts: [['AR01', 'AR01 · Depósito Rosario'], ['AR02', 'AR02 · Depósito Córdoba']] } ], start: [{ mat: '', cant: '', precio: '', centro: '' }] };
+window.FD_PLAT = {
+  id: 's4hana', name: 'SAP S/4HANA', mark: 's4', vendor: 'SAP', area: 'Finanzas y operaciones', role: 'Usuario/a clave de Compras y Ventas', hours: 7,
+  roles: ['Analista contable', 'Analista de compras', 'Consultor/a funcional SAP jr.'],
+  blurb: 'Operás el ERP de SAP como en una empresa: alta de proveedores, pedidos de compra, entrada de mercancías, facturas y pedidos de venta. Entendés cómo cada paso genera documentos y asientos.',
+  context: 'S/4HANA es el ERP de miles de empresas medianas y grandes. Saber recorrer los procesos de compras (Procure to Pay) y ventas (Order to Cash) es la base para puestos de analista contable, compras, logística y consultoría funcional SAP (MM, SD, FI).',
+  photo: photo('1554224154-22dec7ec8818', 'Escritorio con documentos impresos y una taza de café'),
+  lessons: [
+    { t: 'Qué es un ERP y cómo se organiza S/4HANA', body: [
+      '<p>Un <b>ERP</b> (Enterprise Resource Planning) reúne en un solo sistema compras, ventas, inventario, contabilidad y más. Cuando Compras recibe mercadería, Contabilidad ya ve el impacto: no hay planillas intermedias.</p>',
+      '<p><b>SAP S/4HANA</b> es el ERP actual de SAP. Se usa desde el navegador con <b>SAP Fiori</b> (apps por tarea, como “Gestionar pedidos de compra”) o con el SAP GUI clásico y sus <b>transacciones</b> (códigos como <code>ME21N</code>).</p>',
+      '<p>Se divide en <b>módulos</b>: <b>FI</b> (finanzas), <b>CO</b> (costos), <b>MM</b> (materiales y compras), <b>SD</b> (ventas y distribución), <b>PP</b> (producción), entre otros.</p>',
+      '<p>La <b>estructura organizativa</b> refleja la empresa: <b>sociedad</b> (la entidad legal que presenta balances), <b>centro</b> (planta o depósito), <b>organización de compras</b> y <b>organización de ventas</b>. Casi todo documento pide alguno de estos datos.</p>'],
+      quiz: [
+        ['¿Qué ventaja central tiene un ERP?', ['Integra las áreas en un solo sistema', 'Reemplaza a los empleados', 'Solo sirve para contabilidad', 'Funciona sin internet'], 'Lo que hace un área impacta en las otras al instante.'],
+        ['¿Qué módulo cubre compras e inventario?', ['MM', 'FI', 'SD', 'HR'], 'SD es ventas; FI es finanzas.'],
+        ['¿Qué es una sociedad en SAP?', ['La entidad legal que presenta balances', 'Un depósito', 'Un grupo de usuarios', 'Un proveedor'], 'El centro es la planta o depósito.'],
+        ['¿Qué es ME21N?', ['La transacción para crear un pedido de compra', 'Un proveedor', 'Un informe de ventas', 'Una sociedad'], 'En Fiori se usa la app de pedidos de compra.'],
+      ] },
+    { t: 'Socios de negocio: clientes y proveedores', body: [
+      '<p>En S/4HANA clientes y proveedores son <b>socios de negocio</b> (Business Partner, transacción <code>BP</code>). Una misma persona jurídica puede ser cliente y proveedor con distintos <b>roles</b>.</p>',
+      '<ul><li><code>FLVN00</code>: proveedor en Finanzas (para pagarle).</li><li><code>FLVN01</code>: proveedor en Compras (para pedirle).</li><li><code>FLCU00</code> y <code>FLCU01</code>: cliente en Finanzas y en Ventas.</li></ul>',
+      '<p>Datos clave de un proveedor argentino: razón social, <b>CUIT</b> (número de identificación fiscal), dirección, <b>condición de pago</b> (por ejemplo, a 30 días) y la <b>cuenta asociada</b> del plan de cuentas.</p>',
+      '<p>Los datos maestros bien cargados evitan errores en todos los documentos que vienen después. Por eso muchas empresas tienen un equipo que solo se dedica a crearlos y revisarlos.</p>'],
+      quiz: [
+        ['¿Cómo se llaman clientes y proveedores en S/4HANA?', ['Socios de negocio', 'Materiales', 'Centros', 'Asientos'], 'Se crean con la transacción BP.'],
+        ['¿Qué rol se necesita para hacerle pedidos de compra a un proveedor?', ['FLVN01', 'FLCU01', 'FLCU00', 'Ninguno'], 'FLVN00 es para Finanzas.'],
+        ['¿Qué dato fiscal identifica a un proveedor en Argentina?', ['El CUIT', 'El código postal', 'El centro', 'El grupo de compras'], 'Es el número de identificación tributaria.'],
+        ['¿Por qué importan tanto los datos maestros?', ['Porque se usan en todos los documentos posteriores', 'Porque son opcionales', 'Porque los borra el sistema', 'Porque solo los ve Sistemas'], 'Un error en el maestro se repite en cada pedido y factura.'],
+      ] },
+    { t: 'Compras: del pedido a la factura (Procure to Pay)', body: [
+      '<p>El proceso de compras estándar tiene cuatro documentos:</p><ol><li><b>Pedido de compra</b> (<code>ME21N</code>): qué se compra, a quién, cuánto y a qué precio.</li><li><b>Entrada de mercancías</b> (<code>MIGO</code>, clase de movimiento <code>101</code>): llega la mercadería y sube el stock.</li><li><b>Factura del proveedor</b> (<code>MIRO</code>): se registra lo que hay que pagar.</li><li><b>Pago</b> (<code>F110</code> o pago manual).</li></ol>',
+      '<p>SAP controla la <b>verificación de tres vías</b>: compara pedido, entrada y factura. Si la factura cobra más unidades de las recibidas o a otro precio, la bloquea para pago.</p>',
+      '<p>Cada paso genera <b>asientos contables</b>: la entrada de mercancías debita stock y acredita una cuenta puente (GR/IR); la factura cancela la cuenta puente y genera la deuda con el proveedor.</p>'],
+      quiz: [
+        ['¿Qué clase de movimiento registra la entrada de mercancías por pedido?', ['101', '201', '601', '311'], '601 es salida por venta.'],
+        ['¿Qué compara la verificación de tres vías?', ['Pedido, entrada de mercancías y factura', 'Tres facturas', 'Tres proveedores', 'Tres sociedades'], 'Si no coinciden, la factura se bloquea.'],
+        ['¿Con qué transacción se registra la factura del proveedor?', ['MIRO', 'MIGO', 'ME21N', 'VA01'], 'MIGO es para movimientos de mercancías.'],
+        ['¿Qué cuenta usa la entrada de mercancías como puente?', ['GR/IR', 'Caja', 'Ventas', 'Capital'], 'Se cancela cuando llega la factura.'],
+      ] },
+    { t: 'Ventas: del pedido al cobro (Order to Cash)', body: [
+      '<p>El proceso de ventas estándar:</p><ol><li><b>Pedido de cliente</b> (<code>VA01</code>, clase <code>OR</code>).</li><li><b>Entrega</b> (<code>VL01N</code>) y <b>salida de mercancías</b> (movimiento <code>601</code>).</li><li><b>Factura</b> al cliente (<code>VF01</code>).</li><li><b>Cobro</b>.</li></ol>',
+      '<p>El pedido de cliente necesita el <b>área de ventas</b>: organización de ventas + canal de distribución + sector. Por ejemplo <code>AR10 / 10 (mayorista) / 00</code>.</p>',
+      '<p>Al guardar el pedido, SAP controla <b>disponibilidad</b> (¿hay stock?) y <b>crédito</b> (¿el cliente supera su límite?). Si el crédito falla, el pedido queda bloqueado hasta que Finanzas lo libere.</p>'],
+      quiz: [
+        ['¿Qué forma el área de ventas?', ['Organización de ventas, canal de distribución y sector', 'Sociedad y centro', 'Cliente y material', 'Precio y cantidad'], 'Es obligatoria en el pedido.'],
+        ['¿Qué clase de pedido de cliente es la estándar?', ['OR', 'NB', '101', 'ZZ'], 'NB es la clase estándar de pedido de compra.'],
+        ['¿Qué pasa si el cliente supera su límite de crédito?', ['El pedido queda bloqueado hasta que lo liberen', 'Se borra', 'Se factura igual', 'Se manda al proveedor'], 'Lo controla Finanzas.'],
+        ['¿Qué movimiento registra la salida de mercancías por venta?', ['601', '101', '561', '122'], 'Baja el stock y registra el costo.'],
+      ] },
+    { t: 'Contabilidad: asientos e IVA', body: [
+      '<p>En S/4HANA todo movimiento con impacto económico queda en el <b>Universal Journal</b> (tabla <code>ACDOCA</code>): una sola fuente para contabilidad financiera y de costos.</p>',
+      '<p>Un <b>asiento</b> tiene debe y haber que suman lo mismo. Por ejemplo, la factura de un proveedor por $121.000 con IVA:</p><table><tr><th>Cuenta</th><th>Debe</th><th>Haber</th></tr><tr><td>GR/IR (mercadería recibida)</td><td>100.000</td><td></td></tr><tr><td>IVA crédito fiscal 21%</td><td>21.000</td><td></td></tr><tr><td>Proveedor</td><td></td><td>121.000</td></tr></table>',
+      '<p>El IVA se maneja con <b>indicadores de impuesto</b> (por ejemplo <code>C1</code> = IVA compras 21%). Al cargar la factura se elige el indicador y SAP calcula y contabiliza el impuesto.</p>',
+      '<p>Para revisar lo contabilizado se usan apps como “Mostrar partidas individuales de proveedores” o la transacción <code>FBL1N</code>.</p>'],
+      quiz: [
+        ['¿Dónde se guardan los asientos en S/4HANA?', ['En el Universal Journal (ACDOCA)', 'En una planilla', 'En el pedido de compra', 'En el maestro de materiales'], 'Unifica FI y CO.'],
+        ['En la factura de un proveedor, ¿dónde va la deuda con el proveedor?', ['En el haber', 'En el debe', 'No se registra', 'En el centro'], 'Es un pasivo.'],
+        ['¿Para qué sirve el indicador de impuesto?', ['Para que SAP calcule y contabilice el IVA', 'Para elegir el proveedor', 'Para bloquear pagos', 'Para crear materiales'], 'Ejemplo: C1 = IVA compras 21%.'],
+        ['Una factura neta de 50.000 con IVA 21%, ¿cuánto suma el total?', ['60.500', '50.000', '71.000', '10.500'], '50.000 × 1,21.'],
+      ] },
+  ],
+  tickets: [
+    { id: 'proveedor', num: '4101', title: 'Alta del proveedor Molinos del Sur', from: 'Marina Ríos · Jefa de Compras', prio: 'Prioridad media', level: 'Inicial',
+      desc: 'Empezamos a comprarle a un proveedor nuevo y no está en el sistema. Dalo de alta para que Compras pueda hacerle pedidos y Finanzas pagarle. Los datos están en el formulario de alta que mandó.',
+      reqs: ['Agrupación <b>Proveedor nacional</b>, rol <code>FLVN01</code> (Compras).', 'Razón social <code>Molinos del Sur SA</code>, país AR.', 'CUIT <code>30-71234567-9</code>.', 'Condición de pago <code>Z030</code> (30 días).'],
+      data: [{ name: 'formulario-alta.pdf (texto)', body: 'Razón social: Molinos del Sur SA\nCUIT: 30-71234567-9\nDomicilio: Av. Pellegrini 1500, Rosario, Santa Fe\nCondición de pago acordada: 30 días fecha factura' }],
+      hints: ['FLVN01 es el rol de proveedor para Compras.', 'El CUIT va con guiones, tal como figura en el formulario.'],
+      ws: { type: 'form', app: APP, screen: 'Gestionar socios de negocio · Crear organización', code: 'BP', fields: [
+        { k: 'agr', label: 'Agrupación', type: 'select', opts: ['Cliente nacional', 'Proveedor nacional', 'Proveedor del exterior'] },
+        { k: 'rol', label: 'Rol', type: 'select', opts: [['FLVN00', 'FLVN00 · Proveedor (Finanzas)'], ['FLVN01', 'FLVN01 · Proveedor (Compras)'], ['FLCU01', 'FLCU01 · Cliente (Ventas)']] },
+        { k: 'nom', label: 'Nombre (razón social)', wide: true }, { k: 'pais', label: 'País', type: 'select', opts: [['AR', 'AR · Argentina'], ['UY', 'UY · Uruguay'], ['CL', 'CL · Chile']] },
+        { k: 'cuit', label: 'Nº de identificación fiscal (CUIT)' }, { k: 'cp', label: 'Condición de pago', type: 'select', opts: [['Z000', 'Z000 · Contado'], ['Z030', 'Z030 · 30 días'], ['Z060', 'Z060 · 60 días']] } ] },
+      checks: [
+        { t: 'Proveedor nacional con rol de Compras', ok: all(eq('agr', 'Proveedor nacional'), eq('rol', 'FLVN01')) },
+        { t: 'Razón social y país', ok: all(eq('nom', 'Molinos del Sur SA'), eq('pais', 'AR')) },
+        { t: 'CUIT correcto', ok: eq('cuit', '30-71234567-9') },
+        { t: 'Pago a 30 días', ok: eq('cp', 'Z030') },
+      ],
+      solve: { v: { agr: 'Proveedor nacional', rol: 'FLVN01', nom: 'Molinos del Sur SA', pais: 'AR', cuit: '30-71234567-9', cp: 'Z030' } } },
+    { id: 'pedido-compra', num: '4102', title: 'Pedido de compra de yerba y azúcar', from: 'Marina Ríos · Jefa de Compras', prio: 'Prioridad alta', level: 'Inicial',
+      desc: 'Nos quedamos sin stock en Rosario. Cargá el pedido a Molinos del Sur según la cotización que nos pasaron (precios netos, sin IVA).',
+      reqs: ['Clase de pedido <code>NB</code> (estándar), proveedor <code>100245 · Molinos del Sur SA</code>.', 'Sociedad AR10, organización de compras AR10, grupo 001.', '500 unidades de <code>MAT-101</code> a $2.150 y 300 de <code>MAT-205</code> a $980, las dos para el centro AR01.'],
+      data: [{ name: 'cotizacion-molinos.txt', body: 'MAT-101 Yerba 1 kg ........ $2.150 + IVA\nMAT-205 Azúcar 1 kg ........ $980 + IVA\nEntrega: depósito Rosario' }],
+      hints: ['NB es la clase estándar de pedido de compra.', 'Cada material va en su propia posición.'],
+      ws: { type: 'form', app: APP, screen: 'Crear pedido de compra', code: 'ME21N', fields: [
+        { k: 'clase', label: 'Clase de pedido', type: 'select', opts: [['NB', 'NB · Pedido estándar'], ['UB', 'UB · Pedido de traslado'], ['FO', 'FO · Pedido marco']] },
+        { k: 'prov', label: 'Proveedor', type: 'select', opts: [['100245', '100245 · Molinos del Sur SA'], ['100110', '100110 · Café Puerto SRL']] }, ...ORG ], grid: ITEMS },
+      checks: [
+        { t: 'Pedido estándar a Molinos del Sur', ok: all(eq('clase', 'NB'), eq('prov', '100245')) },
+        { t: 'Datos organizativos', ok: all(eq('soc', 'AR10'), eq('orgc', 'AR10'), eq('gc', '001')) },
+        { t: 'Yerba: 500 a $2.150 en AR01', ok: row({ mat: 'MAT-101', cant: 500, precio: 2150, centro: 'AR01' }) },
+        { t: 'Azúcar: 300 a $980 en AR01', ok: row({ mat: 'MAT-205', cant: 300, precio: 980, centro: 'AR01' }) },
+        { t: 'Solo esas dos posiciones', ok: rows(2) },
+      ],
+      solve: { v: { clase: 'NB', prov: '100245', soc: 'AR10', orgc: 'AR10', gc: '001' }, grid: [{ mat: 'MAT-101', cant: '500', precio: '2150', centro: 'AR01' }, { mat: 'MAT-205', cant: '300', precio: '980', centro: 'AR01' }] } },
+    { id: 'migo', num: '4103', title: 'Registrar la mercadería recibida', from: 'Javier Sosa · Encargado de depósito', prio: 'Prioridad alta', level: 'Intermedio',
+      desc: 'Llegó el camión de Molinos del Sur por el pedido <code>4500001234</code>. Vino toda la yerba, pero de azúcar solo 250 bolsas: el resto llega la semana que viene. Registrá lo que entró.',
+      reqs: ['Operación: Entrada de mercancías, referencia Pedido <code>4500001234</code>.', 'Clase de movimiento <code>101</code>.', 'Posición 10 (MAT-101): 500. Posición 20 (MAT-205): 250.', 'Almacén <code>0001</code> en las dos.'],
+      hints: ['101 = entrada de mercancías por pedido.', 'Se registra lo que llegó físicamente, no lo pedido.'],
+      ws: { type: 'form', app: APP, screen: 'Registrar movimiento de mercancías', code: 'MIGO', fields: [
+        { k: 'op', label: 'Operación', type: 'select', opts: ['Entrada de mercancías', 'Salida de mercancías', 'Traslado'] },
+        { k: 'ref', label: 'Documento de referencia', type: 'select', opts: ['Pedido', 'Entrega', 'Orden de fabricación'] },
+        { k: 'ped', label: 'Nº de pedido' }, { k: 'cm', label: 'Clase de movimiento', type: 'select', opts: ['101', '102', '122', '201', '601'] } ],
+        grid: { label: 'Posiciones recibidas', cols: [{ k: 'pos', label: 'Posición', type: 'select', opts: ['10', '20'] }, { k: 'mat', label: 'Material', type: 'select', opts: ['MAT-101', 'MAT-205'] }, { k: 'cant', label: 'Cantidad recibida', type: 'number' }, { k: 'alm', label: 'Almacén', type: 'select', opts: ['0001', '0002'] }], start: [{ pos: '10', mat: 'MAT-101', cant: '', alm: '' }, { pos: '20', mat: 'MAT-205', cant: '', alm: '' }] } },
+      checks: [
+        { t: 'Entrada contra el pedido', ok: all(eq('op', 'Entrada de mercancías'), eq('ref', 'Pedido'), eq('ped', '4500001234')) },
+        { t: 'Movimiento 101', ok: eq('cm', '101'), why: '102 es la anulación; 122 es la devolución al proveedor.' },
+        { t: 'Yerba: 500 al almacén 0001', ok: row({ pos: '10', mat: 'MAT-101', cant: 500, alm: '0001' }) },
+        { t: 'Azúcar: solo lo recibido (250)', ok: row({ pos: '20', mat: 'MAT-205', cant: 250, alm: '0001' }) },
+      ],
+      solve: { v: { op: 'Entrada de mercancías', ref: 'Pedido', ped: '4500001234', cm: '101' }, grid: [{ pos: '10', mat: 'MAT-101', cant: '500', alm: '0001' }, { pos: '20', mat: 'MAT-205', cant: '250', alm: '0001' }] } },
+    { id: 'miro', num: '4104', title: 'Cargar la factura del proveedor', from: 'Laura Gómez · Analista de Finanzas', prio: 'Prioridad media', level: 'Intermedio',
+      desc: 'Llegó la factura A de Molinos del Sur por lo que ya recibimos (500 de yerba y 250 de azúcar). Registrala para que entre en el próximo pago. Ojo: la factura incluye IVA 21%.',
+      reqs: ['Fecha de factura 25/11/2026, referencia <code>0003-00001587</code>.', 'Pedido <code>4500001234</code>.', 'Importe bruto con IVA calculado sobre lo recibido.', 'Indicador de impuesto <code>C1</code> (IVA compras 21%).'],
+      data: [{ name: 'factura-0003-00001587.txt', body: 'Molinos del Sur SA · Factura A 0003-00001587 · 25/11/2026\n500 x MAT-101 x $2.150 = $1.075.000\n250 x MAT-205 x $980   = $245.000\nNeto gravado: $1.320.000\nIVA 21%: $277.200\nTotal: $1.597.200' }],
+      hints: ['El importe va con IVA: neto × 1,21.', 'Neto = 500 × 2.150 + 250 × 980.'],
+      ws: { type: 'form', app: APP, screen: 'Crear factura de proveedor', code: 'MIRO', fields: [
+        { k: 'fecha', label: 'Fecha de factura', type: 'date' }, { k: 'ref', label: 'Referencia' }, { k: 'ped', label: 'Pedido de compra' },
+        { k: 'imp', label: 'Importe bruto (ARS)', type: 'number', help: 'Total de la factura con impuestos' },
+        { k: 'ind', label: 'Indicador de impuesto', type: 'select', opts: [['C0', 'C0 · Exento'], ['C1', 'C1 · IVA compras 21%'], ['C2', 'C2 · IVA compras 10,5%']] },
+        { k: 'calc', label: 'Calcular impuesto', type: 'select', opts: ['Sí', 'No'] } ] },
+      checks: [
+        { t: 'Fecha y referencia de la factura', ok: all(eq('fecha', '2026-11-25'), eq('ref', '0003-00001587')) },
+        { t: 'Contra el pedido correcto', ok: eq('ped', '4500001234') },
+        { t: 'Importe bruto 1.597.200', ok: numEq('imp', 1597200), why: 'Neto 1.320.000 + IVA 277.200.' },
+        { t: 'IVA 21% calculado por SAP', ok: all(eq('ind', 'C1'), eq('calc', 'Sí')) },
+      ],
+      solve: { v: { fecha: '2026-11-25', ref: '0003-00001587', ped: '4500001234', imp: '1597200', ind: 'C1', calc: 'Sí' } } },
+    { id: 'pedido-venta', num: '4105', title: 'Pedido de un cliente mayorista', from: 'Pablo Ibarra · Ejecutivo de ventas', prio: 'Prioridad alta', level: 'Avanzado',
+      desc: 'Almacén Sur nos pidió por WhatsApp para el lunes. Cargá el pedido de cliente por el canal mayorista. Los precios salen de la lista, no hace falta escribirlos.',
+      reqs: ['Clase <code>OR</code>, cliente <code>200310 · Almacén Sur</code>.', 'Área de ventas: organización AR10, canal <code>10</code> (mayorista), sector <code>00</code>.', 'Referencia del cliente: <code>WA-2611</code>.', '120 de <code>MAT-101</code> y 60 de <code>MAT-310</code>.'],
+      hints: ['El área de ventas son tres datos: organización, canal y sector.'],
+      ws: { type: 'form', app: APP, screen: 'Crear pedido de cliente', code: 'VA01', fields: [
+        { k: 'clase', label: 'Clase de pedido', type: 'select', opts: [['OR', 'OR · Pedido estándar'], ['RE', 'RE · Devolución'], ['CR', 'CR · Nota de crédito']] },
+        { k: 'cli', label: 'Solicitante', type: 'select', opts: [['200310', '200310 · Almacén Sur'], ['200455', '200455 · Kiosco Norte']] },
+        { k: 'ov', label: 'Organización de ventas', type: 'select', opts: ['AR10', 'AR20'] },
+        { k: 'can', label: 'Canal de distribución', type: 'select', opts: [['10', '10 · Mayorista'], ['20', '20 · Minorista'], ['30', '30 · Tienda web']] },
+        { k: 'sec', label: 'Sector', type: 'select', opts: ['00', '01'] }, { k: 'refc', label: 'Referencia del cliente' } ],
+        grid: { label: 'Posiciones', cols: [{ k: 'mat', label: 'Material', type: 'select', opts: ['MAT-101', 'MAT-102', 'MAT-205', 'MAT-310'] }, { k: 'cant', label: 'Cantidad', type: 'number' }], start: [{ mat: '', cant: '' }] } },
+      checks: [
+        { t: 'Pedido estándar para Almacén Sur', ok: all(eq('clase', 'OR'), eq('cli', '200310')) },
+        { t: 'Área de ventas mayorista', ok: all(eq('ov', 'AR10'), eq('can', '10'), eq('sec', '00')) },
+        { t: 'Referencia del cliente', ok: eq('refc', 'WA-2611') },
+        { t: 'Posiciones pedidas', ok: all(row({ mat: 'MAT-101', cant: 120 }), row({ mat: 'MAT-310', cant: 60 }), rows(2)) },
+      ],
+      solve: { v: { clase: 'OR', cli: '200310', ov: 'AR10', can: '10', sec: '00', refc: 'WA-2611' }, grid: [{ mat: 'MAT-101', cant: '120' }, { mat: 'MAT-310', cant: '60' }] } },
+  ],
+  final: {
+    num: '4190', company: 'Distribuidora Andina', from: 'Laura Gómez · Analista de Finanzas', title: 'Compra de café para la temporada',
+    certTitle: 'Proyecto final de SAP S/4HANA: proceso de compras completo (Procure to Pay)',
+    brief: '“Cerramos con Café Puerto la compra de temporada. Necesito todo el circuito en el sistema: el pedido, lo que realmente entre al depósito de Córdoba y la factura, que tiene que coincidir con lo recibido para que pase la verificación.”',
+    why: 'Es el proceso Procure to Pay completo, el más pedido en entrevistas de analista de compras, contable o consultor MM. Podés contarlo como “registré el circuito pedido → entrada de mercancías → factura con verificación de tres vías en S/4HANA”.',
+    parts: [
+      { title: 'Pedido de compra', structure: 'ME21N: clase NB, proveedor, datos organizativos y posiciones', from: 'Marina Ríos · Jefa de Compras',
+        desc: 'Pedido a Café Puerto SRL (100110) para el depósito de Córdoba, grupo de mercadería de reventa.',
+        reqs: ['Clase NB, proveedor 100110.', 'Sociedad AR10, org. de compras AR10, grupo <code>002</code>.', '800 de <code>MAT-102</code> a $3.400 en el centro <code>AR02</code>.'],
+        why: 'El pedido es el compromiso con el proveedor y la base de la verificación.',
+        ws: { type: 'form', app: APP, screen: 'Crear pedido de compra', code: 'ME21N', fields: [
+          { k: 'clase', label: 'Clase de pedido', type: 'select', opts: [['NB', 'NB · Pedido estándar'], ['UB', 'UB · Pedido de traslado']] },
+          { k: 'prov', label: 'Proveedor', type: 'select', opts: [['100245', '100245 · Molinos del Sur SA'], ['100110', '100110 · Café Puerto SRL']] }, ...ORG ], grid: ITEMS },
+        checks: [
+          { t: 'NB a Café Puerto', ok: all(eq('clase', 'NB'), eq('prov', '100110')) },
+          { t: 'Organización y grupo de reventa', ok: all(eq('soc', 'AR10'), eq('orgc', 'AR10'), eq('gc', '002')) },
+          { t: 'Café: 800 a $3.400 en AR02', ok: all(row({ mat: 'MAT-102', cant: 800, precio: 3400, centro: 'AR02' }), rows(1)) } ],
+        solve: { v: { clase: 'NB', prov: '100110', soc: 'AR10', orgc: 'AR10', gc: '002' }, grid: [{ mat: 'MAT-102', cant: '800', precio: '3400', centro: 'AR02' }] } },
+      { title: 'Entrada de mercancías', structure: 'MIGO: entrada contra pedido, 101, cantidad real', from: 'Javier Sosa · Encargado de depósito',
+        desc: 'El pedido quedó como <code>4500001300</code>. Llegaron 760 paquetes en buen estado: 40 vinieron rotos y se rechazaron en la puerta (no se registran).',
+        reqs: ['Entrada de mercancías contra el pedido 4500001300.', 'Movimiento 101.', 'Posición 10 (MAT-102): solo lo aceptado, almacén 0002.'],
+        why: 'El stock y la cuenta GR/IR tienen que reflejar lo que entró de verdad.',
+        ws: { type: 'form', app: APP, screen: 'Registrar movimiento de mercancías', code: 'MIGO', fields: [
+          { k: 'op', label: 'Operación', type: 'select', opts: ['Entrada de mercancías', 'Salida de mercancías', 'Traslado'] }, { k: 'ref', label: 'Documento de referencia', type: 'select', opts: ['Pedido', 'Entrega'] },
+          { k: 'ped', label: 'Nº de pedido' }, { k: 'cm', label: 'Clase de movimiento', type: 'select', opts: ['101', '102', '122', '201'] } ],
+          grid: { label: 'Posiciones recibidas', cols: [{ k: 'pos', label: 'Posición', type: 'select', opts: ['10'] }, { k: 'mat', label: 'Material', type: 'select', opts: ['MAT-102'] }, { k: 'cant', label: 'Cantidad recibida', type: 'number' }, { k: 'alm', label: 'Almacén', type: 'select', opts: ['0001', '0002'] }], start: [{ pos: '10', mat: 'MAT-102', cant: '', alm: '' }] } },
+        checks: [
+          { t: 'Entrada contra el pedido 4500001300', ok: all(eq('op', 'Entrada de mercancías'), eq('ref', 'Pedido'), eq('ped', '4500001300')) },
+          { t: 'Movimiento 101', ok: eq('cm', '101') },
+          { t: 'Solo lo aceptado: 760 en 0002', ok: row({ pos: '10', cant: 760, alm: '0002' }) } ],
+        solve: { v: { op: 'Entrada de mercancías', ref: 'Pedido', ped: '4500001300', cm: '101' }, grid: [{ pos: '10', mat: 'MAT-102', cant: '760', alm: '0002' }] } },
+      { title: 'Factura del proveedor', structure: 'MIRO: referencia, pedido, bruto con IVA sobre lo recibido', from: 'Laura Gómez · Analista de Finanzas',
+        desc: 'Café Puerto facturó solo lo recibido. Registrala para que no quede bloqueada por diferencias.',
+        reqs: ['Fecha 27/11/2026, referencia <code>0001-00004410</code>.', 'Pedido 4500001300.', 'Bruto = 760 × 3.400 × 1,21.', 'Indicador C1 con cálculo de impuesto.'],
+        data: [{ name: 'factura-0001-00004410.txt', body: 'Café Puerto SRL · Factura A 0001-00004410 · 27/11/2026\n760 x MAT-102 x $3.400 = $2.584.000\nIVA 21%: $542.640\nTotal: $3.126.640' }],
+        why: 'Si la factura coincide con pedido y entrada, pasa la verificación de tres vías y se puede pagar.',
+        ws: { type: 'form', app: APP, screen: 'Crear factura de proveedor', code: 'MIRO', fields: [
+          { k: 'fecha', label: 'Fecha de factura', type: 'date' }, { k: 'ref', label: 'Referencia' }, { k: 'ped', label: 'Pedido de compra' },
+          { k: 'imp', label: 'Importe bruto (ARS)', type: 'number' }, { k: 'ind', label: 'Indicador de impuesto', type: 'select', opts: [['C0', 'C0 · Exento'], ['C1', 'C1 · IVA compras 21%'], ['C2', 'C2 · IVA compras 10,5%']] },
+          { k: 'calc', label: 'Calcular impuesto', type: 'select', opts: ['Sí', 'No'] } ] },
+        checks: [
+          { t: 'Fecha y referencia', ok: all(eq('fecha', '2026-11-27'), eq('ref', '0001-00004410')) },
+          { t: 'Pedido 4500001300', ok: eq('ped', '4500001300') },
+          { t: 'Bruto 3.126.640 (coincide con lo recibido)', ok: numEq('imp', 3126640) },
+          { t: 'IVA 21% calculado', ok: all(eq('ind', 'C1'), eq('calc', 'Sí')) } ],
+        solve: { v: { fecha: '2026-11-27', ref: '0001-00004410', ped: '4500001300', imp: '3126640', ind: 'C1', calc: 'Sí' } } },
+    ],
+  },
+};
+})();

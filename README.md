@@ -1,6 +1,6 @@
 # flowDev
 
-Plataforma educativa para aprender automatización e integración con flujos en software empresarial: **SAP CPI** y **Microsoft Power Platform**.
+Simulador gratuito de herramientas empresariales: se practica en un entorno de trabajo simulado, resolviendo tickets de una empresa ficticia (Distribuidora Andina), y cada plataforma con tickets cierra con un proyecto final y un certificado verificable.
 
 ## Qué incluye
 
@@ -10,7 +10,9 @@ Plataforma educativa para aprender automatización e integración con flujos en 
 - **SAP CPI** (`sap-cpi/`): introducción con teoría y el taller de iFlows con editor BPMN, 11 escenarios guiados, 20 cuestionarios teóricos, 9 ejercicios extra y modo libre.
 - **Power Platform (Power Automate)** (`power-automate/`): 20 clases con su cuestionario, taller de cloud flows con 11 escenarios guiados, 9 ejercicios extra y modo libre. Incluye Condition, Switch, Apply to each, variables, Terminate, Filter array, Select, CSV, Excel, SharePoint, Teams, Outlook, Dataverse, aprobaciones, AI Builder, Power BI, Power Apps y flujos de escritorio, con las expresiones reales (`@{triggerBody()?['campo']}`, `body('Accion')`, `items('Apply_to_each')`, `variables('x')`).
 - **Claude Code** (`claude-code/`): 20 clases con su cuestionario (prompts, contexto, plan mode, skills, subagentes, permisos, hooks, MCP y flujos de trabajo) y un taller con una consola simulada como la real: comandos (`/init`, `/help`, `/agents`, `/model`…), `@archivo`, `!comando`, Shift+Tab y permisos s/n/a. Los prompts se reconocen por intención y al lado se ve el flujo de cada pedido (entrada, contexto, plan, agentes, herramientas y respuesta). 11 escenarios guiados, 9 de práctica extra y modo libre.
-- **Próximamente:** MuleSoft y KNIME.
+- **Plataformas con tickets** (`btp/`, `abap/`, `s4hana/`, `knime/`, `power-bi/`, `successfactors/`): SAP BTP, ABAP, SAP S/4HANA, KNIME, Power BI y SAP SuccessFactors. Cada una tiene 5 clases con su cuestionario, 5 tickets y un proyecto final en 3 partes. El ticket se resuelve en una pantalla de tres columnas (pedido, área de trabajo y verificación) que usa uno de tres tipos de área de trabajo: formulario de transacción, editor de código o cadena de nodos/pasos.
+- **Proyecto final y certificado** (`certificado/`): al aprobar las partes del proyecto final se emite un certificado con código verificable (tabla `certificates` en Supabase, `supabase/certificates.sql`). La página pública muestra el certificado, el botón para LinkedIn y el trabajo entregado.
+- **Cursos gratis** (`cursos/`): catálogo revisado a mano de cursos gratis con certificado o insignia gratis, por nicho (datos, automatización e IA, RRHH y habilidades blandas). Los datos están en `cursos/catalogo.js`.
 
 Los talleres comparten la misma distribución: barra con selector de ejercicios, paleta, lienzo con el estilo de cada herramienta y panel con las pestañas Ejercicio, Propiedades y Probar. La primera vez que se abre un taller aparece una guía paso a paso (`tour.js`, compartido por los dos talleres); el botón «Cómo se usa» la vuelve a abrir.
 
@@ -28,7 +30,17 @@ power-automate/
 claude-code/
   index.html  claude-code.css  claude-code.js
                                     Claude Code: clases, cuestionarios y taller de configuración
+plataforma/
+  motor.js  motor.css               motor compartido de las plataformas con tickets
+  ayuda.js                          funciones para escribir los criterios de verificación
+  catalogo.js                       resumen de cada plataforma para Mi avance (generado desde datos.js)
+btp/ abap/ s4hana/ knime/ power-bi/ successfactors/
+  index.html  datos.js              clases, tickets y proyecto final de cada plataforma
+certificado/                        verificación pública de certificados (?c=CODIGO)
+cursos/                             cursos gratis con certificado (catalogo.js tiene la lista)
+inicio.css                          estilos del inicio (áreas, tickets y fotos)
 supabase/schema.sql                 tabla de avance, políticas RLS y límites
+supabase/certificates.sql           tabla de certificados y función pública verify_certificate()
 vercel.json                         headers de seguridad y caché del sitio
 assets/                             imagen para compartir (Open Graph) e íconos
 privacidad.html  404.html           privacidad y página de error

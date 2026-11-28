@@ -1,0 +1,45 @@
+/* flowDev · certificado público (pantalla e impresión en A4 apaisado) */
+.verify{display:flex;flex-direction:column;gap:14px;max-width:760px}
+.verify form{align-items:flex-end}
+.verify .fld{min-width:220px}
+.verify input{font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em}
+.bad-msg{background:var(--bad-soft);color:var(--bad);border-radius:12px;padding:10px 14px;font-size:14.5px}
+.ok-bar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--ink);color:var(--paper);border-radius:var(--r);padding:14px 18px}
+.ok-bar>div{display:flex;flex-direction:column;margin-right:auto}
+.ok-bar>div span{color:var(--muted-dark);font-size:13.5px}
+.ok-bar .btn{color:var(--paper)}
+.okdot{width:30px;height:30px;border-radius:50%;background:var(--sky);color:var(--ink);display:grid;place-items:center;font-weight:600}
+.cert-wrap{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:16px;align-items:start}
+.cert{background:var(--paper);border-radius:var(--r);padding:clamp(24px,4vw,48px);display:flex;flex-direction:column;gap:12px;aspect-ratio:297/210;min-height:0;position:relative;border:10px solid var(--paper);box-shadow:inset 0 0 0 1.5px var(--line)}
+.cert-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.cert-top .logo{display:flex;align-items:center;gap:10px}
+.cert-sim{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.cert-kind{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--sky-3);margin-top:clamp(8px,2vw,20px)}
+.cert-se{color:var(--muted)}
+.cert-name{font-size:clamp(30px,4.4vw,48px);font-weight:500;letter-spacing:-.04em;line-height:1.05}
+.cert-what{font-size:clamp(14px,1.5vw,16.5px);max-width:640px}
+.cert-parts{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:6px 18px;font-size:13.5px}
+.cert-parts span{color:var(--muted);margin-right:6px}
+.cert-foot{display:flex;gap:28px;flex-wrap:wrap;align-items:flex-end;border-top:1px solid var(--line);padding-top:14px;margin-top:auto}
+.cert-foot span{display:block;font-size:12px;color:var(--muted)}
+.cert-foot b{font-weight:500}
+.cert-seal{margin-left:auto;width:74px;height:74px;border-radius:50%;background:var(--sky);display:grid;place-items:center;font-size:26px;line-height:1;text-align:center}
+.cert-seal small{display:block;font-size:9px;letter-spacing:.12em;text-transform:uppercase}
+.cert-url{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.cert-legal{font-size:11.5px;color:var(--muted)}
+.side{display:flex;flex-direction:column;gap:10px;padding:22px}
+.work{display:flex;flex-direction:column;gap:10px}
+.work details{border:1.5px solid var(--line);border-radius:14px}
+.work summary{display:flex;gap:10px;align-items:center;padding:12px 14px;cursor:pointer}
+.work pre{margin:0;border-radius:0 0 12px 12px;background:var(--ink);color:#E8E8E2;font-family:var(--mono);font-size:12.5px;padding:14px;overflow:auto;white-space:pre-wrap}
+@media (max-width:900px){.cert-wrap{grid-template-columns:1fr}.cert{aspect-ratio:auto}}
+@media print{
+  @page{size:A4 landscape;margin:0}
+  body{background:#fff;padding:0}
+  .no-print{display:none!important}
+  .shell{max-width:none;padding:0}
+  .cert-wrap{display:block}
+  .cert{width:297mm;height:210mm;border-radius:0;aspect-ratio:auto;padding:18mm 20mm;box-shadow:none;border:0}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+.cert .logo-word b{color:var(--sky-3)}

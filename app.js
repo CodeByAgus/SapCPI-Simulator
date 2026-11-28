@@ -113,7 +113,9 @@ const SAP = {
   ],
 };
 const sapDone = () => { try { return JSON.parse(localStorage.getItem('taller-iflows-v1') || '{}').done || {}; } catch (_) { return {}; } };
-const TOTAL_ESC = PA.esc.length + SAP.esc.length;
+// Plataformas con tickets (BTP, ABAP, S/4HANA, KNIME, Power BI, SuccessFactors): vienen de plataforma/catalogo.js
+const NEW = window.FD_PLATS || [];
+const TOTAL_ESC = PA.esc.length + SAP.esc.length + CC.esc.length + API.esc.length + NEW.reduce((a, p) => a + p.esc.length, 0);
 
 /* ---------------- Datos del usuario (en Supabase si está configurado; si no, en este navegador) ---------------- */
 const KEY = 'flowdev-v1';
@@ -264,10 +266,21 @@ function initCarousel() {
   carKill = () => { clearTimeout(timer); queued = null; ro.disconnect(); };
 }
 function home() {
-  const f = tpl('tplHome', { user: me(),
-    sapEsc: SAP.esc.length, sapQz: SAP.quizzes, paEsc: PA.esc.length, paQz: PA.quizzes, ccEsc: CC.esc.length, ccQz: CC.quizzes, apiEsc: API.esc.length, apiQz: API.quizzes });
-  buildCarousel(f);
+  const f = tpl('tplHome', { user: me(), nPlat: 4 + NEW.length, nEsc: TOTAL_ESC });
+  homeCursos($('#homeCursos', f));
   return f;
+}
+// Cursos gratis destacados: el primero de cada nicho, con filtro por nicho
+function homeCursos(box, nicho = 'todos') {
+  const C = window.FD_CURSOS; if (!C || !box) return;
+  const esc = t => String(t ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const name = Object.fromEntries(C.nichos);
+  const list = nicho === 'todos' ? C.nichos.map(([k]) => C.cursos.find(c => c.n === k)).filter(Boolean).slice(0, 3) : C.cursos.filter(c => c.n === nicho).slice(0, 3);
+  box.innerHTML = `<div class="h-chips" role="tablist" aria-label="Nichos">${[['todos', 'Todos'], ...C.nichos].map(([k, l]) => `<button type="button" role="tab" data-cursos="${k}" aria-selected="${k === nicho}">${esc(l)}</button>`).join('')}</div>
+    <div class="h-course-grid">${list.map(c => `<a class="card h-course" href="${esc(c.url)}" target="_blank" rel="noopener">
+      <div class="row sb"><span class="pill">${esc(name[c.n])}</span><span class="mono dim">${esc(c.h)}</span></div>
+      <h3 class="h3">${esc(c.t)}</h3><p class="dim small">${esc(c.p)} · ${esc(c.idioma)}</p>
+      <div class="row sb h-course-foot"><span class="pill sky">Curso gratis · ${esc(c.cred)}</span><span class="dim small">✓ Revisado en ${esc(C.rev)}</span></div></a>`).join('')}</div>`;
 }
 
 function auth() {
@@ -302,6 +315,12 @@ function stats() {
       ['Escenarios', CC.esc.filter(([id]) => pr[`cc:P:${id}`]).length, CC.esc.length],
       ['Cuestionarios', cnt(CC.quizzes, i => pr[`cc:Q:c${i + 1}`]), CC.quizzes]],
       next: nextCc ? { label: nextCc[1], href: `${CC.href}#ejercicio=${nextCc[0]}` } : null },
+    ...NEW.map(p => { const nx = p.esc.find(([id]) => !pr[`${p.id}:P:${id}`]), fin = cnt(p.parts, i => pr[`${p.id}:F:${i}`]); return { name: p.name, mark: p.mark, tag: p.area, href: p.href, rows: [
+      ['Teoría', cnt(p.lessons, i => pr[`${p.id}:L${i}`]), p.lessons],
+      ['Escenarios', p.esc.filter(([id]) => pr[`${p.id}:P:${id}`]).length, p.esc.length],
+      ['Cuestionarios', cnt(p.lessons, i => pr[`${p.id}:Q:c${i + 1}`]), p.lessons],
+      ['Proyecto final', fin, p.parts]],
+      next: nx ? { label: nx[1], href: `${p.href}#ticket=${nx[0]}` } : fin < p.parts ? { label: 'Proyecto final', href: `${p.href}#final` } : null }; }),
   ].map(p => ({ ...p, done: p.rows.reduce((a, r) => a + r[1], 0), total: p.rows.reduce((a, r) => a + r[2], 0) }));
 }
 // Recuperar contraseña (view 'olvido') y elegir una nueva (view 'clave': desde el enlace del email o desde Mi avance)
@@ -357,9 +376,10 @@ function render() {
   if (state.view === 'clave' && !cloud && !state.recovery) state.view = 'auth';
   view.replaceChildren({ home, auth, dash, olvido: pass, clave: pass }[state.view]());
   state.passMsg = '';
-  if (state.view === 'home') initCarousel(); else if (carKill) { carKill(); carKill = null; }
+  if (state.view === 'home' && state.scroll) { const el = document.getElementById(state.scroll); state.scroll = null; if (el) requestAnimationFrame(() => el.scrollIntoView({ block: 'start' })); }
 }
 document.addEventListener('click', e => {
+  const cf = e.target.closest('[data-cursos]'); if (cf) return homeCursos($('#homeCursos'), cf.dataset.cursos);
   const el = e.target.closest('[data-go],[data-auth],[data-act]'); if (!el) return;
   const d = el.dataset;
   if (d.go) return go(d.go);
@@ -436,8 +456,9 @@ const fromHash = () => {
   if (h === 'sap') { location.replace(SAP.href); return; }
   if (h === 'registro' || h === 'ingreso') Object.assign(state, { view: 'auth', auth: h });
   else if (h === 'avance') state.view = 'dash';
-  else state.view = 'home';
+  else { state.view = 'home'; if (h === 'areas') state.scroll = 'areas'; }
   render();
+  if (h !== 'areas') window.scrollTo(0, 0);
 };
 window.addEventListener('hashchange', fromHash);
 fromHash();
